@@ -6,14 +6,17 @@ reproducible regardless of which agent made it.
 
 ## 1. No personal credentials
 
-Project-scoped secrets live in **`.env`** at the repo root (gitignored; see
-`.env.example` for the template). Every agent reads the same file.
+**Routine updates need no credential at all.** The graph's LLM backend defaults to
+`claude-cli`, which drives the `claude` CLI already on PATH. `.env` is empty for
+normal work.
 
 - Do **not** export a personal API key in your own shell and rely on it.
 - Do **not** commit credentials, tokens, or machine-specific paths.
-- `.\scripts\update_knowledge_graph.ps1` loads `.env` itself and degrades to
-  `-Mode code-only` (no secret needed) when the key is absent. Routine updates
-  should use the default path and require no credential at all.
+- `.\scripts\update_knowledge_graph.ps1` loads `.env` itself (see `.env.example`)
+  and degrades to `-Mode code-only` when a requested backend has no key.
+- `-Backend claude-cli` (the default) and `-Backend ollama` need no key. Only a
+  deliberately hosted backend (`kimi`, `claude`, `openai`, `deepseek`) needs one,
+  and then it is the project's key, in `.env`.
 
 Rationale: if graph extraction or any other step depended on one agent's
 personal key, the project's shared state would be a function of whose machine
@@ -58,6 +61,13 @@ independ of *who* changed it.
   let a human re-sign.
 - **Never overwrite `data/benchmark/benchmark-v1.json`.** It is the ADR-003
   baseline; v2 is a separate file so the baseline stays comparable.
+- **Never point the Obsidian export at the vault root.** `graphify export obsidian`
+  writes one note per graph node; aimed at `vault/` it produced 1,922 derived
+  files at its root that buried the 47 real notes and then re-indexed themselves.
+  It now targets `vault/_graph-view/`, which is inside the vault (so Obsidian
+  renders it) but quarantined in one subfolder and listed in `.graphifyignore`,
+  and it exports the **pruned** graph so note names are real symbols.
+  `vault/00 - Meta & Indexes/Code Map.md` is the human-facing code↔doc map.
 - **Never write core weights outside the sleep gate** (or a human
   promote/rollback). `hrm/learning` writes knowledge; the reasoner never does.
 - **Attribute honestly, including negative results.** If an experiment shows a
@@ -65,7 +75,33 @@ independ of *who* changed it.
   is the most expensive failure mode in a multi-agent project, because the next
   agent will trust it.
 
-## 4. Measure before claiming
+## 3a. Text files: never round-trip them through PowerShell
+
+`Get-Content` + `Set-Content -Encoding utf8` in PowerShell 5.1 reads a BOM-less
+UTF-8 file as Windows-1252 and writes the mojibake back with a BOM added. This
+silently corrupted 5 files on 2026-09-27 (`â€”` for `—`, `ðŸ` for emoji). Use the
+editor tools, which write UTF-8 without a BOM. If a file must be rewritten in
+bulk, do it in Python and verify the byte size afterwards.
+
+## 4. The knowledge graph is a view, not the source of truth
+
+`graphify` extracts code locally (AST) and markdown through the `claude-cli`
+backend, which needs no API key. If that backend is unavailable (no `claude` CLI,
+or a session rate limit), the script degrades to `-Mode code-only` and the graph
+holds code nodes but **zero** note nodes, so sessions, ADRs and concepts will not
+appear in it. Do not present that as a bug in the drawing; the edges do not exist
+yet. A re-run retries whatever failed, so fix the cause and re-run rather than
+hand-editing the graph.
+
+- `.\scripts\update_knowledge_graph.ps1` is the sanctioned update path. It runs
+  the update, prunes the result, and refreshes the Obsidian view in one command.
+- The raw graph is deliberately over-granular (every function, every docstring
+  promoted to a node). `scripts/simplify_graph.py` prunes to the module/class
+  skeleton and writes `graphify-out/graph.simple.json` + `graph.html`.
+- Use the **full** graph for `query` / `path` / `affected`; pruning is only for
+  display and for the Obsidian export.
+
+## 5. Measure before claiming
 
 - Run the full suite (`python -m pytest`) and report the real numbers.
 - Prefer a measurement over an assertion. If an ablation is flat, say it is flat
@@ -75,12 +111,15 @@ independ of *who* changed it.
 - A benchmark that cannot fail proves nothing. If a new instrument reports a
   perfect score, treat that as a prompt to make it harder, not as success.
 
-## 5. Where things are documented
+## 6. Where things are documented
 
 | Concern | Location |
 |---|---|
-| Architecture as built | `ADR-003 Unified Cognitive Model` |
+| **Which code implements which document** | `vault/00 - Meta & Indexes/Code Map.md` |
+| Architecture as built | `HRM-EQB Specification v0.2` (normative), `ADR-003 Unified Cognitive Model` |
+| Why program search was replaced | `ADR-005 Neural HRM-Phi Replaces Program Search` |
 | What the benchmark can and cannot show | `ADR-004 Discriminating Benchmark and Reasoning Ceiling` |
-| Why the deep engine is not load-bearing | `05 - Engineering & Guides/Why v2 Did Not Prove the Model.md` |
+| Why v2 did not prove the model | `05 - Engineering & Guides/Why v2 Did Not Prove the Model.md` |
 | Session history / decision chain | `08 - Chat Context & Sessions/00 - Session Index.md` |
 | Repo-level agent rules | this file |
+

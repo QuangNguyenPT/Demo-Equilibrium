@@ -26,16 +26,16 @@ Plan: [[ADR-003 Unified Cognitive Model]]. Every phase ends with tests green →
 
 ## Phase log
 
-| Phase | Result | Tests |
-|---|---|---|
-| P0 triage | `legacy/` holds old engine + blueprint; `pyproject.toml`; `.graphifyignore` excludes legacy | — |
-| P1 substrate | FHRR algebra, name-derived deterministic codebook (read-only cached symbols), backend validation gate | 47 |
-| P2 knowledge | SSD store: memmap fp16 keys + sqlite; copy-on-write rows; savepoints; crash-tested; disk cap eviction | 68 |
-| P3 domains + verifier | `Domain` protocol; grid domain (PEM port); sequence domain (new); independent verifier | 100 |
-| P4 two-level reasoning | fast (recognition, zero ticks) → deep (equilibrium) → synthesis → abstain; confidence = agreement of exact explanations over the whole vocabulary; reasoner is read-only | 119 |
-| P5a model bundle + online learning | `Model` = one SSD bundle (manifest, strict config, core generations, knowledge); episodes + answer log; human feedback quarantines / relearns from corrections | 132 |
-| P5b sleep cycle | hash-locked frozen benchmark (51 tasks, `data/benchmark/benchmark-v1.json`); gate = no regression + zero decoy false-accepts + store integrity; auto/staged promotion; reversible graduation; rollback; ledger `results.tsv` | 148 |
-| P5c metacognition + self-study | competence map (learning progress), curiosity (skips mastered/stuck), intent regression matrix (asks when unsure), `perceive()`, autoresearch-style `study()` | 167 |
+| Phase                              | Result                                                                                                                                                                                                                       | Tests |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| P0 triage                          | `legacy/` holds old engine + blueprint; `pyproject.toml`; `.graphifyignore` excludes legacy                                                                                                                                  | —     |
+| P1 substrate                       | FHRR algebra, name-derived deterministic codebook (read-only cached symbols), backend validation gate                                                                                                                        | 47    |
+| P2 knowledge                       | SSD store: memmap fp16 keys + sqlite; copy-on-write rows; savepoints; crash-tested; disk cap eviction                                                                                                                        | 68    |
+| P3 domains + verifier              | `Domain` protocol; grid domain (PEM port); sequence domain (new); independent verifier                                                                                                                                       | 100   |
+| P4 two-level reasoning             | fast (recognition, zero ticks) → deep (equilibrium) → synthesis → abstain; confidence = agreement of exact explanations over the whole vocabulary; reasoner is read-only                                                     | 119   |
+| P5a model bundle + online learning | `Model` = one SSD bundle (manifest, strict config, core generations, knowledge); episodes + answer log; human feedback quarantines / relearns from corrections                                                               | 132   |
+| P5b sleep cycle                    | hash-locked frozen benchmark (51 tasks, `data/benchmark/benchmark-v1.json`); gate = no regression + zero decoy false-accepts + store integrity; auto/staged promotion; reversible graduation; rollback; ledger `results.tsv` | 148   |
+| P5c metacognition + self-study     | competence map (learning progress), curiosity (skips mastered/stuck), intent regression matrix (asks when unsure), `perceive()`, autoresearch-style `study()`                                                                | 167   |
 
 | P6 language section | inner speech in reasoning, strict program-language parser, text notation + LLM rewrite, intent text columns, 3 backends (hashing / transformers / ollama), `explain()`, CLI `python -m hrm` | 197 |
 | P7 native backend | deferred by profiling; numpy caching + closed-family pruning instead (see ADR-003) | — |
@@ -43,12 +43,6 @@ Plan: [[ADR-003 Unified Cognitive Model]]. Every phase ends with tests green →
 ## Real-scale measurements (D=4096, benchmark v1)
 
 Solve rate 93.3% (gravity 0% by design), 0/6 decoy false accepts, 207 s. Self-study 30 tasks: 27 correct, 0 wrong, 3 abstained; one kept cycle consolidated `dihedral(r180)`, `affine(a=-3, b=0)`, `reverse`, `cumsum`, `diff` and graduated them off the SSD. Each sleep cycle costs ~7 min at D=4096 (two benchmark passes) — fine overnight, slow interactively.
-
-## Real language models (torch 2.11.0+cu128, transformers 5.17.0, RTX 5070 Ti)
-
-- `Qwen/Qwen2.5-0.5B-Instruct`: backend test passes (embed + generate on GPU). Inner speech without a format example: 0/6 parseable (it chats). With a worked format example in the prompt: 6/6 parseable, 0/6 verifying (degenerate: same rule for every task).
-- `Qwen/Qwen2.5-1.5B-Instruct`: varied, partly on-target proposals (right scale factor, names `cumsum`/`reverse`), 0/6 verifying.
-- Verification rejected every wrong proposal: safe, but ≤1.5B local models add no reasoning here. Next step: fine-tune the language section on the knowledge store's verified (task → program) pairs — the reasoning section teaching the language section.
 
 ## Design decisions made during the build
 

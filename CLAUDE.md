@@ -1,5 +1,35 @@
 # HRM+LLM Hybrid AI Model Research Project
 
+## Session-Start Rules (MANDATORY — read before any action)
+
+Every session MUST complete these steps before touching code:
+
+1. **Read vault session index** → `vault/08 - Chat Context & Sessions/00 - Session Index.md`
+   - Understand the decision chain: what was decided, why, what changed last session
+2. **Check ADR status** → `vault/06 - Devlogs & ADRs/` — know current phase (ADR-003/004/005/006)
+3. **Run test suite** → `python -m pytest --tb=short -q` — baseline before any change
+4. **Verify training state** → if `models/eqb-small/` absent, training may need resuming (check `runs/train-eqb-small.log`)
+5. **Update graph after every session** → `.\scripts\update_knowledge_graph.ps1 -Mode code-only`
+
+**Why:** Two BSOD crashes taught us: never start blind. Context from previous sessions prevents re-doing fixed bugs, re-breaking invariants, or racing training runs.
+
+### Per-Prompt Checklist (before implementing any change)
+
+- [ ] Does this change a certified map, routing normalization, or σ? → `test_eqb_theorems.py` must stay green
+- [ ] Is this a CUDA command? → only through `select_device()` (70% VRAM cap)
+- [ ] Is this a write to knowledge? → only through `mind.learn()` with a `VerificationReport`
+- [ ] Is this editing a frozen benchmark or `hrm/learning/harness.py`? → STOP, make a new version instead
+- [ ] Does this affect training? → check checkpoint exists, use `--pause 0.15` on GPU
+
+### Information Path (traceability)
+```
+Question → Research (vault/Knowledge Graph/) → Decision (vault/06 ADRs) 
+→ Implementation (hrm_eqb/) → Test (tests/) → Session log (vault/08)
+→ Knowledge graph (graphify-out/) → vault/ sync
+```
+
+---
+
 ## Project Overview
 
 Engineering hybrid AI architecture combining Hierarchical Reasoning Model (HRM) with modern LLMs. Reference: Executive Summary + detailed system design doc in `/docs`.

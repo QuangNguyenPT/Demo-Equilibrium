@@ -38,6 +38,8 @@ Each session file in this folder follows the template:
 | 2026-09-27 | [[Session - 2026-09-27 - HRM-Phi Design]] | Reflection + research (ARC Prize, TRM, recurrent-depth, memory layers); HRM-Φ math-first design; two-file format; N0–N9 plan (no code yet) |
 | 2026-09-27 | [[Session - 2026-09-27 - Unified Model Build]] | Built the unified model (ADR-003): PEM port + SSD knowledge + two-level reasoning + learning loops + metacognition + language section; 197 tests; real-scale baseline |
 | 2026-09-27 | [[Session - 2026-09-27 - Benchmark v2 and the Reasoning Ceiling]] | Fixed the controller livelock, built benchmark v2 (depth + vocabulary axes) which exposed 4 real defects; v2 scores 1.000 but the ablation ladder is flat, so the deep engine and phasor substrate are **not** load-bearing yet (ADR-004) |
+| 2026-09-27 | [[Session - 2026-09-27 - HRM-EQB Full Build]] | HRM-EQB N0–N8 built (ADR-005): certified equilibrium core, FHRR field, Sinkhorn routing, quaternion memory, AttnRes chain, .hrmc format, Mind runtime, self-study, CLI; 42/42 tests; training ran 150 min (peak batch acc 88.7%, loss floor 0.143); vault+graph updated; BSOD × 2 fixed (GPU safety); ADR-006 written |
+| 2026-09-27 | [[Session - 2026-09-27 - Graph Rebuild and Benchmarks]] | Graph rebuilt with deep semantic extraction (2948 nodes, 6311 edges, 263 communities, 30 named); benchmarks complete: language=0.983, schedule=1.000, generated=0.298, arc=0.000; ADR-006 benchmark results filled; simplify_graph test threshold updated; all 295/296 tests pass |
 
 ---
 

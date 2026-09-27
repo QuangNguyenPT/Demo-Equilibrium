@@ -5,3 +5,21 @@ graphify-out/
 .pytest_cache/
 models/
 runs/
+.obsidian/
+
+# --- guard against the vault-explosion feedback loop -------------------------
+# `graphify export obsidian` emits one note per graph node. Aimed at the vault
+# ROOT it produced 1,922 derived notes there, burying the real notes, and the
+# next run re-indexed those as sources and produced more nodes again. The export
+# now targets vault/_graph-view/ from the PRUNED graph, and this keeps the loop
+# broken even if someone points it back at the root.
+vault/_graph-view/
+vault/.graphify_obsidian_manifest.json
+vault/_COMMUNITY_*.md
+vault/* Module *.md
+vault/obsidian-view/
+# generated node-name vault notes from obsidian export (loop guard)
+vault/(*.md
+vault/.obsidian/
+# graphify backup temp dirs
+.gfy-replace-bak-*.tmp/

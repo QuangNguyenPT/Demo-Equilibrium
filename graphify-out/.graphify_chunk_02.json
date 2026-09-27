@@ -1,0 +1,1274 @@
+{
+  "nodes": [
+    {
+      "id": "vault_04___interop___c_abi_bridge_c_abi___interop_specification",
+      "label": "C-ABI & Interop Specification",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\04 - Interop & C-ABI Bridge\\C-ABI & Interop Specification.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_05___engineering___guides_build___toolchain_guide",
+      "label": "Build & Toolchain Guide",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Build & Toolchain Guide.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_05___engineering___guides_development_workflow___conventions",
+      "label": "Development Workflow & Conventions",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Development Workflow & Conventions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_05___engineering___guides_gpu_safety___vram_oversubscription_and_dpc_watchdog",
+      "label": "GPU Safety: VRAM Oversubscription and DPC Watchdog",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-27",
+      "author": "claude-opus-5-5",
+      "contributor": null
+    },
+    {
+      "id": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "label": "Why v2 Did Not Prove the Model",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-27",
+      "author": "opencode/big-pickle",
+      "contributor": null
+    },
+    {
+      "id": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "label": "ADR-001: Hybrid C++ Engine with Python Blueprint",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-001 Hybrid C++ Engine with Python Blueprint.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-26",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_06___devlogs___adrs_adr_002_zero_allocation_memory_arena",
+      "label": "ADR-002: Zero-Allocation Memory Arena",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-002 Zero Allocation Memory Arena.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-26",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "label": "ADR-003: Unified Cognitive Model",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-27",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "label": "ADR-004: Discriminating Benchmark and Reasoning Ceiling",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-27",
+      "author": "opencode/big-pickle",
+      "contributor": null
+    },
+    {
+      "id": "vault_06___devlogs___adrs_devlog___2026_09___project_foundation",
+      "label": "Devlog: 2026-09 Project Foundation & Hybrid Architecture Inception",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\Devlog - 2026-09 - Project Foundation.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-26",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_07___templates_template___adr",
+      "label": "Template: Architectural Decision Record (ADR)",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\07 - Templates\\Template - ADR.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_07___templates_template___devlog",
+      "label": "Template: Engineering Devlog",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\07 - Templates\\Template - Devlog.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_07___templates_template___kernel_spec",
+      "label": "Template: Kernel Specification",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\07 - Templates\\Template - Kernel Spec.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_07___templates_template___model_blueprint",
+      "label": "Template: Model Blueprint",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\07 - Templates\\Template - Model Blueprint.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_08___chat_context___sessions_00___session_index",
+      "label": "Chat Session Index",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\00 - Session Index.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-26",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "label": "Session 2026-09-26: Foundation, PEM Integration & Deep Research",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-26",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vault_08___chat_context___sessions_session___2026_09_26___knowledge_graph_expansion",
+      "label": "Session 2026-09-26: Knowledge Graph Expansion",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Knowledge Graph Expansion.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-09-26",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "hrm_eqb_device",
+      "label": "hrm_eqb/device.py — select_device() VRAM cap",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": "hrm_eqb/device.py",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "hrm_eqb_train",
+      "label": "hrm_eqb/train.py — bounded training batches",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": "hrm_eqb/train.py",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "hrm_reasoning_synthesis",
+      "label": "hrm/reasoning/synthesis.py — beam synthesizer",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": "hrm/reasoning/synthesis.py",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "hrm_reasoning_controller",
+      "label": "hrm/reasoning/controller.py — conjunctive halt & annealed restart",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": "hrm/reasoning/controller.py",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "hrm_reasoning_qhead",
+      "label": "hrm/reasoning/qhead.py — 9-feature Q-head",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": "hrm/reasoning/qhead.py",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "hrm_substrate",
+      "label": "hrm/substrate — FHRR phasor algebra",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": "hrm/substrate",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "src_kernels_hrm_loop_cpp",
+      "label": "src/kernels/hrm_loop.cpp — C++ HRM reasoning loop",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": "src/kernels/hrm_loop.cpp",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "src_kernels_attention_cpp",
+      "label": "src/kernels/attention.cpp — RealFormer attention residuals",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": "src/kernels/attention.cpp",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "include_hrm_c_api_hrm_c_api_h",
+      "label": "include/hrm/c_api/hrm_c_api.h — pure C-ABI exports",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\04 - Interop & C-ABI Bridge\\C-ABI & Interop Specification.md",
+      "source_location": "include/hrm/c_api/hrm_c_api.h",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "include_hrm_core_allocator_hpp",
+      "label": "include/hrm/core/allocator.hpp — ArenaAllocator header",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-002 Zero Allocation Memory Arena.md",
+      "source_location": "include/hrm/core/allocator.hpp",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "python_hrm_blueprint_configs_py",
+      "label": "python/hrm_blueprint/configs.py — HRMConfig & TransformerConfig",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": "python/hrm_blueprint/configs.py",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "python_hrm_blueprint_hrm_controller_py",
+      "label": "python/hrm_blueprint/hrm_controller.py — HRM controller blueprint",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": "python/hrm_blueprint/hrm_controller.py",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "data_benchmark_benchmark_v2_json",
+      "label": "data/benchmark/benchmark-v2.json — 108-task discriminating benchmark",
+      "file_type": "document",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": "data/benchmark/benchmark-v2.json",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_test_vector3d_py",
+      "label": "tests/test_vector3d.py — depth label verification tests",
+      "file_type": "code",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": "tests/test_vector3d.py",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_arena_allocator",
+      "label": "ArenaAllocator — zero-allocation bump memory arena",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-002 Zero Allocation Memory Arena.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_c_abi_bridge",
+      "label": "C-ABI Bridge — Python/C++ interop via extern C",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\04 - Interop & C-ABI Bridge\\C-ABI & Interop Specification.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_zero_copy_numpy",
+      "label": "Zero-Copy NumPy Sharing via wrap_numpy",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\04 - Interop & C-ABI Bridge\\C-ABI & Interop Specification.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_conjunctive_halt",
+      "label": "Conjunctive Halt — kinetic AND semantic AND verification",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_act_halting",
+      "label": "ACT Halting — Adaptive Computation Time Q-head",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_realformer_attn_residuals",
+      "label": "RealFormer Attention Residuals — cross-layer score passthrough",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_fhrr_phasor",
+      "label": "FHRR Phasor Algebra — unit complex phasor substrate",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_vector3d_domain",
+      "label": "Vector3DDomain — continuous 3-vector benchmark domain",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_synthesis_depth_ceiling",
+      "label": "Synthesis Depth Ceiling — deep engine unreachable above synthesis_depth",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_equilibrium_engine",
+      "label": "EquilibriumEngine H-level — deep reasoning engine (currently dead code in v2)",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_vram_sysmem_fallback",
+      "label": "NVIDIA VRAM Sysmem Fallback — DPC_WATCHDOG_VIOLATION cause",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_select_device_guard",
+      "label": "select_device() 70% VRAM Cap — allocator overflow guard",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_flat_ablation_ladder",
+      "label": "Flat Ablation Ladder — deep engine and phasor not load-bearing in v2",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_information_path",
+      "label": "Information Path — question → research → decision → implementation traceability",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\00 - Session Index.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "vault_04___interop___c_abi_bridge_c_abi___interop_specification",
+      "target": "include_hrm_c_api_hrm_c_api_h",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\04 - Interop & C-ABI Bridge\\C-ABI & Interop Specification.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_04___interop___c_abi_bridge_c_abi___interop_specification",
+      "target": "concept_c_abi_bridge",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\04 - Interop & C-ABI Bridge\\C-ABI & Interop Specification.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_04___interop___c_abi_bridge_c_abi___interop_specification",
+      "target": "concept_zero_copy_numpy",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\04 - Interop & C-ABI Bridge\\C-ABI & Interop Specification.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_build___toolchain_guide",
+      "target": "vault_04___interop___c_abi_bridge_c_abi___interop_specification",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Build & Toolchain Guide.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_build___toolchain_guide",
+      "target": "vault_05___engineering___guides_development_workflow___conventions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Build & Toolchain Guide.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_development_workflow___conventions",
+      "target": "vault_05___engineering___guides_build___toolchain_guide",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Development Workflow & Conventions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_development_workflow___conventions",
+      "target": "include_hrm_c_api_hrm_c_api_h",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Development Workflow & Conventions.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_gpu_safety___vram_oversubscription_and_dpc_watchdog",
+      "target": "hrm_eqb_device",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_gpu_safety___vram_oversubscription_and_dpc_watchdog",
+      "target": "hrm_eqb_train",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_gpu_safety___vram_oversubscription_and_dpc_watchdog",
+      "target": "concept_vram_sysmem_fallback",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_gpu_safety___vram_oversubscription_and_dpc_watchdog",
+      "target": "concept_select_device_guard",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_select_device_guard",
+      "target": "hrm_eqb_device",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "target": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "target": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "target": "hrm_reasoning_synthesis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "target": "concept_equilibrium_engine",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "target": "concept_flat_ablation_ladder",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "target": "concept_synthesis_depth_ceiling",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "target": "data_benchmark_benchmark_v2_json",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "target": "concept_c_abi_bridge",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-001 Hybrid C++ Engine with Python Blueprint.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "target": "python_hrm_blueprint_configs_py",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-001 Hybrid C++ Engine with Python Blueprint.md",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "target": "python_hrm_blueprint_hrm_controller_py",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-001 Hybrid C++ Engine with Python Blueprint.md",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "target": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": "supersedes",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_002_zero_allocation_memory_arena",
+      "target": "concept_arena_allocator",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-002 Zero Allocation Memory Arena.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_002_zero_allocation_memory_arena",
+      "target": "include_hrm_core_allocator_hpp",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-002 Zero Allocation Memory Arena.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "target": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": "supersedes",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "target": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "target": "hrm_substrate",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "target": "hrm_reasoning_controller",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "target": "hrm_reasoning_qhead",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "target": "concept_fhrr_phasor",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "target": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "target": "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "target": "data_benchmark_benchmark_v2_json",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "target": "hrm_reasoning_synthesis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "target": "tests_test_vector3d_py",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "target": "concept_vector3d_domain",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "target": "concept_flat_ablation_ladder",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "target": "concept_synthesis_depth_ceiling",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_devlog___2026_09___project_foundation",
+      "target": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\Devlog - 2026-09 - Project Foundation.md",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "vault_06___devlogs___adrs_devlog___2026_09___project_foundation",
+      "target": "vault_06___devlogs___adrs_adr_002_zero_allocation_memory_arena",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\Devlog - 2026-09 - Project Foundation.md",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "vault_06___devlogs___adrs_devlog___2026_09___project_foundation",
+      "target": "concept_arena_allocator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\Devlog - 2026-09 - Project Foundation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_06___devlogs___adrs_devlog___2026_09___project_foundation",
+      "target": "concept_act_halting",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\Devlog - 2026-09 - Project Foundation.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_00___session_index",
+      "target": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\00 - Session Index.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_00___session_index",
+      "target": "vault_08___chat_context___sessions_session___2026_09_26___knowledge_graph_expansion",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\00 - Session Index.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_00___session_index",
+      "target": "vault_06___devlogs___adrs_adr_003_unified_cognitive_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\00 - Session Index.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_00___session_index",
+      "target": "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\00 - Session Index.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_00___session_index",
+      "target": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\00 - Session Index.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_00___session_index",
+      "target": "concept_information_path",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\00 - Session Index.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "target": "src_kernels_hrm_loop_cpp",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "target": "src_kernels_attention_cpp",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "target": "python_hrm_blueprint_configs_py",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "target": "python_hrm_blueprint_hrm_controller_py",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "target": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "target": "concept_conjunctive_halt",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "target": "concept_realformer_attn_residuals",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "target": "concept_act_halting",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___knowledge_graph_expansion",
+      "target": "vault_08___chat_context___sessions_session___2026_09_26___foundation___research",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Knowledge Graph Expansion.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___knowledge_graph_expansion",
+      "target": "vault_08___chat_context___sessions_00___session_index",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Knowledge Graph Expansion.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___knowledge_graph_expansion",
+      "target": "concept_realformer_attn_residuals",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Knowledge Graph Expansion.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___knowledge_graph_expansion",
+      "target": "src_kernels_attention_cpp",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Knowledge Graph Expansion.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vault_08___chat_context___sessions_session___2026_09_26___knowledge_graph_expansion",
+      "target": "concept_information_path",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Knowledge Graph Expansion.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_conjunctive_halt",
+      "target": "concept_act_halting",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "concept_conjunctive_halt",
+      "target": "hrm_reasoning_controller",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_act_halting",
+      "target": "hrm_reasoning_qhead",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_fhrr_phasor",
+      "target": "hrm_substrate",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-003 Unified Cognitive Model.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_realformer_attn_residuals",
+      "target": "src_kernels_attention_cpp",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\08 - Chat Context & Sessions\\Session - 2026-09-26 - Foundation & Research.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_arena_allocator",
+      "target": "concept_zero_copy_numpy",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\04 - Interop & C-ABI Bridge\\C-ABI & Interop Specification.md",
+      "source_location": null,
+      "weight": 0.65
+    },
+    {
+      "source": "concept_equilibrium_engine",
+      "target": "hrm_reasoning_synthesis",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "concept_flat_ablation_ladder",
+      "target": "concept_synthesis_depth_ceiling",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\Why v2 Did Not Prove the Model.md",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "vault_07___templates_template___adr",
+      "target": "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\07 - Templates\\Template - ADR.md",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "vault_07___templates_template___model_blueprint",
+      "target": "python_hrm_blueprint_hrm_controller_py",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\07 - Templates\\Template - Model Blueprint.md",
+      "source_location": null,
+      "weight": 0.65
+    },
+    {
+      "source": "vault_07___templates_template___kernel_spec",
+      "target": "src_kernels_hrm_loop_cpp",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\07 - Templates\\Template - Kernel Spec.md",
+      "source_location": null,
+      "weight": 0.65
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "c_engine_foundation",
+      "label": "C++ Engine Foundation: C-ABI + Arena + ADR-001 + ADR-002",
+      "nodes": [
+        "vault_04___interop___c_abi_bridge_c_abi___interop_specification",
+        "vault_06___devlogs___adrs_adr_001_hybrid_c___engine_with_python_blueprint",
+        "vault_06___devlogs___adrs_adr_002_zero_allocation_memory_arena"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-001 Hybrid C++ Engine with Python Blueprint.md"
+    },
+    {
+      "id": "vram_safety_guards",
+      "label": "VRAM Safety Guards: GPU Safety Guide + select_device() + train.py bounded batches",
+      "nodes": [
+        "vault_05___engineering___guides_gpu_safety___vram_oversubscription_and_dpc_watchdog",
+        "hrm_eqb_device",
+        "hrm_eqb_train"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\05 - Engineering & Guides\\GPU Safety - VRAM Oversubscription and DPC Watchdog.md"
+    },
+    {
+      "id": "benchmark_v2_falsifiability",
+      "label": "Benchmark v2 Falsifiability: ADR-004 + Why v2 + flat ablation finding",
+      "nodes": [
+        "vault_06___devlogs___adrs_adr_004_discriminating_benchmark_and_reasoning_ceiling",
+        "vault_05___engineering___guides_why_v2_did_not_prove_the_model",
+        "concept_flat_ablation_ladder"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\Admin\\Desktop\\Code\\AI\\Demo\\vault\\06 - Devlogs & ADRs\\ADR-004 Discriminating Benchmark and Reasoning Ceiling.md"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

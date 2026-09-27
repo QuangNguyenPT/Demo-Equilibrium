@@ -19,3 +19,15 @@ data/external/
 # large reference downloads and graphify's per-file cache
 docs/*.zip
 graphify-out/cache/
+
+# generated vault notes (graphify obsidian export to vault root — real notes are in subdirs)
+vault/*.md
+vault/*.canvas
+vault/_graph-view/
+vault/graph.canvas
+
+# graphify backup temp dirs
+.gfy-replace-bak-*.tmp/
+
+# scratch canvas files
+Untitled*.canvas
