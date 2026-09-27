@@ -52,6 +52,7 @@ class TrainConfig:
     log_every: int = 50
     checkpoint: Optional[str] = None   # rolling checkpoint path; an existing one is resumed
     checkpoint_every: int = 250
+    pause: float = 0.0                 # seconds idle after each step (duty cycle for thermal headroom)
 
 
 def task_batches(rng: np.random.Generator, cfg: TrainConfig, max_side: int,
@@ -165,6 +166,8 @@ def train(model: HRMEQB, cfg: TrainConfig, device: torch.device, extra: Sequence
         opt.step()
         sched.step()
         ema_update(ema, model, cfg.ema, step)
+        if cfg.pause > 0:
+            time.sleep(cfg.pause)
         if step % cfg.log_every == 0 or step == 1:
             acc = float(exact(outputs[-1], batch).float().mean())
             log(f"[TRAIN] step {step} loss {float(loss.detach()):.4f} task_acc {acc:.3f} "
