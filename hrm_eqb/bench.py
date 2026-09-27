@@ -77,8 +77,11 @@ def language(model: HRMEQB, device: torch.device, n_per_family: int = 50) -> Sui
 
 @torch.no_grad()
 def committee_accuracy(model: HRMEQB, tasks: Sequence[Task], device: torch.device, n_views: int = 4,
-                       attempts: int = 2) -> List[bool]:
-    """pass@attempts with the committee's most voted de-augmented answers (ARC scoring)."""
+                       attempts: int = 2) -> List[Optional[bool]]:
+    """pass@attempts with the committee's most voted de-augmented answers (ARC scoring).
+
+    None marks a task that did not fit in memory (reported as skipped, never as solved).
+    """
     rng = np.random.default_rng(BENCH_SEED)
     model.to(device).eval()
     ok = []
@@ -87,10 +90,15 @@ def committee_accuracy(model: HRMEQB, tasks: Sequence[Task], device: torch.devic
         members = [a.apply(task) for a in augs] if task.kind == "grid" else [task]
         encoded = [encode_task(m) for m in members]
         answers = []
-        for group in budget_chunks(encoded, EVAL_PAIRS):
-            chunk = [encoded[i] for i in group]
-            ids = model(collate(chunk).to(device))[-1].logits.argmax(-1).cpu().numpy()
-            answers += [decode_answer(e, row[:e.answer_pos.size]) for e, row in zip(chunk, ids)]
+        try:
+            for group in budget_chunks(encoded, EVAL_PAIRS):
+                chunk = [encoded[i] for i in group]
+                ids = model(collate(chunk).to(device))[-1].logits.argmax(-1).cpu().numpy()
+                answers += [decode_answer(e, row[:e.answer_pos.size]) for e, row in zip(chunk, ids)]
+        except torch.OutOfMemoryError:
+            torch.cuda.empty_cache()
+            ok.append(None)
+            continue
         tallied = tally([_undo(a, ans, task) for a, ans in zip(augs, answers)])
         ok.append(any(answers_equal(a, task.answer) for a, _ in tallied[:attempts]))
     return ok
@@ -102,9 +110,10 @@ def arc(model: HRMEQB, device: torch.device, directory: Path, limit: Optional[in
         tasks = tasks[:limit]
     usable = [t for t in tasks if fits(t, MAX_TOKENS) and encode_task(t).target is not None]
     ok = committee_accuracy(model, usable, device)
-    solved = sum(ok)
-    return SuiteResult("arc", len(usable), len(tasks) - len(usable), solved / max(len(tasks), 1),
-                       {"on_attempted": solved / max(len(usable), 1), "solved": float(solved)})
+    attempted = [o for o in ok if o is not None]
+    solved = sum(attempted)
+    return SuiteResult("arc", len(attempted), len(tasks) - len(attempted), solved / max(len(tasks), 1),
+                       {"on_attempted": solved / max(len(attempted), 1), "solved": float(solved)})
 
 
 @torch.no_grad()
@@ -114,13 +123,13 @@ def sudoku(model: HRMEQB, device: torch.device, csv_path: Optional[Path] = None,
     ev_own = evaluate(model, own, device)
     detail = {"generated_solved": ev_own.accuracy,
               "generated_cells": _cell_accuracy(ev_own.predictions, own)}
-    attempted, acc = len(own), ev_own.accuracy
+    name, attempted, acc = "sudoku_generated", len(own), ev_own.accuracy
     if csv_path is not None and Path(csv_path).exists():
         ext = load_sudoku_csv(Path(csv_path), limit)
         ev_ext = evaluate(model, ext, device)
         detail.update({"extreme_solved": ev_ext.accuracy, "extreme_cells": _cell_accuracy(ev_ext.predictions, ext)})
-        attempted, acc = attempted + len(ext), ev_ext.accuracy
-    return SuiteResult("sudoku", attempted, 0, acc, detail)
+        name, attempted, acc = "sudoku_extreme", len(ext), ev_ext.accuracy
+    return SuiteResult(name, attempted, 0, acc, detail)
 
 
 def _cell_accuracy(preds: Sequence[np.ndarray], tasks: Sequence[Task]) -> float:

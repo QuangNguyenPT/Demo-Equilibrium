@@ -22,12 +22,19 @@ hrm/                       the model, numpy-first (torch only for the transforme
   core.py                  core weights <-> JSON (per generation)
   model.py                 Model facade = one bundle directory; human controls
   __main__.py              CLI: python -m hrm create|ask|feedback|explain|sleep|study|report|...
-hrm_eqb/                   HRM-EQB (torch): the model going forward (ADR-005, spec v0.2)
+hrm_eqb/                   HRM-EQB (torch): the model (ADR-005, spec v0.2 incl. §14)
   algebra.py               rotation-vector text (complex planes) + quaternion knowledge (4-D)
   certified.py             Cayley x sigmoid-diag weights, sub-stochastic routing, radial ReLU
   equilibrium.py           L/H equilibrium core; certificate (Γ, r_n) from SVD norms; halting
-  attnres.py / product_keys.py / neuromodulation.py / curiosity.py / gate.py
-tests/                     pytest, one file per section; test_eqb_theorems.py = one check per theorem
+  tasks.py / field.py      generated families + ARC/Sudoku loaders; token field, augmentation
+  model.py                 prelude -> certified segments -> answer/halt heads; coda.py (language)
+  memory.py / knowledge.py quaternion product-key memory; knowledge.pt (in-place rows, WAL, seal)
+  hrmc.py                  model.hrmc: full core, recomputed certificate, probes, forgery refused
+  train.py / mind.py       training (checkpointed); runtime Answer-or-Question, verified writes
+  study.py / bench.py      autoresearch-style keep/discard (G1); benchmark suites
+  device.py                select_device(): VRAM cap (see GPU Safety note)
+  __main__.py              CLI: python -m hrm_eqb create|info|ask|learn|study|bench|seal
+tests/                     pytest; test_eqb_theorems.py (§2-8), test_eqb_model.py + test_eqb_runtime.py (§14)
 data/benchmark/            frozen benchmark v1 (never overwrite; make v2)
 scripts/                   make_benchmark.py, update_knowledge_graph.ps1
 vault/                     Obsidian vault; session logs in "08 - Chat Context & Sessions"
@@ -41,11 +48,13 @@ legacy/                    superseded C++ GRU engine + blueprint (reference only
 **Status note (2026-09-27).** The sections below that describe a transformer
 stack, RoPE, FlashAttention, attention residuals, a 6-stage pretraining pipeline
 and MXFP4 compression are *design targets carried over from the original
-research brief*. None of them exist in this repository. What is built is a
-numpy-first FHRR model whose reasoning is a bounded compositional search over
-exact-checkable programs. Do not read those sections as a description of the
-current code; see ADR-003 for what was actually built and ADR-004 for what the
-benchmark now measures about it.
+research brief*. Updated 2026-09-27 (ADR-005): `hrm_eqb/` now has a small
+transformer prelude, rotation-bound (RoPE-as-binding) positions, Attention
+Residuals over the thinking chain, and a certified two-level equilibrium core
+trained with deep supervision. There is still no LLM pretraining pipeline,
+FlashAttention kernel, MoE or MXFP4, and the ACT Q-learning head is a supervised
+"is this answer right" halting head instead. `hrm/` remains the numpy
+program-search model of ADR-003/004.
 - **A (Separate HRM Module):** LLM encoder → HRM reasoning → decoder. Modular, reusable, trains as add-on.
 - **B (Hierarchical Inside Transformer):** Recurrent loops embedded in layers. Hard to train, breaks parallelism.
 - **C (Latent Reasoning Loop):** Extra hidden-state updates between tokens. Simple, but slow inference.
@@ -183,7 +192,12 @@ for attempt in range(3):
 ## Development Workflow
 
 ```powershell
-python -m pytest                                   # full suite (~15 s)
+python -m pytest                                   # full suite (~45 s)
+python scripts/fetch_benchmarks.py                 # ARC-AGI-1 + Sudoku-Extreme -> data/external/ (gitignored)
+python -m hrm_eqb create models/eqb-small --minutes 120 --arc-train data/external/arc/training
+python -m hrm_eqb bench models/eqb-small --suites generated,language,sudoku,arc,empty_brain,schedule
+python -m hrm_eqb ask models/eqb-small task.json   # Answer, or a Question with candidates + bits
+python -m hrm_eqb study models/eqb-small --minutes 10   # keep/discard gate, results.tsv ledger
 python -m hrm create models/main --benchmark data/benchmark/benchmark-v1.json
 python -m hrm study models/main --tasks 100 --minutes 480   # self-study, sleep cycles, ledger
 python -m hrm report models/main                            # competence map + generations
@@ -293,8 +307,10 @@ Use normal mode for:
 
 **Last updated:** 2026-09-27  
 **Status:** Unified model built (ADR-003 P0–P6): reasoning, SSD knowledge, metacognition, learning loops, language section. Native backend deferred by measurement (P7).
-**Direction (ADR-005):** HRM-EQB replaces program search as the model. The spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md`. N0 (the certified core plus 23 theorem tests) is done; next is N1 (task field and prelude). `hrm/` becomes teacher, judge and baseline.
+**Direction (ADR-005):** HRM-EQB replaces program search as the model. The spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md` (§14 = construction lemmas). N0–N7 are built and tested; N8 (training + benchmarks) is recorded in ADR-006. `hrm/` is teacher, judge and baseline.
 **Rule:** anything that changes a certified map, the routing normalization or σ must keep `tests/test_eqb_theorems.py` green. The proofs depend on those invariants.
+**GPU rule (two crashes, 2026-09-27):** all CUDA work goes through `hrm_eqb.device.select_device()` (70 % VRAM cap) with pair/token-budgeted batches; probe peak memory on a worst-case batch before any long run; stop background jobs only by task ID. See `vault/05 - Engineering & Guides/GPU Safety - VRAM Oversubscription and DPC Watchdog.md`.
+**Git:** the repo is under version control (branch `feat/hrm-eqb-full`); commit per phase with the full suite green.
 
 ## Knowledge Graph — Auto-Update Rule
 

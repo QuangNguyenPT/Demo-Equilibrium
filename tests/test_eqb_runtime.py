@@ -224,7 +224,8 @@ def test_bench_suites_run_and_schedule_invariance_holds(model_dir):
 
 def test_cli_create_info_ask_learn_seal(tmp_path, capsys):
     directory = str(tmp_path / "cli")
-    assert main(["create", directory, "--preset", "tiny", "--steps", "1", "--cpu"]) == 0
+    assert main(["create", directory, "--preset", "tiny", "--steps", "1", "--cpu",
+                 "--checkpoint", str(tmp_path / "checkpoint.pt")]) == 0
     capsys.readouterr()
     assert main(["info", directory, "--cpu"]) == 0
     info = json.loads(capsys.readouterr().out)
@@ -243,3 +244,16 @@ def test_cli_create_info_ask_learn_seal(tmp_path, capsys):
     assert main(["seal", directory, "--cpu"]) == 0
     assert zipfile.ZipFile(tmp_path / "cli" / KNOWLEDGE).testzip() is None
 
+
+
+def test_hormone_drives_move_in_the_documented_directions():
+    """§6 table: DA follows reward error, 5-HT patience gain, NE agreement, ACh surprise."""
+    from hrm_eqb.neuromodulation import drive
+    level = torch.tensor([0.4, 0.5, 0.6, 0.3], dtype=torch.float64)
+    base = drive(0.0, 0.0, 0.5, 2.0, 0.2, level)
+    assert drive(0.8, 0.0, 0.5, 2.0, 0.2, level)[0] > base[0] > drive(-0.8, 0.0, 0.5, 2.0, 0.2, level)[0]
+    assert drive(None, 0.0, 0.5, 2.0, 0.2, level)[0] == level[0]            # no reward observed: unchanged
+    assert drive(0.0, 0.3, 0.5, 2.0, 0.2, level)[1] > base[1] > drive(0.0, -0.3, 0.5, 2.0, 0.2, level)[1]
+    assert drive(0.0, 0.0, 0.0, 2.0, 0.2, level)[2] > base[2] > drive(0.0, 0.0, 2.0, 2.0, 0.2, level)[2]
+    assert drive(0.0, 0.0, 0.5, 2.0, 0.9, level)[3] > base[3]
+    assert bool(((base >= 0) & (base <= 1)).all())

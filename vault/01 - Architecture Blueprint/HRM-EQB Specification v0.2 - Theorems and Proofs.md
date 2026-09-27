@@ -559,7 +559,9 @@ mean. The plain residual sum $\sum_iv_i$ only guarantees $\|\cdot\|\le s\max_i\|
 3. $w=0$ makes every logit equal. ∎
 
 **Use.** AttnRes over $(h^*_1,\dots,h^*_s)$:
-- initializes segment $s+1$;
+- enters segment $s+1$ as context, through the injection $c_H$. An earlier draft used it as
+  the next segment's *initializer*. That cannot work: by E2 the start state never changes
+  the equilibrium, so it would receive no gradient (§14, E2′);
 - with $k_\tau$ learned pseudo-queries, is the **semi-embedder** that hands the
   thinking chain to the coda.
 

@@ -97,7 +97,8 @@ guarantees $\|h_l\|\le l\max_i\|v_i\|$.
 **Use in HRM-EQB.** Recurrent depth *is* the thinking chain. AttnRes is applied over the
 sequence of segment equilibria $h^*_1,\dots,h^*_s$:
 - to aggregate the thought chain for the language coda (the semi-embedder);
-- to initialize the next segment.
+- as context for the next segment (injection $c_H$). It cannot be the initializer: the
+  equilibrium is independent of its start (E2), so an initializer would receive no gradient.
 
 See [[HRM-EQB Specification v0.2 - Theorems and Proofs]].
 
