@@ -7,7 +7,7 @@ only outside the certified maps, so no hormonal state can break convergence (H1b
 
 import math
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Dict, Optional, Sequence
 
 import torch
 from torch import Tensor
@@ -50,3 +50,35 @@ class Neuromodulators:
     def segment_budget(self) -> int:
         """Maximum refinement segments ⌈1 / (1 - serotonin)⌉ (patience as a discount)."""
         return math.ceil(1.0 / (1.0 - self.get("serotonin")))
+
+    def route_gain(self) -> float:
+        """Routing inverse temperature: 0.5 + noradrenaline (sharper when certain, softer when exploring)."""
+        return 0.5 + self.get("noradrenaline")
+
+    def learning_rate(self, base: float) -> float:
+        """Test-time write step size, scaled by acetylcholine around its box midpoint."""
+        mid = float((self.lower[3] + self.upper[3]) / 2.0)
+        return base * self.get("acetylcholine") / mid
+
+    def state(self) -> Dict[str, float]:
+        return {name: self.get(name) for name in HORMONES}
+
+    def load_state(self, levels: Dict[str, float]) -> None:
+        level = torch.tensor([levels[n] for n in HORMONES], dtype=torch.float64)
+        self.level = torch.minimum(torch.maximum(level, self.lower), self.upper)
+
+
+def drive(reward_error: Optional[float], confidence_gain: float, vote_bits: float, max_bits: float,
+          unexplained: float, current: Tensor) -> Tensor:
+    """Target levels from one episode's signals (each in [0, 1] after squashing).
+
+    dopamine      <- sigmoid(4 · reward-prediction error); unchanged when no reward was observed
+    serotonin     <- 0.5 + gain in halting confidence from thinking longer (patience pays off)
+    noradrenaline <- 1 - vote entropy / max entropy (agreement -> exploit, disagreement -> explore)
+    acetylcholine <- fraction of demonstrations left unexplained (surprise -> learn faster)
+    """
+    da = current[0] if reward_error is None else torch.sigmoid(torch.tensor(4.0 * reward_error, dtype=torch.float64))
+    ht = torch.tensor(min(1.0, max(0.0, 0.5 + confidence_gain)), dtype=torch.float64)
+    ne = torch.tensor(1.0 - (vote_bits / max_bits if max_bits > 0 else 0.0), dtype=torch.float64)
+    ach = torch.tensor(min(1.0, max(0.0, unexplained)), dtype=torch.float64)
+    return torch.stack((torch.as_tensor(da, dtype=torch.float64), ht, ne, ach))

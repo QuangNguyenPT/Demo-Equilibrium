@@ -7,7 +7,7 @@ A cycle runs n_low fast steps, then one slow step (the HRM schedule).
 
 import math
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Optional, Tuple
 
 import torch
 from torch import Tensor, nn
@@ -126,35 +126,73 @@ class EquilibriumCore(nn.Module):
             v_h=self.high_self.spectral_norm(), v_l=self.high_from_low.spectral_norm(),
             alpha=b.alpha, beta=b.beta)
 
-    def low_step(self, low: Tensor, high: Tensor, ctx: Context) -> Tensor:
-        """T_L(l; h)."""
-        drive = ctx.route_low @ (self.low_self(low) + self.low_from_high(high)) + ctx.inject_low
+    def maps(self) -> "CoreMaps":
+        """Materialize the four certified matrices once (reused by every step of a solve)."""
+        return CoreMaps(self.low_self.weight(), self.low_from_high.weight(),
+                        self.high_self.weight(), self.high_from_low.weight())
+
+    def low_step(self, low: Tensor, high: Tensor, ctx: Context, maps: Optional["CoreMaps"] = None,
+                 plan: Optional[Tensor] = None) -> Tensor:
+        """T_L(l; h); `plan` = h W_lhᵀ may be passed in, since h is fixed during the fast steps."""
+        m = maps or self.maps()
+        plan = high @ m.low_from_high.T if plan is None else plan
+        drive = mix(ctx.route_low, low @ m.low_self.T + plan) + ctx.inject_low
         return (1.0 - self.budgets.alpha) * low + self.budgets.alpha * radial_relu(drive, self.shrink)
 
-    def high_step(self, high: Tensor, low: Tensor, ctx: Context) -> Tensor:
+    def high_step(self, high: Tensor, low: Tensor, ctx: Context, maps: Optional["CoreMaps"] = None) -> Tensor:
         """T_H(h; l)."""
-        drive = ctx.route_high @ (self.high_self(high) + self.high_from_low(low)) + ctx.inject_high
+        m = maps or self.maps()
+        drive = mix(ctx.route_high, high @ m.high_self.T + low @ m.high_from_low.T) + ctx.inject_high
         return (1.0 - self.budgets.beta) * high + self.budgets.beta * radial_relu(drive, self.shrink)
 
-    def cycle(self, high: Tensor, low: Tensor, ctx: Context, n_low: int) -> Tuple[Tensor, Tensor]:
+    def cycle(self, high: Tensor, low: Tensor, ctx: Context, n_low: int,
+              maps: Optional["CoreMaps"] = None) -> Tuple[Tensor, Tensor]:
         """C_n(h, l): n_low fast steps against a fixed plan, then one slow step."""
+        m = maps or self.maps()
+        plan = high @ m.low_from_high.T
         for _ in range(n_low):
-            low = self.low_step(low, high, ctx)
-        return self.high_step(high, low, ctx), low
+            low = self.low_step(low, high, ctx, m, plan)
+        return self.high_step(high, low, ctx, m), low
 
-    def solve(self, high: Tensor, low: Tensor, ctx: Context, n_low: int,
-              tol: float, max_cycles: int) -> Solution:
-        """Iterate cycles until the certified bound ||z - z*||_w <= tol (E6); w_h = 1 bounds ||h - h*||."""
+    def certificate(self, n_low: int) -> Tuple[float, Tuple[float, float]]:
+        """(r_n, Perron weights) from the current weights; refuses an uncertified core."""
         rate, weights = self.bounds().perron(n_low)
         if not rate < 1.0:
             raise RuntimeError(f"measured cycle rate {rate:.4f} >= 1; weights left their budgets")
+        return rate, weights
+
+    def solve(self, high: Tensor, low: Tensor, ctx: Context, n_low: int, tol: float, max_cycles: int,
+              certificate: Optional[Tuple[float, Tuple[float, float]]] = None,
+              maps: Optional["CoreMaps"] = None) -> Solution:
+        """Iterate cycles until the certified bound ||z - z*||_w <= tol (E6); w_h = 1 bounds ||h - h*||."""
+        rate, weights = certificate or self.certificate(n_low)
         factor = rate / (1.0 - rate)
+        maps = maps or self.maps()
         bound = math.inf
         for cycles in range(1, max_cycles + 1):
-            new_high, new_low = self.cycle(high, low, ctx, n_low)
+            new_high, new_low = self.cycle(high, low, ctx, n_low, maps)
             step = weighted_distance(new_high - high, new_low - low, weights)
             bound = factor * float(step.max())
             high, low = new_high, new_low
             if bound <= tol:
                 return Solution(high, low, cycles, bound, True)
         return Solution(high, low, max_cycles, bound, False)
+
+
+@dataclass(frozen=True)
+class CoreMaps:
+    """The four certified matrices of one core, materialized."""
+
+    low_self: Tensor
+    low_from_high: Tensor
+    high_self: Tensor
+    high_from_low: Tensor
+
+
+def mix(route: Tensor, x: Tensor) -> Tensor:
+    """A X for one routing matrix; head-wise [A_1 X_1, ..., A_H X_H] for (..., H, n, n) routings (S2)."""
+    if route.dim() == x.dim():
+        return route @ x
+    heads = route.shape[-3]
+    parts = x.unflatten(-1, (heads, -1)).transpose(-3, -2)
+    return (route @ parts).transpose(-3, -2).flatten(-2)

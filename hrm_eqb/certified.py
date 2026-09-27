@@ -32,9 +32,9 @@ class CertifiedLinear(nn.Module):
         return (cayley(self.left) * self.scales()) @ cayley(self.right)
 
     def spectral_norm(self) -> float:
-        """||W||_2 of the matrix actually used in compute (float64 SVD)."""
+        """||W||_2 of the matrix actually used in compute (float64 SVD on CPU)."""
         with torch.no_grad():
-            return float(torch.linalg.matrix_norm(self.weight().double(), ord=2))
+            return float(torch.linalg.matrix_norm(self.weight().detach().cpu().double(), ord=2))
 
     def forward(self, x: Tensor) -> Tensor:
         return x @ self.weight().T
@@ -50,11 +50,16 @@ def substochastic(route: Tensor) -> Tensor:
     return route / scale[..., None, None]
 
 
+RADIUS_EPS = 1e-6
+
+
 def radial_relu(x: Tensor, shrink: float) -> Tensor:
-    """Per-quaternion max(0, |x| - shrink) x/|x| on (..., 4k): 1-Lipschitz, rotation-equivariant (N1)."""
+    """Per quaternion max(0, ρ - shrink) x/ρ with ρ = sqrt(|x|^2 + ε^2): 1-Lipschitz, equivariant (N1).
+
+    The smoothed radius keeps the gradient finite at x = 0 and is the identity when shrink = 0.
+    """
     if shrink < 0.0:
         raise ValueError(f"shrink must be >= 0, got {shrink}")
     blocks = x.reshape(*x.shape[:-1], -1, 4)
-    radius = torch.linalg.vector_norm(blocks, dim=-1, keepdim=True)
-    gain = torch.relu(radius - shrink) / radius.clamp_min(torch.finfo(x.dtype).tiny)
-    return (blocks * gain).reshape(x.shape)
+    radius = torch.sqrt(blocks.pow(2).sum(dim=-1, keepdim=True) + RADIUS_EPS ** 2)
+    return (blocks * (torch.relu(radius - shrink) / radius)).reshape(x.shape)

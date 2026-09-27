@@ -228,21 +228,30 @@ This uses that the spectral radius is bounded by any induced norm. ∎
 ### N1 — The radial ReLU is 1-Lipschitz and rotation-equivariant
 
 **Statement.** On each quaternion block $x\in\mathbb{R}^4$, let
-$\sigma(x)=g(|x|)\,x/|x|$ with $g(t)=\max(0,t-\mu)$, where the shrink is $\mu\ge0$.
-Then $\sigma$ is 1-Lipschitz,
-and $\sigma(Rx)=R\sigma(x)$ for every orthogonal $R$.
+$\sigma(x)=g(\rho)\,x/\rho$ with $\rho=\sqrt{|x|^2+\epsilon^2}$ ($\epsilon>0$) and
+$g(t)=\max(0,t-\mu)$, where the shrink is $\mu\ge0$. Then:
+- $\sigma$ is 1-Lipschitz;
+- $\sigma(Rx)=R\sigma(x)$ for every orthogonal $R$;
+- $\sigma$ is the identity when $\mu=0$.
+
+The smoothed radius $\rho\ge\epsilon$ keeps the gradient finite at $x=0$. The unsmoothed
+$x/|x|$ produced NaN gradients on padding tokens, whose state is exactly 0.
 
 **Proof.**
-1. $\sigma$ is continuous (it is $0$ on $|x|\le\mu$) and piecewise $C^1$.
-2. Where differentiable, its Jacobian is
-   $g'(r)\,\hat x\hat x^{\top}+\tfrac{g(r)}{r}(I-\hat x\hat x^{\top})$, whose operator
-   norm is $\max(g'(r),g(r)/r)\le1$, because $g'\in\{0,1\}$ and $g(r)\le r$.
-3. A continuous, piecewise-$C^1$ map on a convex set is Lipschitz with constant equal
-   to the supremum of its Jacobian norm: integrate along segments, which meet the
-   non-smooth set $\{|x|=\mu\}$ in finitely many points (a line meets a sphere at
-   most twice).
-4. Blocks act independently, and squared norms add, so the whole map is 1-Lipschitz.
-5. Equivariance: $|Rx|=|x|$ and $Rx/|Rx|=R(x/|x|)$. ∎
+1. Write $\sigma=\varphi(\rho)\,x$ with $\varphi=g/\rho\in[0,1)$. It is continuous, and
+   smooth except on $\{\rho=\mu\}$, a sphere (or empty).
+2. Where differentiable, $J=\varphi I+\varphi'(\rho)\,xx^{\top}/\rho$. Its eigenvalues are:
+   - $\varphi$ on $x^{\perp}$;
+   - $\varphi+\varphi'|x|^2/\rho$ along $x$.
+3. For $\rho<\mu$ both eigenvalues are $0$. For $\rho>\mu$, $\varphi=1-\mu/\rho$ and
+   $\varphi'=\mu/\rho^2$, so the radial eigenvalue is
+   $1-\mu/\rho+\mu|x|^2/\rho^3\le1$, because $|x|^2\le\rho^2$. Both eigenvalues lie in
+   $[0,1]$, so $\|J\|_2\le1$.
+4. A continuous, piecewise-$C^1$ map on a convex set is Lipschitz with constant equal
+   to the supremum of its Jacobian norm. Integrate along segments, which meet the
+   non-smooth sphere at most twice.
+5. Blocks act independently and squared norms add, so the whole map is 1-Lipschitz.
+6. Equivariance holds because $\rho(Rx)=\rho(x)$. For $\mu=0$, $g(\rho)/\rho=1$ exactly. ∎
 
 ---
 
@@ -710,7 +719,7 @@ bytes still compute what they computed when saved.
 
 **Contents.**
 - A standard PyTorch archive: sub-keys $K^{(1)},K^{(2)}$, values
-  $V\in\mathbb{H}^{N\times k_v}$ (fp16, stored as $N\times4k_v$), usage, confidence,
+  $V\in\mathbb{H}^{N\times k_v}$ (float32, stored as $N\times4k_v$), usage, confidence,
   per-row generation, and a schema hash matching the `.hrmc`.
 - `torch.load(weights_only=True, mmap=True)` reads it anywhere.
 - At runtime, the value payload is mapped `MAP_SHARED`, so rows are read and written in
@@ -729,7 +738,8 @@ in context: an empty brain.
 ## 10. Verification map (theorem → executable check)
 
 Every row is a test in `tests/test_eqb_theorems.py` (23 tests, float64, seeded), run
-against the code in the `hrm_eqb` package. **Status 2026-09-27: all pass**, and the full
+against the code in the `hrm_eqb` package. The construction lemmas of §14 have their own
+table there. **Status 2026-09-27: all pass**, and the full
 suite passes (243 passed, 1 skipped).
 
 | Theorem | Numerical check | Code |
@@ -818,3 +828,219 @@ provability against capacity.
 - Oudeyer & Kaplan, intrinsic motivation / learning progress (2007); Houlsby et al., BALD (2011).
 - Hoeffding (1963); Horn & Johnson, *Matrix Analysis* (Perron–Frobenius); Conway & Smith, *On Quaternions and Octonions* (2003).
 - Karpathy, autoresearch (2026); PEM v1.1 design document.
+
+---
+
+## 14. Construction lemmas (added while building the full model)
+
+Building the model (package `hrm_eqb`, phases N1–N7) needed eleven more statements. Each
+is proved here and checked in `tests/test_eqb_model.py` or `tests/test_eqb_runtime.py`.
+Rules R1–R3 are engineering rules backed by measurements, not theorems.
+
+### G1a — Augmentation is an exact group action on tasks
+
+**Statement.** Let $g=\mathrm{rot}^r\circ\mathrm{flip}^f\circ\pi$, where $\pi$
+permutes colors 1–9 and fixes 0. Then:
+- $g$ is a bijection on canvases with
+  $g^{-1}=\pi^{-1}\circ\mathrm{flip}^f\circ\mathrm{rot}^{-r}$;
+- for a task $T$ of rule $F$, the augmented task $g\cdot T$ is a task of the rule
+  $gFg^{-1}$, and its answer is $g(\mathrm{ans}\,T)$.
+
+**Proof.**
+1. Each factor is a bijection with the stated inverse.
+2. The pairs of $g\cdot T$ are $(gx,\,gF(x))=(gx,\,(gFg^{-1})(gx))$. ∎
+
+**Consequence.** De-augmenting a correct committee member returns the correct answer of $T$.
+So for a perfect solver the vote entropy (Q1) is 0, and any disagreement proves that some
+member is wrong.
+
+### S2 — Head-wise routing is non-expansive
+
+**Statement.** Split the features into groups $X=[X_1,\dots,X_H]$. Then
+$\|[A_1X_1,\dots,A_HX_H]\|\le\max_h\|A_h\|_2\,\|X\|$. So C1 holds unchanged with
+$\|A\|$ replaced by $\max_h\|A_h\|\le1$.
+
+**Proof.**
+$\sum_h\|A_hX_h\|^2\le\sum_h\|A_h\|^2\|X_h\|^2\le\max_h\|A_h\|^2\sum_h\|X_h\|^2$. ∎
+
+### R1 — Routing is always admissible
+
+**Statement.** $A_h=\mathrm{S1}\big(\exp(\mathrm{Sinkhorn}_T(L_h\text{ masked}))\big)$ is
+nonnegative, with every row and column sum $\le1$ (so $\|A_h\|\le1$ by S1). It is
+exactly zero on the rows and columns of padding tokens.
+
+**Proof.**
+1. The final S1 normalization gives the sums, whatever the Sinkhorn iterates are, so
+   convergence of Sinkhorn is not needed.
+2. Masked log-entries are re-set to $-10^4$ after every sweep. $e^{-10^4}$ is exactly
+   $0$ in float32, and multiplying by the 0/1 mask afterwards makes it exact. ∎
+
+**Remarks.**
+- Sinkhorn runs in log space. In probability space, dividing by underflowed row sums
+  overflowed the backward pass (NaN at step 64 of training).
+- Sinkhorn is invariant under an initial diagonal scaling, so masking the logits
+  *before* the first sweep is redundant. A mutation test confirmed this: removing that
+  mask changes nothing.
+
+### P1 — Padding is exact
+
+**Statement.** A task's equilibrium does not depend on what it is batched with, up to the
+certified solve error.
+
+**Proof.**
+1. Padding rows and columns of $A$ are 0 (R1), padding injections are 0, the prelude
+   masks padding keys, and the memory, LayerNorm and FFN act per token. So for a valid
+   token $i$, $(AX)_i=\sum_{j\text{ valid}}A_{ij}X_j$: the valid block evolves by the
+   unpadded task's own map, and by E2 it has the same fixed point.
+2. The only coupling is the shared stopping time. A batched task may run extra cycles,
+   which moves it by at most its certified error bound (E6). ∎
+
+Test: logits agree to $10^{-3}$ at tolerance $10^{-7}$, and a mutant that treats padding
+as valid is caught.
+
+### E2′ — The start state cannot change the answer (a design constraint)
+
+**Statement.** By E2 the joint equilibrium is unique, so the solve's start state affects
+only the number of cycles.
+
+**Consequence.** Anything meant to influence the answer must enter the *context*
+$(A,c)$, not the start state. v0.2 §5 proposed AttnRes over past equilibria as a
+next-segment initializer. It would receive zero gradient, because the equilibrium does not
+depend on the start. So the chain enters as injection $c_H$. Warm-starting from the
+previous equilibrium is kept as a pure speed-up.
+
+### E7 — Backpropagating through the last $k$ cycles is the truncated Neumann series
+
+**Statement.** Run $k$ cycles $z_{j+1}=C(z_j,\theta)$ from the fixed point $z_0=z^*$ and
+backpropagate a loss $\ell(z_k)$. Then autograd returns
+
+$$\nabla_\theta^{(k)}=B^{\top}\sum_{i<k}(J^{\top})^i\,\nabla\ell,\qquad
+B=\partial_\theta C,\; J=\partial_z C\text{ at }z^*,$$
+
+and the error against the implicit-function gradient
+$B^{\top}(I-J^{\top})^{-1}\nabla\ell$ is
+$B^{\top}\sum_{i\ge k}(J^{\top})^i\nabla\ell$. Its magnitude is controlled by E4's dual
+bound $r^k/(1-r)$.
+
+**Proof.**
+1. Every $z_j$ equals $z^*$, so each cycle's Jacobians are the same $J$ and $B$.
+2. Unrolling the chain rule over $k$ cycles gives the geometric sum. ∎
+
+**Not proved.** Training starts from a $\mathrm{tol}$-approximate equilibrium, which adds
+an $O(\mathrm{tol})$ error for Lipschitz Jacobians. $\sigma$ is not $C^1$ at the shrink
+sphere, so that part is measured, not proved.
+
+The test checks the identity to $10^{-9}$ and a strictly decreasing error for
+$k=1..6$.
+
+### K2 — Knowledge reads are bounded
+
+**Statement.** For the memory read $m=(\sum_i\alpha_iv_i)\otimes r$, with $\alpha$ a
+softmax over the product top-$k$ and $r$ unit quaternions per component,
+$\|m\|\le\max_i\|v_i\|$. Hence the injected read is at most
+$\|W_{\rm out}\|\max_i\|v_i\|+\|b\|$.
+
+**Proof.**
+1. The norm is convex, so the convex combination has norm $\le\max_i\|v_i\|$.
+2. Right-multiplying each quaternion component by a unit quaternion preserves that
+   component's norm (T3), so the total norm is preserved. ∎
+
+**Consequence.** With E5, knowledge can move a thought by at most
+$L_c(\|W_{\rm out}\|\max\|v\|+\|b\|)/(1-r)$. With all values at zero (the *empty brain*)
+the model still converges and still reasons from context.
+
+### L3 — Language cannot change answers
+
+**Statement.** The coda reads the chain of equilibria detached, so
+$\partial\mathcal L_{\rm coda}/\partial\theta=0$ for every parameter outside the coda.
+
+**Proof.** The stop-gradient is the identity in the forward pass and zero in the
+backward pass. ∎
+
+Two independent detaches enforce it: in `SegmentOutput` and in `Coda.memory`. A mutant
+that removes both is caught; removing only one is not, correctly, because the other still
+holds.
+
+### F3 — Journaled knowledge writes are atomic
+
+**Protocol.**
+1. Write the journal (rows, new bytes, CRC-32) and fsync it.
+2. Apply the rows to the mapped file and flush.
+3. Delete the journal.
+
+Recovery replays a journal whose CRC verifies and deletes one that does not.
+
+**Statement.** After any crash followed by recovery, every journaled row holds all-old or
+all-new bytes.
+
+**Proof.**
+- **Crash before the journal is durable.** The journal is absent or fails its CRC.
+  Nothing was applied, because application starts only after the fsync. All rows are
+  old.
+- **Crash after the journal is durable.** Recovery replays it completely. Re-writing
+  rows that were already applied writes identical bytes. All rows are new.
+- **Limit.** CRC-32 misses random corruption with probability $2^{-32}$. It is not
+  adversarially secure. ∎
+
+`seal()` is an atomic rewrite (temporary file, then `os.replace`), so the file is either
+the old one or the new sealed one.
+
+### V1 — What a test-time write guarantees (and what it does not)
+
+**Statement.** A write reaches disk only if, after the candidate update:
+1. every demonstration, including the newly taught pair, is re-derived by leave-one-out
+   ($E_{\rm loo}=0$);
+2. the fixed canary set's error count does not increase.
+
+This is exactly the code path in `Mind.learn`. A mutant that drops condition 1 is caught.
+
+**Not guaranteed.** The canary set is a sample, so a verified write can still hurt tasks
+outside it. Core changes are protected separately by the G1 gate on the frozen harness.
+
+### R2 — Serve only depths that deep supervision trained (measured rule)
+
+**Measurement.** Training one segment and serving two gave training loss 0.003 with 0 %
+exact match. The second segment's context path had never been trained.
+
+**Rule.** `TrainConfig.segments` defaults to `max_segments`. The serotonin budget
+$\lceil1/(1-\gamma)\rceil$ is clipped to `max_segments`. With all served segments
+trained, a tiny certified model fits 8 fixed tasks exactly (test), and the trained
+weights still certify $\Gamma<1$.
+
+### R3 — Choosing $n_L$ and bounding memory (measured rules)
+
+**$n_L$.** By E3, $n_L$ changes speed, never the answer; a test checks $n_L=1$ against
+$n_L=6$ to $10^{-3}$. The cost to a fixed tolerance is proportional to
+$(n_L+1)/\ln(1/r_{n_L})$, which on measured cores is smallest near $n_L\in\{1,2\}$.
+E4's gradient error $r^k/(1-r)$ favours more backprop cycles instead. The defaults are
+$n_L=2$, $k=3$.
+
+**Memory.** Peak VRAM is about 0.9 GiB per $10^6$ padded attention pairs
+($B\,n_{\max}^2$). Batches are bounded to $4\cdot10^6$ pairs (measured 4.1 GiB peak), and
+the allocator is capped at 70 % of VRAM. An unbounded batch spilled into system RAM and
+crashed the machine twice; see [[GPU Safety - VRAM Oversubscription and DPC Watchdog]].
+
+### F1 update — probes run with an empty brain
+
+The `.hrmc` self-test runs the probe tasks with every knowledge read silenced. The core's
+identity check therefore does not depend on `knowledge.pt`, which changes with every
+verified write. Tolerance is $10^{-3}$ on logits, not bit-exactness, which is not
+guaranteed across machines.
+
+### Verification of §14
+
+| Statement | Test |
+|---|---|
+| G1a | `test_augmentation_is_an_exact_group_action` |
+| S2 | `test_headwise_mixing_is_nonexpansive` |
+| R1 | `test_model_routing_is_substochastic_per_head` |
+| P1 | `test_padding_does_not_change_a_task` (mutation-checked) |
+| E3 at model level | `test_schedule_changes_speed_not_answers`, `bench.schedule_invariance` |
+| E7 | `test_e7_k_cycle_backprop_is_the_truncated_neumann_series` |
+| K2 | `test_memory_read_is_bounded_by_the_rows_it_reads` |
+| L3 | `test_coda_cannot_change_answers` (mutation-checked) |
+| F1 | `test_hrmc_round_trip_is_exact`, `test_hrmc_refuses_corruption_and_forgery` (flipped byte, forged weights, forged claim, missing tensor) |
+| F2/F3 | `test_knowledge_rows_are_written_in_place_and_persist`, `test_knowledge_journal_makes_writes_atomic`, `test_seal_restores_valid_zip_checksums` |
+| V1 | `test_unverified_write_never_reaches_disk` (mutation-checked), `test_committed_write_changes_exactly_its_rows` |
+| G1 in the loop | `test_study_records_a_ledger_row_and_locks_the_harness` |
+| R2 (learning works) | `test_certified_model_overfits_a_fixed_task_set` |
