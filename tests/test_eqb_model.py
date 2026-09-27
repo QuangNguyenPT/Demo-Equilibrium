@@ -295,3 +295,16 @@ def test_encoded_padding_uses_void():
     assert enc.canvas == (1, 2)
     assert enc.target.tolist()[1] == VOID
     assert canvas_of(task) == (1, 2)
+
+
+def test_training_resumes_from_a_rolling_checkpoint(tmp_path):
+    """A crash loses at most checkpoint_every steps: training restarts after the saved step."""
+    from hrm_eqb.train import train
+    ck = str(tmp_path / "checkpoint-train-latest.pt")
+    cfg = dict(batch_tokens=512, batch_pairs=50_000, checkpoint=ck, checkpoint_every=2, log_every=1, coda_weight=0.0)
+    train(HRMEQB(TINY), TrainConfig(steps=4, **cfg), torch.device("cpu"), log=lambda s: None)
+    assert torch.load(ck, weights_only=True)["step"] == 4
+    logs = []
+    train(HRMEQB(TINY), TrainConfig(steps=6, **cfg), torch.device("cpu"), log=logs.append)
+    assert "resumed" in logs[0] and "step 5" in logs[0]
+    assert torch.load(ck, weights_only=True)["step"] == 6

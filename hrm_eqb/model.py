@@ -16,6 +16,7 @@ from typing import List, Optional
 
 import torch
 from torch import Tensor, nn
+from torch.utils.checkpoint import checkpoint
 
 from hrm_eqb.algebra import as_complex, as_real
 from hrm_eqb.attnres import DepthAttention
@@ -166,7 +167,8 @@ class HRMEQB(nn.Module):
             h, l = sol.high, sol.low
             if torch.is_grad_enabled():
                 for _ in range(cfg.grad_cycles):
-                    h, l = self.core.cycle(h, l, ctx, cfg.n_low, maps)
+                    # recomputed in backward: keeps only each cycle's inputs alive (memory ~ tokens, not steps)
+                    h, l = checkpoint(self.core.cycle, h, l, ctx, cfg.n_low, maps, use_reentrant=False)
             out = SegmentOutput(self.answer_logits(h, batch), self.halt_logit(h, batch), h.detach(), l.detach(),
                                 sol.cycles, sol.error_bound)
             outputs.append(out)

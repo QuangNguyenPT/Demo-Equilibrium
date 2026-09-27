@@ -7,8 +7,10 @@ Gradients reach the core through the last grad_cycles cycles from each equilibri
 """
 
 import copy
+import os
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable, Dict, Iterator, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -31,7 +33,7 @@ class TrainConfig:
 
     steps: int = 2000
     batch_tokens: int = 16384          # padded tokens per batch (count x max_n)
-    batch_pairs: int = 4_000_000       # padded attention pairs per batch (count x max_n^2): bounds VRAM
+    batch_pairs: int = 2_000_000       # padded attention pairs per batch (count x max_n^2): bounds VRAM
     max_batch: int = 256
     lr: float = 1e-3
     weight_decay: float = 0.01
@@ -48,6 +50,8 @@ class TrainConfig:
     ema: float = 0.999
     grad_clip: float = 1.0
     log_every: int = 50
+    checkpoint: Optional[str] = None   # rolling checkpoint path; an existing one is resumed
+    checkpoint_every: int = 250
 
 
 def task_batches(rng: np.random.Generator, cfg: TrainConfig, max_side: int,
@@ -70,7 +74,10 @@ def task_batches(rng: np.random.Generator, cfg: TrainConfig, max_side: int,
         while len(picks) < cfg.max_batch:
             task = draw()
             task = random_augmentation(rng).apply(task) if task.kind == "grid" else task
-            grown = max(n_max, encode_task(task).content.size)
+            n = encode_task(task).content.size
+            if n * n > cfg.batch_pairs:
+                continue                     # a task that alone exceeds the memory budget is never trained on
+            grown = max(n_max, n)
             size = len(picks) + 1
             if picks and (size * grown > cfg.batch_tokens or size * grown * grown > cfg.batch_pairs):
                 break
@@ -124,17 +131,29 @@ def ema_update(ema: HRMEQB, model: HRMEQB, decay: float, step: int) -> None:
 def train(model: HRMEQB, cfg: TrainConfig, device: torch.device, extra: Sequence[Task] = (),
           log: Callable[[str], None] = print) -> HRMEQB:
     """Train in place; returns the EMA copy (the weights that are evaluated and exported)."""
-    rng = np.random.default_rng(cfg.seed)
     torch.manual_seed(cfg.seed)
     model.to(device).train()
     ema = copy.deepcopy(model).eval()
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / cfg.warmup))
+    first, elapsed = 1, 0.0
+    if cfg.checkpoint and Path(cfg.checkpoint).exists():
+        saved = torch.load(cfg.checkpoint, map_location=device, weights_only=True)
+        model.load_state_dict(saved["model"])
+        ema.load_state_dict(saved["ema"])
+        opt.load_state_dict(saved["opt"])
+        sched.load_state_dict(saved["sched"])
+        first, elapsed = saved["step"] + 1, saved["elapsed"]
+        log(f"[TRAIN] resumed from {cfg.checkpoint} at step {first} ({elapsed:.0f}s already trained)")
+    rng = np.random.default_rng(cfg.seed + first)
     start, stream = time.time(), task_batches(rng, cfg, model.cfg.max_side, extra)
-    for step in range(1, cfg.steps + 1):
+    step = first - 1
+    for step in range(first, cfg.steps + 1):
         tasks = next(stream)
         encoded = [encode_task(t) for t in tasks]
         keep = [i for i, e in enumerate(encoded) if e.target is not None]
+        if not keep:
+            continue
         batch = collate([encoded[i] for i in keep]).to(device)
         outputs = model(batch, segments=cfg.segments, tol=cfg.solve_tol)
         loss = answer_loss(outputs, batch, cfg.halt_weight)
@@ -150,11 +169,23 @@ def train(model: HRMEQB, cfg: TrainConfig, device: torch.device, extra: Sequence
             acc = float(exact(outputs[-1], batch).float().mean())
             log(f"[TRAIN] step {step} loss {float(loss.detach()):.4f} task_acc {acc:.3f} "
                 f"cycles {outputs[-1].cycles} bound {outputs[-1].error_bound:.1e} "
-                f"t {time.time() - start:.0f}s")
-        if cfg.minutes is not None and time.time() - start > 60 * cfg.minutes:
+                f"t {elapsed + time.time() - start:.0f}s")
+        if cfg.checkpoint and step % cfg.checkpoint_every == 0:
+            _save_checkpoint(cfg.checkpoint, model, ema, opt, sched, step, elapsed + time.time() - start)
+        if cfg.minutes is not None and elapsed + time.time() - start > 60 * cfg.minutes:
             log(f"[TRAIN] time budget reached at step {step}")
             break
+    if cfg.checkpoint:
+        _save_checkpoint(cfg.checkpoint, model, ema, opt, sched, step, elapsed + time.time() - start)
     return ema
+
+
+def _save_checkpoint(path: str, model: HRMEQB, ema: HRMEQB, opt, sched, step: int, elapsed: float) -> None:
+    """Atomic rolling checkpoint (temp file + replace), so a crash never leaves a torn one."""
+    tmp = Path(path).with_name(Path(path).name + ".tmp")
+    torch.save({"model": model.state_dict(), "ema": ema.state_dict(), "opt": opt.state_dict(),
+                "sched": sched.state_dict(), "step": step, "elapsed": elapsed}, tmp)
+    os.replace(tmp, path)
 
 
 @dataclass

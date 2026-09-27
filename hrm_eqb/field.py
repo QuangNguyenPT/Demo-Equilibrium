@@ -133,21 +133,31 @@ class EncodedTask:
 MAX_CANVAS = 30
 
 
-def canvas_of(task: Task) -> Tuple[int, int]:
-    """Largest demo/query shape, grown to the query shape times the demos' largest out/in ratio.
+def _integral_scale(r: float) -> bool:
+    """r or 1/r is a whole number (the only size changes treated as scaling rules)."""
+    return r > 0 and (abs(r - round(r)) < 1e-9 or abs(1.0 / r - round(1.0 / r)) < 1e-9)
 
-    Covers rules whose output size is a fixed multiple of the input size (copying, doubling,
-    upscaling) or its transpose (rotations); capped at MAX_CANVAS.
+
+def canvas_of(task: Task) -> Tuple[int, int]:
+    """Largest demo/query shape, grown to the answer shape the demos imply for the query.
+
+    If every demo transposes its shape, the query shape is transposed (rotations); otherwise,
+    if every demo scales its input by the same whole-number factors (or their inverses), the
+    query is scaled by them (copying, doubling, up/downscaling). Demos that disagree imply
+    nothing. Capped at MAX_CANVAS.
     """
     grids = [g for pair in task.demos for g in pair] + [task.query]
     h, w = max(g.shape[0] for g in grids), max(g.shape[1] for g in grids)
-    if task.demos:
-        rh = max(y.shape[0] / max(x.shape[0], 1) for x, y in task.demos)
-        rw = max(y.shape[1] / max(x.shape[1], 1) for x, y in task.demos)
-        h = max(h, min(MAX_CANVAS, int(np.ceil(task.query.shape[0] * rh))))
-        w = max(w, min(MAX_CANVAS, int(np.ceil(task.query.shape[1] * rw))))
-        if any(y.shape == x.shape[::-1] != x.shape for x, y in task.demos):
-            h, w = max(h, task.query.shape[1]), max(w, task.query.shape[0])
+    if not task.demos:
+        return h, w
+    ratios = {(y.shape[0] / max(x.shape[0], 1), y.shape[1] / max(x.shape[1], 1)) for x, y in task.demos}
+    qh, qw = task.query.shape
+    if all(y.shape == x.shape[::-1] for x, y in task.demos):
+        h, w = max(h, qw), max(w, qh)       # checked first: it has no free parameter
+    elif len(ratios) == 1 and all(_integral_scale(r) for r in next(iter(ratios))):
+        rh, rw = ratios.pop()
+        h = max(h, min(MAX_CANVAS, int(np.ceil(qh * rh))))
+        w = max(w, min(MAX_CANVAS, int(np.ceil(qw * rw))))
     return h, w
 
 

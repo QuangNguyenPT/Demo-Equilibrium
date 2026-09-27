@@ -19,7 +19,7 @@ from hrm_eqb.study import study_once
 from hrm_eqb.tasks import fits, load_arc
 from hrm_eqb.train import TrainConfig, train
 
-ARC_TRAIN_PAIRS = 4_000_000
+ARC_TRAIN_PAIRS = 2_000_000
 
 
 def _grid_json(a: np.ndarray, domain: str):
@@ -37,8 +37,11 @@ def cmd_create(args) -> int:
         extra = [t for t in load_arc(Path(args.arc_train))
                  if t.answer is not None and fits(t, int(ARC_TRAIN_PAIRS ** 0.5))]
         print(f"[CREATE] {len(extra)} ARC training tasks fit the attention budget")
+    checkpoint = args.checkpoint or str(Path("runs") / f"checkpoint-train-{Path(args.dir).name}.pt")
+    Path(checkpoint).parent.mkdir(parents=True, exist_ok=True)
     tcfg = TrainConfig(steps=args.steps, minutes=args.minutes, seed=args.seed,
-                       extra_weight=args.arc_weight if extra else 0.0, log_every=args.log_every)
+                       extra_weight=args.arc_weight if extra else 0.0, log_every=args.log_every,
+                       checkpoint=checkpoint)
     ema = train(model, tcfg, device, extra)
     sha = Mind.create(Path(args.dir), ema.to("cpu"), {
         "generation": 0, "parent": None, "note": "created",
@@ -155,6 +158,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--arc-train", default=None, help="ARC-AGI training directory to mix in")
     s.add_argument("--arc-weight", type=float, default=0.15)
     s.add_argument("--log-every", type=int, default=100)
+    s.add_argument("--checkpoint", default=None, help="rolling checkpoint (resumed if present)")
     add("info", cmd_info, "print config, certificate, lineage and state")
     s = add("ask", cmd_ask, "answer a task JSON, or ask a question about it")
     s.add_argument("task")
