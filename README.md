@@ -1,4 +1,93 @@
-# HRM — a unified cognitive model
+# HRM-EQB — hierarchical reasoning by certified equilibrium
+
+`hrm_eqb/` is the model (ADR-005). It is a two-level reasoning core, contractive for every
+weight value. So its thinking provably converges, its halting rule carries a certified
+error bound, and the certificate is recomputed from the weights every time the model file
+is loaded.
+
+**Spec and proofs:** `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md`.
+Every theorem there (§2–§9 and §14) has an executable check, and several of those checks
+are mutation-tested.
+
+## How it thinks
+
+```
+task (demos + query)  ->  token field: content ⊛ rotation(row, col, slot)        (T1)
+                      ->  prelude (small transformer)
+for each segment s:                                                            (deep supervision)
+    routing A_L, A_H  =  S1(Sinkhorn(attention))  per head, fixed during the solve (R1, S2)
+    context c_L       =  input + knowledge read (quaternion product-key memory)    (K2, E5)
+    context c_H       =  input + AttnRes over earlier equilibria                   (A1, E2')
+    (h*, l*)          =  certified solve of  l <- T_L(l; h),  h <- T_H(h; l)      (C1, E2, E3)
+    halt when r/(1-r) * step <= tol                                              (E6)
+answer = readout(h* at answer cells) · Embedᵀ      (the solution is read in token space, L2)
+words  = coda(detached thinking chain)             (language cannot change the answer, L3)
+```
+
+- **Convergence.** Four norm budgets decide it: if Γ = v_h + v_l s_h/(1−s_l) < 1, every
+  segment converges for every input, memory state, hormone state and fast/slow schedule.
+  The number of fast steps changes the speed, never the answer (E3; tested on the model).
+- **Cognition.** A committee of augmented views either agrees, and the model returns an
+  **Answer**, or it disagrees or cannot re-derive its own demonstrations, and the model
+  asks a **Question**. The question carries the candidate answers and the bits of
+  information the reply would give (Q1).
+- **Hormones.** Dopamine, serotonin, noradrenaline and acetylcholine set the reward
+  signal, patience, exploration and learning rate. They act only outside the certified
+  maps, so they cannot break convergence (H1).
+- **Learning.** A taught answer becomes a test-time update of the knowledge rows the task
+  read. It reaches the SSD only if every demonstration is then re-derived and a canary set
+  does not get worse (V1).
+- **Self-study.** An autoresearch-style loop practises weak families for a fixed budget,
+  then keeps or discards the result with a Hoeffding gate on a frozen, hash-locked harness
+  (G1). Every experiment is logged in `results.tsv`.
+
+## The two files
+
+```
+models/<name>/
+  model.hrmc     the whole core: every weight, budgets, certificate claims, probe logits,
+                 SHA-256s. Pickle-free. The loader recomputes Γ and r_n from SVD norms,
+                 re-runs the probes, and refuses a corrupted or forged file.
+  knowledge.pt   the knowledge: a normal torch archive (quaternion values, keys, usage,
+                 confidence). Rows are rewritten in place on SSD through a write-ahead
+                 journal; `seal` restores the zip checksums. Without it: an empty brain.
+  state.json     hormones, counters, generation, harness lock
+  results.tsv    self-study ledger
+```
+
+## Quick start
+
+```powershell
+python -m pip install numpy pytest torch
+python -m pytest                                          # all tests
+python scripts/fetch_benchmarks.py                        # ARC-AGI-1 + Sudoku-Extreme (optional)
+python -m hrm_eqb create models/eqb-small --minutes 120 --arc-train data/external/arc/training --pause 0.15
+python -m hrm_eqb info models/eqb-small                   # certificate, lineage, state
+python -m hrm_eqb ask models/eqb-small task.json          # Answer, or Question + candidates + bits
+python -m hrm_eqb learn models/eqb-small task.json answer.json
+python -m hrm_eqb study models/eqb-small --minutes 10
+python -m hrm_eqb bench models/eqb-small --suites generated,language,sudoku,arc,empty_brain,schedule
+```
+
+A task file is ARC-style JSON with a `domain` (`grid`, `sequence`, `text` or `sudoku`).
+Text may be given as strings:
+
+```json
+{"domain": "text", "train": [{"input": "cat", "output": "CAT"}, {"input": "owl", "output": "OWL"}],
+ "test": [{"input": "river"}]}
+```
+
+**GPU safety.** All CUDA work goes through `select_device()` (allocator capped at 70 % of
+VRAM), and batches are budgeted by attention pairs. An unbounded batch once spilled into
+system RAM and crashed Windows. `--pause` lowers the duty cycle on a hot laptop GPU.
+
+<!-- EQB-RESULTS -->
+
+---
+
+# Baseline: HRM program-search model (ADR-003)
+
+The numpy model below is kept as teacher, judge and ablation baseline (ADR-005).
 
 One model with four sections that think together:
 
@@ -53,7 +142,7 @@ after it. Every cycle is a row in `ledger/results.tsv`.
 
 ```powershell
 python -m pip install numpy pytest
-python -m pytest                                  # 197 tests
+python -m pytest                                  # full suite (hrm + hrm_eqb)
 
 python -m hrm create models/main --benchmark data/benchmark/benchmark-v1.json
 python -m hrm ask models/main "1 2 3 -> 3 2 1 ; 4 5 6 -> ?" --task-id t1
@@ -172,10 +261,11 @@ explanation is k and raises rather than shipping a mislabelled task.
 ## Repository
 
 ```
-hrm/            the model (substrate, perception, reasoning, verify, knowledge,
-                language, metacognition, learning, core, model, CLI)
+hrm_eqb/        HRM-EQB, the model (certified core, field, memory, files, mind, study, bench, CLI)
+hrm/            baseline program-search model (substrate, perception, reasoning, verify,
+                knowledge, language, metacognition, learning, core, model, CLI)
 tests/          pytest suite (one file per section)
-data/benchmark/ frozen benchmark v1
+data/benchmark/ frozen benchmarks v1, v2 (data/external/: downloaded ARC + Sudoku, gitignored)
 scripts/        make_benchmark.py, update_knowledge_graph.ps1
 vault/          Obsidian knowledge vault (ADRs, session logs, concepts)
 legacy/         superseded C++ GRU engine + blueprint layer (reference only)
