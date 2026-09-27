@@ -1,0 +1,74 @@
+---
+title: Chat Session Index
+type: session-index
+tags:
+  - sessions
+  - context
+  - decisions
+  - information-path
+status: active
+created: 2026-09-26
+---
+
+# 💬 Chat Session Index
+
+Each session log captures: **decisions made, research done, files modified, open questions**.
+These are knowledge graph nodes — graphify indexes them and links them to the codebase.
+
+---
+
+## Session Log Format
+
+Each session file in this folder follows the template:
+- **Date** + **Goal**
+- **Key Decisions** (permanent, architectural)
+- **Research Findings** (papers, repos, techniques found)
+- **Files Modified**
+- **Open Questions / Next Steps**
+
+---
+
+## Session Registry
+
+| Date | Session File | Summary |
+|------|-------------|---------|
+| 2026-09-26 | [[Session - 2026-09-26 - Foundation & Research]] | CLAUDE.md created, PEM analyzed, Kimi/DeepSeek researched, PEM→HRM integrated, attention residuals implemented |
+| 2026-09-26 | [[Session - 2026-09-26 - Knowledge Graph Expansion]] | Knowledge graph expanded to chat context + deep Kimi K3 research |
+| 2026-09-27 | [[Session - 2026-09-27 - HRM-EQB Theorems]] | HRM-EQB spec v0.2: every claim a theorem with proof; `hrm_eqb` package; 23 theorem tests pass (243 total); AttnRes (2603.15031) verified; 4-D quaternion knowledge, hormones, curiosity, keep gate |
+| 2026-09-27 | [[Session - 2026-09-27 - HRM-Phi Design]] | Reflection + research (ARC Prize, TRM, recurrent-depth, memory layers); HRM-Φ math-first design; two-file format; N0–N9 plan (no code yet) |
+| 2026-09-27 | [[Session - 2026-09-27 - Unified Model Build]] | Built the unified model (ADR-003): PEM port + SSD knowledge + two-level reasoning + learning loops + metacognition + language section; 197 tests; real-scale baseline |
+| 2026-09-27 | [[Session - 2026-09-27 - Benchmark v2 and the Reasoning Ceiling]] | Fixed the controller livelock, built benchmark v2 (depth + vocabulary axes) which exposed 4 real defects; v2 scores 1.000 but the ablation ladder is flat, so the deep engine and phasor substrate are **not** load-bearing yet (ADR-004) |
+
+---
+
+## How Sessions Feed the Knowledge Graph
+
+```
+Chat Session
+    ↓
+Session Log (vault/08 - Chat Context & Sessions/)
+    ↓
+graphify --update (picks up new .md files)
+    ↓
+Knowledge Graph (semantic nodes + edges to code)
+    ↓
+graphify-out/graph.json (queryable)
+```
+
+Run `.\scripts\update_knowledge_graph.ps1` after every session to keep graph current.
+For semantic extraction of markdown, ask the project owner to add the key to the shared `.env`, then use `-Mode deep`. Agents do not supply personal keys — see `AGENTS.md`.
+---
+
+## Information Path (Decision Chain)
+
+Track how project decisions flowed:
+
+0. **Discriminating benchmark & ceiling** → ADR-004: v2 can now fail; found 4 defects and a flat ablation ladder → see [[ADR-004 Discriminating Benchmark and Reasoning Ceiling]] (session 2026-09-27)
+0. **HRM-EQB (N0 built)** → provable equilibrium model; supersedes HRM-Φ v0.1 → see [[HRM-EQB Specification v0.2 - Theorems and Proofs]], [[Session - 2026-09-27 - HRM-EQB Theorems]]
+0. **HRM-Φ (superseded)** → learned latent refiner replaces program search as the model → see [[ADR-005 Neural HRM-Phi Replaces Program Search]], [[HRM-Phi Design Document v0.1]]
+1. **Unified model** → ADR-003 supersedes ADR-001 (session 2026-09-27) → see [[ADR-003 Unified Cognitive Model]]
+2. **Architecture Choice** → Architecture A (session 2026-09-26) → see [[ADR-001 Hybrid C++ Engine with Python Blueprint]]
+3. **Q-Head Design** → 9-feature PEM QHead (session 2026-09-26) → see [[Session - 2026-09-26 - Foundation & Research]]
+4. **Attention Residuals** → RealFormer (session 2026-09-26) → see [[Concept - Attention Residuals (RealFormer & AttnRes)]]
+5. **Halt Logic** → Conjunctive halt + hard rails (session 2026-09-26) → see [[HRM Recurrent Stepper & ACT]]
+6. **Training Plan** → 6-stage pipeline (founding docs) → see [[HRM+LLM Fusion Architecture]]

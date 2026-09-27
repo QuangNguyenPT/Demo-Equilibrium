@@ -1,0 +1,12 @@
+{
+  "useMarkdownLinks": false,
+  "livePreview": true,
+  "defaultViewMode": "source",
+  "showLineNumber": true,
+  "readableLineLength": true,
+  "autoPairBrackets": true,
+  "autoPairMarkdown": true,
+  "tabSize": 4,
+  "showUnsupportedFiles": false,
+  "attachmentFolderPath": "attachments"
+}

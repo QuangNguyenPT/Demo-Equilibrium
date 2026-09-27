@@ -1,0 +1,21 @@
+# secrets and local machine state
+.env
+.claude/settings.local.json
+.claude/.index-stale
+.obsidian/workspace*.json
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# trained artifacts and downloaded datasets (reproducible, large)
+models/
+runs/
+*.hrmc
+knowledge*.pt
+data/external/
+
+# large reference downloads and graphify's per-file cache
+docs/*.zip
+graphify-out/cache/

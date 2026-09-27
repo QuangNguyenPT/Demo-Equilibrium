@@ -1,0 +1,24 @@
+model_name: "HRM-LLM-Base-Reasoning"
+vocab_size: 32000
+
+transformer:
+  num_layers: 12
+  hidden_dim: 768
+  num_attention_heads: 12
+  intermediate_dim: 2048
+  max_seq_len: 2048
+  norm_eps: 1e-6
+  rope_base: 10000.0
+
+hrm:
+  hidden_dim: 768
+  max_reasoning_steps: 8
+  low_level_substeps: 3
+  act_threshold: 0.65
+  use_act_halting: true
+  inject_mode: "residual_sum"
+
+engine:
+  arena_capacity_mb: 256
+  num_threads: 8
+  enable_avx2: true

@@ -1,0 +1,24 @@
+model_name: "HRM-LLM-Toy-Fast"
+vocab_size: 8000
+
+transformer:
+  num_layers: 2
+  hidden_dim: 128
+  num_attention_heads: 4
+  intermediate_dim: 384
+  max_seq_len: 512
+  norm_eps: 1e-6
+  rope_base: 10000.0
+
+hrm:
+  hidden_dim: 128
+  max_reasoning_steps: 4
+  low_level_substeps: 2
+  act_threshold: 0.5
+  use_act_halting: true
+  inject_mode: "residual_sum"
+
+engine:
+  arena_capacity_mb: 32
+  num_threads: 2
+  enable_avx2: true

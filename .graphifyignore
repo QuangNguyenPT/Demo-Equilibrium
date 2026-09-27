@@ -1,0 +1,7 @@
+# superseded engine kept for reference only (ADR-003); must not appear in impact queries
+legacy/
+# generated / runtime artifacts
+graphify-out/
+.pytest_cache/
+models/
+runs/
