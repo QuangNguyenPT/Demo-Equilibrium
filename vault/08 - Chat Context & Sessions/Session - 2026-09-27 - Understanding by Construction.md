@@ -11,7 +11,7 @@ agent: "claude-code"
 model: "claude-opus-5-5"
 date: 2026-09-27
 status: design-proposed
-code: [scripts/knowledge_map.py, scripts/update_knowledge_graph.ps1]
+commits: [6b28b26]
 ---
 
 # Session: 2026-09-27 — Understanding by Construction
