@@ -21,5 +21,7 @@ vault/obsidian-view/
 # generated node-name vault notes from obsidian export (loop guard)
 vault/(*.md
 vault/.obsidian/
+# curated code map is generated from code + notes; indexing it would echo the code back
+vault/09 - Code Map/
 # graphify backup temp dirs
 .gfy-replace-bak-*.tmp/

@@ -1,17 +1,17 @@
-   
-title: "Session: 2026 09 26 — Foundation, PEM Integration & Deep Research"
-type: session log
+---
+title: "Session: 2026-09-26 — Foundation, PEM Integration & Deep Research"
+type: session-log
 tags:
-    session
-    decisions
-    research
-    pem
-    kimi
-    deepseek
-    attention residuals
-date: 2026 09 26
+  - session
+  - decisions
+  - research
+  - pem
+  - kimi
+  - deepseek
+  - attention-residuals
+date: 2026-09-26
 status: complete
-   
+---
 
 # Session: 2026 09 26 — Foundation, PEM Integration & Deep Research
 

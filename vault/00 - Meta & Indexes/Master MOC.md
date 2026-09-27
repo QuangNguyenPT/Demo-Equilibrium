@@ -16,15 +16,16 @@ model: "big-pickle"
 
 This Master MOC categorizes and links every major engineering document, architectural specification, and kernel reference in this repository.
 
-> **Start here:** [[Code Map]] — every code module mapped to the document that governs it. The knowledge graph cannot link notes to code (markdown extraction needs an LLM key), so this file is the authoritative bridge.
+> **Start here:** [[Code Map]] — every code module mapped to the document that governs it. [[00 - Code Subsystems|Code Subsystems]] is the generated companion: one note per subsystem, linked to the specs, ADRs and sessions that govern or changed it (`scripts/knowledge_map.py`).
 
-**Current state (2026-09-27):** two architectures coexist. `hrm_eqb/` (HRM-Φ, "reasoning by equilibrium") is the target per [[ADR-005 Neural HRM-Phi Replaces Program Search]]; `hrm/`'s program-search reasoner is the measured baseline. See [[HRM-EQB Specification v0.2 - Theorems and Proofs]] for the normative design.
+**Current state (2026-09-27):** two architectures coexist. `hrm_eqb/` (HRM-Φ, "reasoning by equilibrium") is the target per [[ADR-005 Neural HRM-Phi Replaces Program Search]]; `hrm/`'s program-search reasoner is the measured baseline. See [[HRM-EQB Specification v0.2 - Theorems and Proofs]] for the normative design. **Proposed next:** [[HRM-X Specification v0.3 - Understanding by Construction]] ([[ADR-007 Grounded Algebra and Executable Concepts]]) — the trained HRM-EQB learned patterns but no arithmetic ([[ADR-006 HRM-EQB Training and Benchmark Results]]).
 
 ---
 
 ## 🏛️ 01 - Architecture & Philosophy
 Concepts, theoretical foundations, and mathematical motivations for the HRM+LLM system.
 
+- [[HRM-X Specification v0.3 - Understanding by Construction]] — **Proposed design (ADR-007).** Define understanding formally (extrapolation, definitions, faithful explanation, honest ignorance), then derive the model: grounded residue-phasor algebra, executable concepts, transformer only for conventions; every theorem a capability.
 - [[HRM-EQB Specification v0.2 - Theorems and Proofs]] — **Normative design.** Every claim a theorem, every theorem a test; theorem IDs (T1–T5, M1, K1–K2, G1, F1–F2, H1) are cited directly in `hrm_eqb/` docstrings.
 - [[HRM-Phi Design Document v0.1]] — Phasor HRM-Φ: plane algebra shared by PEM and the transformer, and the reasoning that replaces program search.
 - [[Hybrid System Philosophy]] — Deep explanation of why Python handles the layout blueprint while C++ executes everything computational.

@@ -12,6 +12,8 @@ date: 2026-09-27
 agent: "opencode/big-pickle"
 model: "big-pickle"
 status: complete
+# before git; squashed into baseline commit 2c2675c
+code: [hrm/perception/vector3d.py, hrm/reasoning/controller.py, hrm/learning/harness.py, hrm/verify/verifier.py, scripts/make_benchmark.py]
 related:
   - "[[ADR-004 Discriminating Benchmark and Reasoning Ceiling]]"
   - "[[ADR-003 Unified Cognitive Model]]"

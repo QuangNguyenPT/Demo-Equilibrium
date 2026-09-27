@@ -8,6 +8,8 @@ tags:
   - hrm-eqb
 date: 2026-09-27
 status: n0-done
+# before git; squashed into baseline commit 2c2675c
+code: [hrm_eqb/algebra.py, hrm_eqb/certified.py, hrm_eqb/equilibrium.py, hrm_eqb/attnres.py, hrm_eqb/product_keys.py, hrm_eqb/neuromodulation.py, hrm_eqb/curiosity.py, hrm_eqb/gate.py]
 ---
 
 # Session: 2026-09-27 — HRM-EQB Theorems and Proofs

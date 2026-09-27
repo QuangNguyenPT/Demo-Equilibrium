@@ -194,6 +194,13 @@ The substitutions are architecturally sound:
 
 ---
 
+## Follow-up
+
+A post-training probe found a fuzzy number line but no arithmetic in the integer embeddings
+(additive-consistency error 1.39; random vectors score 1.41). It also found that every solve
+takes about 5 cycles whatever the task. The redesign that follows is
+[[ADR-007 Grounded Algebra and Executable Concepts]].
+
 ## Open Questions for Next Phase
 
 1. **ARC benchmark numbers**: run `hrm_eqb bench` to get real scores

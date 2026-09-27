@@ -8,7 +8,9 @@ tags:
   - knowledge-store
   - domains
 date: 2026-09-27
-status: in-progress
+status: complete
+# built before git; squashed into baseline commit 2c2675c, so the code is listed explicitly
+code: [hrm/substrate/, hrm/perception/, hrm/reasoning/, hrm/verify/, hrm/knowledge/, hrm/language/, hrm/metacognition/, hrm/learning/, hrm/model.py, hrm/core.py, hrm/config.py, hrm/__main__.py]
 ---
 
 # Session: 2026-09-27 — Unified Model Build

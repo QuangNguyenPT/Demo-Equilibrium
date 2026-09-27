@@ -32,12 +32,12 @@ $EnvFile     = Join-Path $ProjectRoot ".env"
 # the script mid-way, so a failed semantic pass (e.g. a CLI session limit) also
 # silently skipped the Obsidian export below. Exit codes are checked explicitly.
 
-# The Obsidian view lives INSIDE the vault so Obsidian's own graph view can
-# render it, but in one quarantined subfolder. Pointing the export at the vault
-# ROOT produced 1,922 derived notes that buried the real notes and then
-# re-indexed themselves; this path cannot do that, and .graphifyignore excludes
-# it from extraction so the feedback loop stays broken.
-$ViewDir     = Join-Path $ProjectRoot "vault\_graph-view"
+# The Obsidian view is a curated code map (scripts/knowledge_map.py): one note
+# per subsystem, linked to the specs, ADRs and sessions that govern or changed
+# it. graphify's own `export obsidian` wrote one note per function/docstring --
+# 2,084 notes at the vault root plus 3,211 in vault/_graph-view -- which Obsidian
+# drew as two giant blobs burying the ~45 real notes. graph.json is still built
+# for symbol-level `graphify query` / impact analysis; it is just not exported.
 
 # Hosted-backend credentials, if the project ever needs one. Project-scoped, and
 # optional: `claude-cli` and `code-only` need nothing.
@@ -114,25 +114,13 @@ try {
     }
 
     if (-not $NoObsidian) {
-        # Export the PRUNED graph, not the raw one. The raw graph is 1,879 nodes
-        # of which ~397 are whole docstrings promoted to nodes -- exporting it
-        # produced notes named after sentence fragments. The pruned graph is the
-        # module/class skeleton (509 nodes) with real symbol names.
-        $simple = Join-Path $ProjectRoot "graphify-out\graph.simple.json"
-        $py = Get-Command python -ErrorAction SilentlyContinue
-        if ($py) {
-            & python (Join-Path $PSScriptRoot "simplify_graph.py") --graph "graphify-out\graph.json" --out $simple
-        }
-        if (Test-Path -LiteralPath $simple) {
-            & graphify export obsidian --graph $simple --dir $ViewDir
-            if ($LASTEXITCODE -eq 0) {
-                $count = (Get-ChildItem $ViewDir -Recurse -Filter *.md -ErrorAction SilentlyContinue).Count
-                Write-Host "[GRAPHIFY] Obsidian view: $count notes in $ViewDir (pruned graph)" -ForegroundColor Green
-            } else {
-                Write-Host "[GRAPHIFY] obsidian export failed (code $LASTEXITCODE)" -ForegroundColor Yellow
+        if (Get-Command python -ErrorAction SilentlyContinue) {
+            & python (Join-Path $PSScriptRoot "knowledge_map.py") --root $ProjectRoot
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "[GRAPHIFY] code map reported unassigned modules; add them to SUBSYSTEMS in scripts/knowledge_map.py" -ForegroundColor Yellow
             }
         } else {
-            Write-Host "[GRAPHIFY] pruned graph missing; skipped the Obsidian view." -ForegroundColor Yellow
+            Write-Host "[GRAPHIFY] python not on PATH; skipped the code map." -ForegroundColor Yellow
         }
     }
 } finally {

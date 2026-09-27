@@ -26,8 +26,16 @@ vault/*.canvas
 vault/_graph-view/
 vault/graph.canvas
 
-# graphify backup temp dirs
+# graphify backup temp dirs and per-run intermediates (graph.json + manifest are the tracked outputs)
 .gfy-replace-bak-*.tmp/
+graphify-out/2026-*/
+graphify-out/graph.html
+graphify-out/.graphify_ast.json
+graphify-out/.graphify_cached.json
+graphify-out/.graphify_detect.json
+graphify-out/.graphify_python
+graphify-out/.graphify_uncached.txt
+vault/.obsidian/
 
 # scratch canvas files
 Untitled*.canvas
