@@ -135,4 +135,4 @@ flowchart LR
 | [[Session - 2026-09-27 - HRM-EQB Theorems]] | EQB Algebra & Certified Maps, EQB Equilibrium Core, EQB Runtime Mind |
 | [[Session - 2026-09-27 - Understanding by Construction]] | Tooling & Benchmarks |
 | [[Session - 2026-09-27 - Unified Model Build]] | HRM Knowledge Store, HRM Language, HRM Learning Loops, HRM Metacognition, HRM Model Facade & CLI, HRM Perception, HRM Reasoning, HRM Substrate (FHRR), HRM Verification |
-| [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] | Tooling & Benchmarks |
+| [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] | HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, HRM-X Native Backend, HRM-X Workspace & Rules, Tooling & Benchmarks |

@@ -34,7 +34,7 @@ tags:
 
 ## Changed or discussed in sessions
 
-- none recorded
+- [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] — commits `d5bacb1`
 
 ## Tests
 
@@ -42,4 +42,4 @@ tags:
 
 ## Recent history
 
-- none
+- 2026-09-28 d5bacb1 HRM-X v0.4: operator inference over structured situations + C++ backend (ADR-008)

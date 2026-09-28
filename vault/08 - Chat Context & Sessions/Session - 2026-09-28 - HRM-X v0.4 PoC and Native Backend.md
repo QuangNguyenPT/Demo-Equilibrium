@@ -10,7 +10,7 @@ agent: "claude-code"
 model: "claude-opus-5-5"
 date: 2026-09-28
 status: built-and-measured
-commits: []
+commits: [d5bacb1]
 ---
 
 # Session: 2026-09-28 — HRM-X v0.4 PoC and Native Backend
