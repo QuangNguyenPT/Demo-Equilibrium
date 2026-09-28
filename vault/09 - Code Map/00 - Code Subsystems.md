@@ -49,16 +49,21 @@ flowchart LR
   S4["EQB Knowledge & Model Files"]
   S5["EQB Runtime Mind"]
   S6["EQB Training, Study & Bench"]
-  S7["HRM Substrate (FHRR)"]
-  S8["HRM Perception"]
-  S9["HRM Reasoning"]
-  S10["HRM Verification"]
-  S11["HRM Knowledge Store"]
-  S12["HRM Language"]
-  S13["HRM Metacognition"]
-  S14["HRM Learning Loops"]
-  S15["HRM Model Facade & CLI"]
-  S16["Tooling & Benchmarks"]
+  S7["HRM-X Workspace & Rules"]
+  S8["HRM-X Mind & Induction"]
+  S9["HRM-X Domains"]
+  S10["HRM-X Native Backend"]
+  S11["HRM-X Experiments"]
+  S12["HRM Substrate (FHRR)"]
+  S13["HRM Perception"]
+  S14["HRM Reasoning"]
+  S15["HRM Verification"]
+  S16["HRM Knowledge Store"]
+  S17["HRM Language"]
+  S18["HRM Metacognition"]
+  S19["HRM Learning Loops"]
+  S20["HRM Model Facade & CLI"]
+  S21["Tooling & Benchmarks"]
   S1 --> S0
   S4 --> S0
   S4 --> S2
@@ -76,37 +81,47 @@ flowchart LR
   S6 --> S2
   S6 --> S5
   S6 --> S3
-  S11 --> S15
-  S11 --> S7
-  S12 --> S15
-  S12 --> S8
-  S14 --> S11
+  S16 --> S20
+  S16 --> S12
+  S17 --> S20
+  S17 --> S13
+  S19 --> S16
+  S19 --> S18
+  S19 --> S20
+  S19 --> S13
+  S19 --> S14
+  S19 --> S15
+  S18 --> S20
+  S18 --> S13
+  S20 --> S16
+  S20 --> S17
+  S20 --> S19
+  S20 --> S18
+  S20 --> S13
+  S20 --> S14
+  S20 --> S12
+  S13 --> S20
+  S13 --> S12
+  S14 --> S16
+  S14 --> S17
+  S14 --> S20
   S14 --> S13
+  S14 --> S12
   S14 --> S15
-  S14 --> S8
-  S14 --> S9
-  S14 --> S10
-  S13 --> S15
-  S13 --> S8
-  S15 --> S11
-  S15 --> S12
-  S15 --> S14
+  S12 --> S20
+  S15 --> S20
   S15 --> S13
-  S15 --> S8
-  S15 --> S9
-  S15 --> S7
-  S8 --> S15
-  S8 --> S7
-  S9 --> S11
-  S9 --> S12
-  S9 --> S15
   S9 --> S8
-  S9 --> S7
   S9 --> S10
-  S7 --> S15
-  S10 --> S15
-  S10 --> S8
-  S16 --> S14
+  S9 --> S7
+  S11 --> S9
+  S11 --> S8
+  S11 --> S10
+  S8 --> S7
+  S10 --> S7
+  S7 --> S8
+  S7 --> S10
+  S21 --> S19
 ```
 
 ## What each session changed
@@ -120,3 +135,4 @@ flowchart LR
 | [[Session - 2026-09-27 - HRM-EQB Theorems]] | EQB Algebra & Certified Maps, EQB Equilibrium Core, EQB Runtime Mind |
 | [[Session - 2026-09-27 - Understanding by Construction]] | Tooling & Benchmarks |
 | [[Session - 2026-09-27 - Unified Model Build]] | HRM Knowledge Store, HRM Language, HRM Learning Loops, HRM Metacognition, HRM Model Facade & CLI, HRM Perception, HRM Reasoning, HRM Substrate (FHRR), HRM Verification |
+| [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] | Tooling & Benchmarks |

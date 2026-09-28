@@ -1,0 +1,114 @@
+{
+  "experiment": "x_grid",
+  "config": {
+    "seed": 0,
+    "demos": 3,
+    "demo_grids": "8-10 square, 2-4 objects",
+    "novel_test": "11-14, 4-6 objects",
+    "families": [
+      "recolor_all",
+      "recolor_colour",
+      "delete_colour",
+      "move_all",
+      "recolor_largest",
+      "delete_smallest",
+      "keep_largest",
+      "flip_objects_h",
+      "flip_h",
+      "flip_v",
+      "rot90"
+    ],
+    "compositions": [
+      [
+        "move_all",
+        "recolor_colour"
+      ],
+      [
+        "keep_largest",
+        "flip_h"
+      ],
+      [
+        "delete_smallest",
+        "move_all"
+      ],
+      [
+        "recolor_largest",
+        "rot90"
+      ],
+      [
+        "flip_objects_h",
+        "delete_colour"
+      ]
+    ],
+    "confound_control": "demos regenerated until the property selector is identified"
+  },
+  "metrics": {
+    "single, same-size test": {
+      "n": 62,
+      "hrmx": 0.9838709677419355,
+      "hrmx_wrong_answers": 0.0,
+      "pixel_lut": 0.2903225806451613,
+      "whole_grid_only": 0.5161290322580645,
+      "hrmx_colour_permuted": 0.9838709677419355,
+      "hrmx_mean_ops": 854.8870967741935,
+      "per_family": {
+        "recolor_all": 1.0,
+        "recolor_colour": 1.0,
+        "delete_colour": 1.0,
+        "move_all": 1.0,
+        "recolor_largest": 1.0,
+        "delete_smallest": 0.8333333333333334,
+        "keep_largest": 1.0,
+        "flip_objects_h": 1.0,
+        "flip_h": 1.0,
+        "flip_v": 1.0,
+        "rot90": 1.0
+      }
+    },
+    "single, new arrangement (bigger grid, more objects)": {
+      "n": 63,
+      "hrmx": 0.9841269841269841,
+      "hrmx_wrong_answers": 0.0,
+      "pixel_lut": 0.25396825396825395,
+      "whole_grid_only": 0.5238095238095238,
+      "hrmx_colour_permuted": 0.9841269841269841,
+      "hrmx_mean_ops": 1016.8888888888889,
+      "per_family": {
+        "recolor_all": 1.0,
+        "recolor_colour": 1.0,
+        "delete_colour": 1.0,
+        "move_all": 1.0,
+        "recolor_largest": 1.0,
+        "delete_smallest": 0.8333333333333334,
+        "keep_largest": 1.0,
+        "flip_objects_h": 1.0,
+        "flip_h": 1.0,
+        "flip_v": 1.0,
+        "rot90": 1.0
+      }
+    },
+    "composition (never a task)": {
+      "n": 29,
+      "hrmx": 0.9310344827586207,
+      "hrmx_wrong_answers": 0.034482758620689655,
+      "pixel_lut": 0.034482758620689655,
+      "whole_grid_only": 0.0,
+      "hrmx_colour_permuted": 0.9310344827586207,
+      "hrmx_mean_ops": 10086.655172413793,
+      "per_family": {
+        "move_all+recolor_colour": 1.0,
+        "keep_largest+flip_h": 1.0,
+        "delete_smallest+move_all": 0.6666666666666666,
+        "recolor_largest+rot90": 1.0,
+        "flip_objects_h+delete_colour": 0.875
+      }
+    },
+    "E12 search rank (programs tried before a fit), second half of stream": {
+      "uniform_prior": 47.1875,
+      "learned_prior": 29.8125
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-28 17:53:39"
+}

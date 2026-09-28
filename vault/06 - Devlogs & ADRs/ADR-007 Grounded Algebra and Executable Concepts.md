@@ -6,7 +6,7 @@ tags:
   - hrm-x
   - architecture
   - mathematics
-status: proposed
+status: superseded
 date: 2026-09-27
 related:
   - "[[HRM-X Specification v0.3 - Understanding by Construction]]"
@@ -20,6 +20,8 @@ related:
 ## Status
 
 **Proposed — awaiting the owner's approval before any code (phase X0).**
+
+**Superseded (2026-09-28) by [[ADR-008 Operator Inference over Structured Situations]].** Grounded algebra survives as the verifier representation; hand-written concepts became programs inferred from evidence.
 
 ## Context
 

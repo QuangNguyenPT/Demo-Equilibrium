@@ -1,0 +1,67 @@
+{
+  "experiment": "x_story_16k",
+  "config": {
+    "seed": 0,
+    "baseline_train_stories": 16000,
+    "parser_params": 40908,
+    "parser_train_seconds": 12.513022661209106,
+    "parser_data": "4000 template sentences, 20 names, 6 items, amounts 1-20",
+    "baseline_params": 119872,
+    "baseline_train_seconds": 305.8018400669098,
+    "baseline_train_accuracy": 0.7640625238418579,
+    "baseline": "3-layer transformer d=64, entities anonymized, numbers <= 40 as tokens + value channel, classification over 0..127, 60 epochs",
+    "train_distribution": "2 people, 1-2 events, amounts 1-20, train names/items"
+  },
+  "metrics": {
+    "iid": {
+      "n": 150,
+      "hrmx_correct": 1.0,
+      "hrmx_wrong_answers": 0.0,
+      "baseline_correct": 0.6533333333333333,
+      "hrmx_mean_ops": 35.193333333333335,
+      "hrmx_mean_cycles": 3.0
+    },
+    "unseen names+items": {
+      "n": 150,
+      "hrmx_correct": 1.0,
+      "hrmx_wrong_answers": 0.0,
+      "baseline_correct": 0.6,
+      "hrmx_mean_ops": 33.6,
+      "hrmx_mean_cycles": 3.0
+    },
+    "large numbers": {
+      "n": 150,
+      "hrmx_correct": 1.0,
+      "hrmx_wrong_answers": 0.0,
+      "baseline_correct": 0.0,
+      "hrmx_mean_ops": 33.56,
+      "hrmx_mean_cycles": 3.0
+    },
+    "long chains (3 people, 4-6 events)": {
+      "n": 150,
+      "hrmx_correct": 0.9933333333333333,
+      "hrmx_wrong_answers": 0.0,
+      "baseline_correct": 0.04,
+      "hrmx_mean_ops": 97.30666666666667,
+      "hrmx_mean_cycles": 2.993333333333333
+    },
+    "contradictory": {
+      "n": 100,
+      "hrmx_correct": 1.0,
+      "hrmx_wrong_answers": 0.0,
+      "baseline_correct": 0.0,
+      "hrmx_mean_ops": 21.78,
+      "hrmx_mean_cycles": 3.0
+    },
+    "E4 role-swap minimal pairs": 1.0,
+    "E8 counterfactual edits (both before and after correct)": 1.0,
+    "boundary: unseen passive frame": {
+      "status": "abstain",
+      "answer": "None",
+      "reason": "every reading is inconsistent"
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-28 17:11:34"
+}

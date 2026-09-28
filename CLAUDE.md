@@ -6,7 +6,7 @@ Every session MUST complete these steps before touching code:
 
 1. **Read vault session index** → `vault/08 - Chat Context & Sessions/00 - Session Index.md`
    - Understand the decision chain: what was decided, why, what changed last session
-2. **Check ADR status** → `vault/06 - Devlogs & ADRs/` — know current phase (ADR-003/004/005/006)
+2. **Check ADR status** → `vault/06 - Devlogs & ADRs/` — know current phase (ADR-003..008; ADR-008 = HRM-X v0.4, current)
 3. **Run test suite** → `python -m pytest --tb=short -q` — baseline before any change
 4. **Verify training state** → if `models/eqb-small/` absent, training may need resuming (check `runs/train-eqb-small.log`)
 5. **Update graph after every session** → `.\scripts\update_knowledge_graph.ps1 -Mode code-only`
@@ -20,6 +20,7 @@ Every session MUST complete these steps before touching code:
 - [ ] Is this a write to knowledge? → only through `mind.learn()` with a `VerificationReport`
 - [ ] Is this editing a frozen benchmark or `hrm/learning/harness.py`? → STOP, make a new version instead
 - [ ] Does this affect training? → check checkpoint exists, use `--pause 0.15` on GPU
+- [ ] Does this touch `hrm_x/native/` or a Python function it mirrors? → rebuild (`.\scripts\build_native.ps1`) and keep `tests/test_x_native.py` (differential parity) green
 
 ### Information Path (traceability)
 ```
@@ -64,9 +65,17 @@ hrm_eqb/                   HRM-EQB (torch): the model (ADR-005, spec v0.2 incl. 
   study.py / bench.py      autoresearch-style keep/discard (G1); benchmark suites
   device.py                select_device(): VRAM cap (see GPU Safety note)
   __main__.py              CLI: python -m hrm_eqb create|info|ask|learn|study|bench|seal
-tests/                     pytest; test_eqb_theorems.py (§2-8), test_eqb_model.py + test_eqb_runtime.py (§14)
+tests/                     pytest; test_eqb_theorems.py (§2-8), test_eqb_model.py + test_eqb_runtime.py (§14); test_x_*.py (HRM-X)
 data/benchmark/            frozen benchmark v1 (never overwrite; make v2)
-scripts/                   make_benchmark.py, update_knowledge_graph.ps1
+hrm_x/                     HRM-X v0.4 (ADR-008): operator inference over structured situations, CPU only
+  workspace.py / rules.py  e-graph with provenance (I1-I3), e-matching, saturation; make_workspace() picks backend
+  induction.py             programs -> behaviour classes (posterior), QuickSpec law discovery
+  mind.py                  belief + VOC controller (H), Modulators (rho, volatility), sleep, save/load
+  writer.py                trace -> answer + explanation
+  domains/                 arith (concepts, laws, residue verifier), story (parser .pt + situation), grid (objects)
+  native/                  C++ backend: include/hrmx.h (C ABI), src/egraph.cpp, src/grid.cpp; ctypes wrapper
+experiments/               x_arith|x_story|x_grid|x_control|x_metacog|x_native -> results/*.json
+scripts/                   make_benchmark.py, update_knowledge_graph.ps1, build_native.ps1 (clang++ -> hrm_x/native/bin, gitignored)
 vault/                     Obsidian vault; session logs in "08 - Chat Context & Sessions"
 legacy/                    superseded C++ GRU engine + blueprint (reference only, graph-ignored)
 ```
@@ -224,6 +233,8 @@ for attempt in range(3):
 ```powershell
 python -m pytest                                   # full suite (~45 s)
 python scripts/fetch_benchmarks.py                 # ARC-AGI-1 + Sudoku-Extreme -> data/external/ (gitignored)
+python -m experiments.x_arith                      # HRM-X experiments (also x_story, x_grid, x_control, x_metacog, x_native)
+.\scripts\build_native.ps1                          # HRM-X C++ backend; HRMX_BACKEND=python|native|auto selects it
 python -m hrm_eqb create models/eqb-small --minutes 120 --arc-train data/external/arc/training
 python -m hrm_eqb bench models/eqb-small --suites generated,language,sudoku,arc,empty_brain,schedule
 python -m hrm_eqb ask models/eqb-small task.json   # Answer, or a Question with candidates + bits
@@ -335,9 +346,10 @@ Use normal mode for:
 
 ---
 
-**Last updated:** 2026-09-27  
+**Last updated:** 2026-09-28  
 **Status:** Unified model built (ADR-003 P0–P6): reasoning, SSD knowledge, metacognition, learning loops, language section. Native backend deferred by measurement (P7).
-**Direction (ADR-005):** HRM-EQB replaces program search as the model. The spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md` (§14 = construction lemmas). N0–N7 are built and tested; N8 (training + benchmarks) is recorded in ADR-006. `hrm/` is teacher, judge and baseline.
+**Current (ADR-008, 2026-09-28):** HRM-X v0.4 in `hrm_x/` is the measured PoC; spec `vault/01 - Architecture Blueprint/HRM-X Specification v0.4 - Operator Inference over Structured Situations.md`. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only, exact Fraction arithmetic stays in Python. Hormones = only signals with a computational role (rho, feedback, volatility; lambda fixed); do not add others without an ablation.
+**Earlier direction (ADR-005):** HRM-EQB replaces program search as the model. The spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md` (§14 = construction lemmas). N0–N7 are built and tested; N8 (training + benchmarks) is recorded in ADR-006. `hrm/` is teacher, judge and baseline.
 **Rule:** anything that changes a certified map, the routing normalization or σ must keep `tests/test_eqb_theorems.py` green. The proofs depend on those invariants.
 **GPU rule (two crashes, 2026-09-27):** all CUDA work goes through `hrm_eqb.device.select_device()` (70 % VRAM cap) with pair/token-budgeted batches; probe peak memory on a worst-case batch before any long run; stop background jobs only by task ID. See `vault/05 - Engineering & Guides/GPU Safety - VRAM Oversubscription and DPC Watchdog.md`.
 **Git:** the repo is under version control (branch `feat/hrm-eqb-full`); commit per phase with the full suite green.

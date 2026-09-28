@@ -27,8 +27,8 @@ from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 OUT_DIR = Path("vault") / "09 - Code Map"
 MARKER = "generated: knowledge_map"
-CODE_ROOTS = ("hrm", "hrm_eqb", "scripts")
-CODE_SUFFIXES = (".py", ".ps1")
+CODE_ROOTS = ("hrm", "hrm_eqb", "hrm_x", "experiments", "scripts")
+CODE_SUFFIXES = (".py", ".ps1", ".cpp", ".h")
 SKIP_NOTE_DIRS = ("07 - Templates", "09 - Code Map", "_graph-view")
 INDEX_DIRS = ("00 - Meta & Indexes",)
 SESSION_DIR = "08 - Chat Context & Sessions"
@@ -65,6 +65,19 @@ SUBSYSTEMS: Tuple[Subsystem, ...] = (
               "Deep-supervised training, keep/discard self-study, benchmark suites, VRAM-capped device, CLI.",
               ("hrm_eqb/train.py", "hrm_eqb/study.py", "hrm_eqb/bench.py", "hrm_eqb/device.py",
                "hrm_eqb/__main__.py")),
+    Subsystem("HRM-X Workspace & Rules",
+              "E-graph with provenance: congruence closure, conflicts with blame, rule saturation, extraction.",
+              ("hrm_x/workspace.py", "hrm_x/rules.py")),
+    Subsystem("HRM-X Mind & Induction",
+              "Operator hypotheses as programs, law discovery, the VOC controller, modulators, trace writer.",
+              ("hrm_x/mind.py", "hrm_x/induction.py", "hrm_x/writer.py", "hrm_x/__init__.py")),
+    Subsystem("HRM-X Domains", "Arithmetic concepts, word-problem stories, grid object programs; their verifiers.",
+              ("hrm_x/domains/",)),
+    Subsystem("HRM-X Native Backend",
+              "C++ e-graph and grid kernels behind a C ABI, parity-tested against the Python reference.",
+              ("hrm_x/native/",)),
+    Subsystem("HRM-X Experiments", "E1-E12 runners with baselines and ablations; results recorded as JSON.",
+              ("experiments/",)),
     Subsystem("HRM Substrate (FHRR)", "Phasor algebra, name-derived codebook, backend validation gate.",
               ("hrm/substrate/",)),
     Subsystem("HRM Perception", "Domain protocol; grid, sequence and 3-D domains; the program language.",
@@ -90,7 +103,7 @@ SUBSYSTEMS: Tuple[Subsystem, ...] = (
 # Full repo paths only. Bare names ("train.py") were tried and dropped: old session
 # notes name files that later moved to legacy/, so a bare name linked sessions to the
 # wrong subsystem.
-PATH_RE = re.compile(r"\b((?:hrm_eqb|hrm|scripts|tests)/[\w/]*\w(?:\.py|\.ps1)?)")
+PATH_RE = re.compile(r"\b((?:hrm_eqb|hrm_x|hrm|experiments|scripts|tests)/[\w/]*\w(?:\.py|\.ps1|\.cpp|\.h)?)")
 
 
 def assign(path: str) -> Optional[str]:
@@ -126,6 +139,12 @@ def summary(root: Path, path: str) -> Tuple[str, int]:
         except SyntaxError:
             doc = ""
         first = doc.strip().splitlines()[0] if doc.strip() else ""
+    elif path.endswith((".cpp", ".h")):
+        for line in text.splitlines():
+            stripped = line.strip().lstrip("/*").strip()
+            if line.lstrip().startswith(("//", "/*")) and stripped:
+                first = stripped
+                break
     else:
         for line in text.splitlines():
             if line.startswith("#") and line.strip("# ").strip():

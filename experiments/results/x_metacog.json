@@ -1,0 +1,95 @@
+{
+  "experiment": "x_metacog",
+  "config": {
+    "seed": 0,
+    "concepts": [
+      "\u00d7",
+      "\u2295",
+      "\u2297",
+      "\u2298"
+    ],
+    "study_budget": 12,
+    "trials": 6,
+    "hypothesis_language": "programs up to size 6 over x, y, 0, 1, add, repeat",
+    "volatility_setting": "verify_ops=5000 (verification expensive), false law at task 100"
+  },
+  "metrics": {
+    "curiosity": {
+      "\u00d7/none": {
+        "questions": 0.0,
+        "later_accuracy": 0.6666666666666666,
+        "later_wrong": 0.3333333333333333
+      },
+      "\u00d7/random": {
+        "questions": 4.833333333333333,
+        "later_accuracy": 0.7066666666666667,
+        "later_wrong": 0.0
+      },
+      "\u00d7/curious": {
+        "questions": 1.0,
+        "later_accuracy": 0.86,
+        "later_wrong": 0.0
+      },
+      "\u2295/none": {
+        "questions": 0.0,
+        "later_accuracy": 0.6666666666666666,
+        "later_wrong": 0.0
+      },
+      "\u2295/random": {
+        "questions": 9.333333333333334,
+        "later_accuracy": 1.0,
+        "later_wrong": 0.0
+      },
+      "\u2295/curious": {
+        "questions": 2.0,
+        "later_accuracy": 1.0,
+        "later_wrong": 0.0
+      },
+      "\u2297/none": {
+        "questions": 0.0,
+        "later_accuracy": 0.6666666666666666,
+        "later_wrong": 0.0
+      },
+      "\u2297/random": {
+        "questions": 0.5,
+        "later_accuracy": 1.0,
+        "later_wrong": 0.0
+      },
+      "\u2297/curious": {
+        "questions": 0.3333333333333333,
+        "later_accuracy": 1.0,
+        "later_wrong": 0.0
+      },
+      "\u2298/none": {
+        "questions": 0.0,
+        "later_accuracy": 0.6666666666666666,
+        "later_wrong": 0.0
+      },
+      "\u2298/random": {
+        "questions": 0.5,
+        "later_accuracy": 1.0,
+        "later_wrong": 0.0
+      },
+      "\u2298/curious": {
+        "questions": 0.3333333333333333,
+        "later_accuracy": 1.0,
+        "later_wrong": 0.0
+      }
+    },
+    "volatility": {
+      "volatility on": {
+        "wrong_answers_after_change": 2,
+        "tasks_until_verification_resumed": 2,
+        "verified_after_change": 10
+      },
+      "volatility off": {
+        "wrong_answers_after_change": 6,
+        "tasks_until_verification_resumed": 6,
+        "verified_after_change": 15
+      }
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-28 17:53:15"
+}

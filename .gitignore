@@ -39,3 +39,6 @@ vault/.obsidian/
 
 # scratch canvas files
 Untitled*.canvas
+
+# native build output (rebuild with scripts/build_native.ps1)
+hrm_x/native/bin/

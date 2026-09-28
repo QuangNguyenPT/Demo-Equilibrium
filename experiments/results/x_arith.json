@@ -1,0 +1,187 @@
+{
+  "experiment": "x_arith",
+  "config": {
+    "seed": 0,
+    "train_pairs": 2000,
+    "train_range": "a 1..20 int, b 0.1..20.0",
+    "mlp": "2-64-64-1 tanh, Adam 3e-3, 3000 full-batch steps",
+    "baseline_train_seconds": 6.648600816726685,
+    "hrmx_evidence": "2x2=4, 2x3=6 + questions to teacher",
+    "hrmx_learning_trace": [
+      [
+        "propose",
+        "level 0",
+        "4 hypotheses"
+      ],
+      [
+        "derive",
+        "concept:(y + y)",
+        "f(10, 31/10) = 31/5 (1 exact ops, 0 rewrite reason(s))"
+      ],
+      [
+        "verify",
+        "concept:(y + y)",
+        "pass"
+      ],
+      [
+        "derive",
+        "concept:repeat x times [a := (a + y)] from 0",
+        "f(10, 31/10) = 31 (10 exact ops, 0 rewrite reason(s))"
+      ],
+      [
+        "derive",
+        "concept:repeat y times [a := (a + x)] from 0 | concept:repeat y times [a := (a + 1)] from y",
+        "f(10, 31/10) = undefined (0 exact ops, 0 rewrite reason(s)) | f(10, 31/10) = undefined (0 exact ops, 0 rewrite reason(s))"
+      ],
+      [
+        "ask",
+        "(Fraction(1, 1), Fraction(1, 1))",
+        "voi=0.094"
+      ],
+      [
+        "verify",
+        "concept:repeat x times [a := (a + y)] from 0",
+        "pass"
+      ]
+    ],
+    "laws": [
+      "add(x, y) = add(y, x)",
+      "add(x, z) = add(z, x)",
+      "f(x, y) = f(y, x)",
+      "add(x, add(y, z)) = add(y, add(x, z))",
+      "add(x, add(y, z)) = add(z, add(x, y))",
+      "f(x, f(y, z)) = f(y, f(x, z))",
+      "f(x, f(y, z)) = f(f(x, y), z)",
+      "add(x, add(z, z)) = add(z, add(x, z))",
+      "add(x, add(z, z)) = add(add(x, z), z)",
+      "add(z, f(x, z)) = add(f(x, z), z)",
+      "f(x, add(y, y)) = f(y, add(x, x))",
+      "f(x, add(z, z)) = f(add(x, x), z)",
+      "add(z, add(z, z)) = add(add(z, z), z)",
+      "f(x, add(y, z)) = add(f(x, y), f(x, z))",
+      "f(add(x, y), z) = add(f(x, z), f(y, z))",
+      "add(x, add(y, add(z, z))) = add(add(x, z), add(y, z))",
+      "add(x, add(z, f(y, z))) = add(z, add(x, f(y, z)))",
+      "add(x, add(z, f(y, z))) = add(add(x, z), f(y, z))",
+      "add(x, add(z, f(y, z))) = add(add(x, f(y, z)), z)",
+      "add(x, add(z, f(y, z))) = add(f(y, z), add(x, z))",
+      "add(z, f(x, add(y, z))) = add(f(x, add(y, z)), z)",
+      "f(x, add(y, f(y, z))) = f(y, add(x, f(x, z)))",
+      "f(x, add(z, f(y, z))) = f(add(x, f(x, y)), z)",
+      "add(x, add(z, add(z, z))) = add(z, add(x, add(z, z)))",
+      "add(x, add(z, add(z, z))) = add(add(x, z), add(z, z))",
+      "add(x, add(z, add(z, z))) = add(add(x, add(z, z)), z)",
+      "add(x, add(z, add(z, z))) = add(add(z, z), add(x, z))",
+      "add(z, add(z, f(x, z))) = add(add(z, z), f(x, z))",
+      "add(z, add(z, f(x, z))) = add(add(z, f(x, z)), z)",
+      "add(z, add(z, f(x, z))) = add(f(x, z), add(z, z))",
+      "f(x, add(y, add(y, y))) = f(y, add(x, add(x, x)))",
+      "f(x, add(z, add(z, z))) = f(add(x, add(x, x)), z)",
+      "add(z, add(z, add(z, z))) = add(add(z, z), add(z, z))",
+      "add(z, add(z, add(z, z))) = add(add(z, add(z, z)), z)"
+    ],
+    "law_evaluations": 409521
+  },
+  "metrics": {
+    "E1": {
+      "T1 in-range": {
+        "hrmx": 1.0,
+        "hrmx_mean_ops": 28.42,
+        "knn": 0.41,
+        "knn_median_rel_err": 0.006329367463846499,
+        "mlp": 0.0,
+        "mlp_median_rel_err": 0.0012048043702778063,
+        "log-mlp": 0.0,
+        "log-mlp_median_rel_err": 0.0009416478422240068,
+        "exact": 1.0,
+        "exact_median_rel_err": 0.0
+      },
+      "T2 large integers": {
+        "hrmx": 1.0,
+        "hrmx_mean_ops": 7784.475,
+        "knn": 0.0,
+        "knn_median_rel_err": 0.9999805747607335,
+        "mlp": 0.0,
+        "mlp_median_rel_err": 0.9999789263776664,
+        "log-mlp": 0.0,
+        "log-mlp_median_rel_err": 0.9993931438645874,
+        "exact": 1.0,
+        "exact_median_rel_err": 0.0
+      },
+      "T3 large decimals": {
+        "hrmx": 1.0,
+        "hrmx_mean_ops": 509.86,
+        "knn": 0.0,
+        "knn_median_rel_err": 0.9981064483671767,
+        "mlp": 0.0,
+        "mlp_median_rel_err": 0.9978996759258871,
+        "log-mlp": 0.0,
+        "log-mlp_median_rel_err": 0.9635312542782182,
+        "exact": 1.0,
+        "exact_median_rel_err": 0.0
+      },
+      "T4 10 x 3.1": {
+        "hrmx": 1.0,
+        "hrmx_mean_ops": 21.0,
+        "knn": 0.0,
+        "knn_median_rel_err": 0.03225806451612903,
+        "mlp": 0.0,
+        "mlp_median_rel_err": 0.0016006961945564517,
+        "log-mlp": 0.0,
+        "log-mlp_median_rel_err": 0.0014676442321783706,
+        "exact": 1.0,
+        "exact_median_rel_err": 0.0
+      }
+    },
+    "E12": [
+      [
+        "10 \u00d7 3.1",
+        "31",
+        21,
+        "31",
+        21,
+        "1.0x"
+      ],
+      [
+        "100 \u00d7 3.1",
+        "310",
+        115,
+        "310",
+        43,
+        "2.7x"
+      ],
+      [
+        "1000 \u00d7 3.1",
+        "3100",
+        1021,
+        "3100",
+        192,
+        "5.3x"
+      ],
+      [
+        "10000 \u00d7 3.1",
+        "31000",
+        10020,
+        "31000",
+        411,
+        "24.4x"
+      ],
+      [
+        "100000 \u00d7 3.1",
+        "None",
+        7,
+        "310000",
+        779,
+        "refused before (cost > value)"
+      ]
+    ],
+    "E2": {
+      "depth 1": 1.0,
+      "depth 2": 1.0,
+      "depth 3": 1.0
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-28 17:52:44"
+}
