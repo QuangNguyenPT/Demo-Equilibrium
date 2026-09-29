@@ -35,16 +35,15 @@ This vault employs a structured tagging taxonomy to enable quick filtering and g
 
 ## Current Model Tags
 - `#hrm-x` — The current model family (HRM-X), package `hrm_x/`. Supersedes `#hrm`.
-- `#operator-inference` — The ADR-008 core method: operators are *inferred programs* over structured situations, tracked as version spaces.
-- `#e-graph` — E-graph workspace with provenance (`hrm_x/workspace.py`); equality saturation, rule-based laws.
-- `#spec-v04` — Notes describing the normative [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (ADR-008). v0.3 is superseded.
-- `#adr-008` — Decisions, results and code notes belonging to the current ADR-008 era (gates G1–G6).
+- `#operator-inference` — The ADR-010 core method: a hypothesis is a law-closed family fitted exactly over ℚ, not a program found by enumeration. (The ADR-008 version of this tag meant the opposite — inferred programs over a hand-written DSL — and remains on the retained v0.4 notes.)
+- `#e-graph` — E-graph workspace with provenance (`hrm_x/workspace.py`); equality saturation, rule-based laws. Now serves the v0.4 route inside `hrm_x/`.
+- `#spec-v05` — Notes describing the normative [[HRM-X Specification v0.5 - Structural Operator Inference]] (ADR-010). v0.3 and v0.4 are superseded and retained.
+- `#adr-010` — Decisions, results and code notes belonging to the current ADR-010 era. **Gates G4 and G5 are not met.**
 - `#cpp-native` — Live C++/C-ABI work: the HRM-X e-graph backend in `hrm_x/native/`, behind a differential parity gate. The only native code that exists.
 
 ## Baseline Tags
 - `#hrm` — Hierarchical Reasoning Model (Wang et al. 2025) **and** the `hrm/` package, which is now the measured program-search baseline (ADR-003), not the model.
-- `#hrm-eqb` — The `hrm_eqb/` equilibrium baseline (ADR-005/006): built and theorem-tested, superseded as the design target by HRM-X v0.4.
-- `#act` — Adaptive Computation Time, Q-learning halting, dynamic compute.
+- `#hrm-eqb` — The `hrm_eqb/` equilibrium baseline (ADR-005/006): built, measured and theorem-tested (55 tests), superseded as the design target by HRM-X v0.4 and retained. Why it left, and which of its ideas [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes to re-take.
 - `#recurrence` — Multi-timescale iterative processing ($z_H$ and $z_L$).
 
 ## Process & Management Tags

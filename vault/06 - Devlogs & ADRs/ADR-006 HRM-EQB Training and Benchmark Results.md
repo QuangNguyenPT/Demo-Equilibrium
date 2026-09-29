@@ -232,4 +232,7 @@ takes about 5 cycles whatever the task. The redesign that follows is
 - [x] N7 — self-study, benchmarks, CLI
 - [x] N8 — training complete (150 min, peak 88.7% batch acc, loss floor 0.143)
 - [x] N8 — benchmark suite results (generated=0.298, language=0.983, schedule=1.000, arc=0.000, sudoku=0.000)
-- [ ] Merge `feat/hrm-eqb-full` → `main` (after benchmarks)
+- [~] Merge `feat/hrm-eqb-full` → `main` — **never done, and deliberately so.** That branch
+  was superseded by `feat/hrm-x-v04`; `hrm_eqb/` became a baseline under ADR-008 rather
+  than the target. Nothing is outstanding here. (Annotated 2026-09-29; the box was left
+  open and would otherwise read as a piece of unfinished work.)

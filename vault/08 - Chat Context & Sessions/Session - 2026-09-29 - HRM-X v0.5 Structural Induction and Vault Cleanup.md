@@ -71,9 +71,9 @@ those dead paths in its recent-files list.
 - **The Kimi K3 notes moved** to
   `vault/Knowledge Graph/External Research (Kimi K3)/` with an index that says
   what transfers to this project and what cannot (all of it is a serving result
-  about someone else's checkpoint). Four dangling `[[Semantic Relationship
-  Matrix]]` links, to a note deleted in an earlier cleanup, were repointed.
-- **The canvas was rewritten** as the project's own system: the model that runs,
+  about someone else's checkpoint). Four empty wiki links pointed at notes that did not
+  exist, and the body admitted as much. Six of its ten concept notes were about Kimi K3.
+- **The canvas was rewritten** as the project's own system: the model that runs today,
   the baselines it is measured against, the specs and ADRs that say what is and
   is not claimed, and the concepts behind our design — with the external research
   drawn deliberately outside the picture. Every node is a `file` node pointing at

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hrm"
 version = "0.1.0"
-description = "HRM-X: operator inference over structured situations (hrm_x, current, ADR-008), with the HRM-EQB equilibrium baseline (hrm_eqb, ADR-005) and the HRM program-search baseline (hrm, ADR-003)"
+description = "HRM-X: structural operator inference (hrm_x, current, ADR-010), with the HRM-EQB certified equilibrium baseline (hrm_eqb, ADR-005) and the HRM program-search baseline (hrm, ADR-003)"
 requires-python = ">=3.11"
 dependencies = ["numpy>=1.26"]
 

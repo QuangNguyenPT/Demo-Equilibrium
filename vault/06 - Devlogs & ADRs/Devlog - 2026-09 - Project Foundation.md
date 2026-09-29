@@ -25,12 +25,15 @@ created: 2026-09-26
 > `legacy/tests/`). None of the kernels or the blueprint layer was ever integrated
 > into a model.
 >
-> The **live project** is **HRM-X v0.4 — Operator Inference over Structured
-> Situations** ([[ADR-008 Operator Inference over Structured Situations]]), built and
-> measured in `hrm_x/`, with [[HRM-X Specification v0.4 - Operator Inference over
-> Structured Situations]] as the normative design (gates G1–G6 done; 336 tests pass,
-> 1 skipped; 8 result files in `experiments/results/`). Its only C++ is the e-graph
-> backend in `hrm_x/native/`, which does descend from the C-ABI idea in §1.
+> The **live project** is **HRM-X v0.5 — Structural Operator Inference**
+> ([[ADR-010 Structural Operator Inference]]), built and measured in `hrm_x/`,
+> with [[HRM-X Specification v0.5 - Structural Operator Inference]] as the normative
+> design (436 tests pass, 1 skipped; 12 result files in `experiments/results/`).
+> Its only C++ is the e-graph backend in `hrm_x/native/`, which does descend from
+> the C-ABI idea in §1. (At the time of writing, 2026-09-28, the live project was
+> HRM-X v0.4 — Operator Inference over Structured Situations, ADR-008, with 336 tests
+> passing, 1 skipped and 8 result files.)
+> Attribution: opencode/stealth/space-bunny-alpha (space-bunny-alpha), 2026-09-29.
 >
 > §3 (the Obsidian vault) remains accurate.
 

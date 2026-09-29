@@ -76,18 +76,21 @@ the graph. Use `-Mode code-only` explicitly for the no-LLM fallback.
 
 Track how project decisions flowed:
 
-0. **HRM-X v0.4 (accepted PoC)** → operator inference over structured situations; built in `hrm_x/` with a C++ backend; supersedes ADR-007 → see [[ADR-008 Operator Inference over Structured Situations]], [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
-0. **HRM-X v0.3 (superseded)** → understanding by construction: grounded algebra + executable concepts + transformer only for conventions; supersedes HRM-EQB as the reasoning design once approved → see [[ADR-007 Grounded Algebra and Executable Concepts]], [[HRM-X Specification v0.3 - Understanding by Construction]]
-0. **HRM-EQB trained and measured** → text ≈ 1.0, grids/ARC/Sudoku ≈ 0, memory contributes 0 → see [[ADR-006 HRM-EQB Training and Benchmark Results]]
-0. **Discriminating benchmark & ceiling** → ADR-004: v2 can now fail; found 4 defects and a flat ablation ladder → see [[ADR-004 Discriminating Benchmark and Reasoning Ceiling]] (session 2026-09-27)
-0. **HRM-EQB (N0 built)** → provable equilibrium model; supersedes HRM-Φ v0.1 → see [[HRM-EQB Specification v0.2 - Theorems and Proofs]], [[Session - 2026-09-27 - HRM-EQB Theorems]]
-0. **HRM-Φ (superseded)** → learned latent refiner replaces program search as the model → see [[ADR-005 Neural HRM-Phi Replaces Program Search]], [[HRM-Phi Design Document v0.1]]
-1. **Unified model** → ADR-003 supersedes ADR-001 (session 2026-09-27) → see [[ADR-003 Unified Cognitive Model]]
-2. **Architecture Choice (superseded, never implemented)** → Architecture A: hybrid C++ engine + Python blueprint, decided 2026-09-26 and **never built**. Superseded by ADR-003, which moved the whole engine to `legacy/`; only the C-ABI idea survives, as `hrm_x/native/include/hrmx.h`. See also [[ADR-002 Zero Allocation Memory Arena]] (arena allocator, also never built) → [[ADR-001 Hybrid C++ Engine with Python Blueprint]]
-3. **Q-Head Design** → 9-feature PEM QHead (session 2026-09-26) → see [[Session - 2026-09-26 - Foundation & Research]]
-4. **Attention Residuals** → RealFormer (session 2026-09-26) → see [[Concept - Attention Residuals (RealFormer & AttnRes)]]
-5. **Halt Logic** → Conjunctive halt + hard rails (session 2026-09-26) → see `HRM Recurrent Stepper & ACT` (`vault/02 - C++ Engine & Kernels/`) — **stale**: it documents the never-built C++ engine, so it is kept as a record, not a live design
-6. **Training Plan** → 6-stage pipeline (founding docs) → see [[HRM+LLM Fusion Architecture]]
+1. **HRM-X v0.5 (current)** → structural operator inference: a hypothesis is a law-closed family fitted exactly over ℚ, determinacy and open-world coverage decide when it may answer, verification is the dual solve `Aᵀλ = r`. 7.2× cheaper than v0.4 on operators its language covers; **worse** on operators it does not. Gates G4 and G5 **not met** → see [[ADR-010 Structural Operator Inference]], [[HRM-X Specification v0.5 - Structural Operator Inference]]
+2. **What HRM-EQB is worth (proposed)** → which of its certifiable ideas would apply to HRM-X's objects: rival margin, leave-one-out provenance, statistical keep gate → see [[ADR-011 Reintroducing EQB Ideas into HRM-X]]
+3. **Free text (negative result)** → perception is template-bound; the verifier cannot see a misreading → see [[ADR-009 Free Text Is Not Yet Supported]]
+4. **HRM-X v0.4 (superseded as the target, retained)** → operator inference over structured situations; built in `hrm_x/` with a C++ backend; supersedes ADR-007 → see [[ADR-008 Operator Inference over Structured Situations]], [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
+5. **HRM-X v0.3 (superseded)** → understanding by construction: grounded algebra + executable concepts + transformer only for conventions; supersedes HRM-EQB as the reasoning design once approved → see [[ADR-007 Grounded Algebra and Executable Concepts]], [[HRM-X Specification v0.3 - Understanding by Construction]]
+6. **HRM-EQB trained and measured** → text ≈ 1.0, grids/ARC/Sudoku ≈ 0, memory contributes 0; the integers are a magnitude code and compute is non-adaptive → see [[ADR-006 HRM-EQB Training and Benchmark Results]]
+7. **Discriminating benchmark & ceiling** → ADR-004: v2 can now fail; found 4 defects and a flat ablation ladder → see [[ADR-004 Discriminating Benchmark and Reasoning Ceiling]] (session 2026-09-27)
+8. **HRM-EQB (N0 built)** → provable equilibrium model; supersedes HRM-Φ v0.1 → see [[HRM-EQB Specification v0.2 - Theorems and Proofs]], [[Session - 2026-09-27 - HRM-EQB Theorems]]
+9. **HRM-Φ (superseded)** → learned latent refiner replaces program search as the model → see [[ADR-005 Neural HRM-Phi Replaces Program Search]], [[HRM-Phi Design Document v0.1]]
+10. **Unified model** → ADR-003 supersedes ADR-001 (session 2026-09-27) → see [[ADR-003 Unified Cognitive Model]]
+11. **Architecture Choice (superseded, never implemented)** → Architecture A: hybrid C++ engine + Python blueprint, decided 2026-09-26 and **never built**. Superseded by ADR-003, which moved the whole engine to `legacy/`; only the C-ABI idea survives, as `hrm_x/native/include/hrmx.h`. See also [[ADR-002 Zero Allocation Memory Arena]] (arena allocator, also never built) → [[ADR-001 Hybrid C++ Engine with Python Blueprint]]
+12. **Q-Head Design** → 9-feature PEM QHead (session 2026-09-26) → see [[Session - 2026-09-26 - Foundation & Research]]
+13. **Attention Residuals** → RealFormer (session 2026-09-26) → see [[Concept - Attention Residuals (RealFormer & AttnRes)]]
+14. **Halt Logic** → Conjunctive halt + hard rails (session 2026-09-26) → see `HRM Recurrent Stepper & ACT` (`vault/02 - C++ Engine & Kernels/`) — **stale**: it documents the never-built C++ engine, so it is kept as a record, not a live design
+15. **Training Plan** → 6-stage pipeline (founding docs) → see [[HRM+LLM Fusion Architecture]]
 
 ### ADR list
 
@@ -97,11 +100,14 @@ Track how project decisions flowed:
 | ADR-002 | [[ADR-002 Zero Allocation Memory Arena]] | superseded-not-implemented | ADR-003 |
 | ADR-003 | [[ADR-003 Unified Cognitive Model]] | accepted-baseline (`hrm/`) | ADR-005 (as *the model*) |
 | ADR-004 | [[ADR-004 Discriminating Benchmark and Reasoning Ceiling]] | accepted | — |
-| ADR-005 | [[ADR-005 Neural HRM-Phi Replaces Program Search]] | superseded-baseline (`hrm_eqb/`) | ADR-008 |
+| ADR-005 | [[ADR-005 Neural HRM-Phi Replaces Program Search]] | superseded-baseline (`hrm_eqb/`) | ADR-010 |
 | ADR-006 | [[ADR-006 HRM-EQB Training and Benchmark Results]] | accepted (measurement record) | — |
-| ADR-007 | [[ADR-007 Grounded Algebra and Executable Concepts]] | superseded | ADR-008 |
-| ADR-008 | [[ADR-008 Operator Inference over Structured Situations]] | **current** | — |
+| ADR-007 | [[ADR-007 Grounded Algebra and Executable Concepts]] | superseded | ADR-010 |
+| ADR-008 | [[ADR-008 Operator Inference over Structured Situations]] | accepted-poc, superseded as the target | ADR-010 |
+| ADR-009 | [[ADR-009 Free Text Is Not Yet Supported]] | accepted (negative result) | — |
+| ADR-010 | [[ADR-010 Structural Operator Inference]] | **current** | — |
+| ADR-011 | [[ADR-011 Reintroducing EQB Ideas into HRM-X]] | **proposed — not implemented** | — |
 
-`hrm/` = program-search baseline · `hrm_eqb/` = HRM-Φ equilibrium baseline ·
-`hrm_x/` = current model (HRM-X v0.4, built and measured; normative spec v0.4,
-gates G1–G6 done).
+`hrm/` = program-search baseline · `hrm_eqb/` = HRM-Φ equilibrium baseline (55 tests
+still run) · `hrm_x/` = current model (**HRM-X v0.5**, normative spec v0.5,
+ADR-010). **Gates G4 and G5 are not met** — see ADR-010 before quoting a headline.

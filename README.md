@@ -14,8 +14,9 @@ is measured against.
 - **Normative design:** `vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md`
 - **Decision record:** `vault/06 - Devlogs & ADRs/ADR-010 Structural Operator Inference.md`
 - **Previous:** spec v0.4 and ADR-008, program search over a hand-written DSL.
-- `python -m pytest` → **436 passed, 1 skipped**; 60 of those tests are HRM-X, including
-  differential parity for the C++ backend.
+- `python -m pytest` → **436 passed, 1 skipped**. 128 of those are HRM-X (`tests/test_x_*.py`,
+  including differential parity for the C++ backend), 55 are the `hrm_eqb` theorem and runtime
+  tests, and the rest cover `hrm/` and the vault tooling.
 - **Gates G1–G3 (mathematics, representation, capability) are closed. G4 — refusing operators
   outside the hypothesis language — is not.** On out-of-language operators the v0.5 route gives
   5 confident wrong answers out of 6, where v0.4 gave 0 wrong and 4 abstentions. That regression

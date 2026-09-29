@@ -42,7 +42,7 @@ $$
   `legacy/cpp_engine/src/kernels/attention.cpp`. It was moved there by
   [[ADR-003 Unified Cognitive Model]] on 2026-09-27 and is **not** part of any live
   package. No `src/kernels/attention.cpp` exists at the repository root, and
-  RealFormer is **not** adopted by the current model (HRM-X v0.4, `hrm_x/`).
+  RealFormer is **not** adopted by the current model (HRM-X v0.5, `hrm_x/`).
 
 **Code (legacy/cpp_engine/src/kernels/attention.cpp) — LEGACY, never live**:
 ```cpp

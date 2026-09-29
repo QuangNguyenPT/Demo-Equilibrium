@@ -7,17 +7,23 @@ tags:
   - overview
 status: active
 created: 2026-09-26
-updated: 2026-09-28
+updated: 2026-09-29
 ---
 
 # 🧠 HRM-X Knowledge Dashboard
 
 > [!IMPORTANT] What this vault describes today
-> The live model is **HRM-X v0.4 — operator inference over structured situations** (spec v0.4, [[ADR-008 Operator Inference over Structured Situations]]), in `hrm_x/`. The notes under `01`–`05` were written for the ADR-001 "Python blueprint + C++ engine" design, which **was never built**; ADR-003 moved it to `legacy/`. They are kept as design history, not as a description of the code. For the code that actually exists, use [[Code Map]].
+> The live model is **HRM-X v0.5 — structural operator inference** (spec v0.5,
+> [[ADR-010 Structural Operator Inference]]), in `hrm_x/`. A hypothesis is a law-closed family
+> fitted exactly over ℚ, not a program found by enumeration. **Gates G4 and G5 are not met** —
+> read ADR-010 before quoting a headline. The notes under `01`–`05` were written for the
+> ADR-001 "Python blueprint + C++ engine" design, which **was never built**; ADR-003 moved it to
+> `legacy/`. They are kept as design history, not as a description of the code. For the code
+> that actually exists, use [[Code Map]].
 
 Welcome to the internal engineering knowledge base for **HRM-X**: a reasoner that infers
-*operators* (small programs) from evidence and applies them exactly to *structured
-situations*, checking each answer in an independent representation.
+*operators* from evidence and applies them exactly to *structured situations*, checking each
+answer in an independent representation.
 
 ---
 
@@ -25,7 +31,7 @@ situations*, checking each answer in an independent representation.
 
 | Generation | Path | Role | Standing |
 | :--- | :--- | :--- | :--- |
-| `hrm_x/` | ADR-008, spec v0.4 | **Current model.** E-graph workspace with provenance, inferred programs, laws, H as a value-of-computation controller. C++ hot paths in `hrm_x/native/`. | live |
+| `hrm_x/` | ADR-010, spec v0.5 | **Current model.** Law-closed hypothesis families fitted exactly over ℚ, determinacy, open-world coverage, VOC control, dual-solve verification. The v0.4 program-search route (`domains/arith.py`, `library.py`) stays inside it as the comparison baseline. C++ hot paths in `hrm_x/native/`. | live |
 | `hrm_eqb/` | ADR-005, ADR-006 | HRM-Phi equilibrium baseline: neural H/L trained on algebra. It measured no arithmetic (ADR-006), which is why it was replaced. | baseline |
 | `hrm/` | ADR-003 | The first unified cognitive model: program search over a phasor substrate. | baseline |
 | `legacy/` | ADR-001, ADR-002 | The C++ engine plus Python blueprint design. **Never integrated with the live model.** | historical |
@@ -36,25 +42,48 @@ situations*, checking each answer in an independent representation.
 
 ```mermaid
 flowchart TD
-    subgraph HRMX["hrm_x/ — CURRENT (ADR-008, spec v0.4)"]
+    subgraph HRMX["hrm_x/ — CURRENT (ADR-010, spec v0.5)"]
         direction TB
+        subgraph V5["v0.5 concept core — structural operator inference"]
+            QL["qlinalg.py — exact RREF / rank / solve over Q"]
+            CO["concepts.py — 68 law-closed families,<br/>Thm 3 determinacy, Def. 3 BOTTOM"]
+            CN["consolidation.py — corpus-MDL macro admission"]
+            CD["domains/concept.py — the same mathematics<br/>as a Domain, under the same Mind"]
+        end
         subgraph PY["Python: the blueprint and the reference semantics"]
             WS["workspace.py — e-graph with provenance"]
             RU["rules.py — laws and e-matching"]
-            IN["induction.py — programs, version spaces"]
+            IN["induction.py — programs, version spaces (v0.4 route)"]
+            LB["library.py — program-level DSL mining (v0.4 route)"]
             MI["mind.py — L: saturation + exact execution<br/>H: value of computation"]
             WR["writer.py — answer in words"]
             DOM["domains/ — arith.py, story.py, grid.py"]
+        end
+        subgraph OTH["other v0.5 components"]
+            ST["situation.py — Q^(ExI) state, one-shot frames"]
+            AL["algebra.py — FHRR binding, Prop. 8"]
+            OP["operators.py — D4 x Sym(colours), solved"]
+            RD["reader.py — Place-Value Reader (REQUIRES TORCH)"]
         end
         subgraph NAT["hrm_x/native/ — C++ hot paths behind the hrmx.h C ABI"]
             EG["src/egraph.cpp — union-find, hash-cons,<br/>rebuild, e-matching, explanations"]
             GR["src/grid.cpp — connected components,<br/>object-level steps"]
         end
-        WS <--> EG
-        DOM <--> GR
+        QL --> CO
+        CO --> CD
+        CN --> CO
+        ST --> CD
+        OP --> DOM
+        AL -.-> CD
+        RD -.-> CD
+        CD --> MI
+        CO -.-> MI
         WS --> MI
         RU --> MI
         IN --> MI
+        LB -.-> IN
+        WS <--> EG
+        DOM <--> GR
         MI --> WR
     end
 
@@ -92,8 +121,9 @@ reference is tested differentially (`tests/test_x_native.py`).
 | :--- | :--- | :--- |
 | **Master Index** | Complete vault graph and topic index | [[Master MOC]] |
 | **Code Map** | Which document is implemented by which file | [[Code Map]] |
-| **Current spec** | HRM-X v0.4, operator inference (normative) | [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] |
-| **Decision Records** | ADRs, including the ones this design replaced | [[ADR-008 Operator Inference over Structured Situations]] |
+| **Current spec** | HRM-X v0.5, structural operator inference (normative) | [[HRM-X Specification v0.5 - Structural Operator Inference]] |
+| **Decision Records** | ADR-010 is current; the ADRs it replaced are kept verbatim | [[ADR-010 Structural Operator Inference]] · [[ADR-011 Reintroducing EQB Ideas into HRM-X]] |
+| **HRM-X v0.5 concepts** | One note per v0.5 module | [[HRM-X Concept Induction (v0.5)]] |
 | **Python subsystems** | One note per module of `hrm_x/`, `hrm_eqb/`, `hrm/` | [[HRM-X Workspace & Rules]] |
 | **The only C++** | E-graph and grid kernels behind `hrmx.h` | [[HRM-X Native Backend]] |
 | **Build & Toolchain** | `scripts/build_native.ps1`, `python -m pytest` | [[Build & Toolchain Guide]] |

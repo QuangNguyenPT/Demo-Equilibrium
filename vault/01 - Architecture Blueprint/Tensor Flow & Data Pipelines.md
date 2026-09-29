@@ -8,7 +8,7 @@ tags:
 status: historical
 created: 2026-09-26
 updated: 2026-09-28
-superseded_by: "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"
+superseded_by: "[[HRM-X Specification v0.5 - Structural Operator Inference]]"
 relates_to:
   - "[[HRM+LLM Fusion Architecture]]"
   - "[[ADR-001 Hybrid C++ Engine with Python Blueprint]]"

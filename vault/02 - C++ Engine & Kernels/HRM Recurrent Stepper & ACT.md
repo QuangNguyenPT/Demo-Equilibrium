@@ -9,7 +9,7 @@ tags:
 status: superseded-not-implemented
 created: 2026-09-26
 updated: 2026-09-28
-superseded_by: "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"
+superseded_by: "[[HRM-X Specification v0.5 - Structural Operator Inference]]"
 relates_to:
   - "[[ADR-005 Neural HRM-Phi Replaces Program Search]]"
   - "[[ADR-006 HRM-EQB Training and Benchmark Results]]"
@@ -19,7 +19,10 @@ relates_to:
 # 🔁 HRM Recurrent Stepper & ACT Halting Logic
 
 > [!WARNING] Not implemented as described
-> This note describes the ADR-001 C++/Python hybrid engine, which was **never built**; ADR-003 moved it to `legacy/`. The live C++ is only `hrm_x/native/` (`egraph.cpp`, `grid.cpp`) behind the `hrmx.h` C ABI. The current model is [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (ADR-008), in `hrm_x/`. Kept as design history.
+> This note describes the ADR-001 C++/Python hybrid engine, which was **never built**; ADR-003 moved it to `legacy/`. The live C++ is only `hrm_x/native/` (`egraph.cpp`, `grid.cpp`) behind the `hrmx.h` C ABI.
+>
+> **Superseded as the design target 2026-09-29.** At the time of writing this note the current model was HRM-X v0.4 (spec v0.4, ADR-008); the current target is **HRM-X v0.5** (`hrm_x/`), spec v0.5 + ADR-010. Kept as design history.
+> Attribution: opencode/stealth/space-bunny-alpha (space-bunny-alpha), 2026-09-29.
 
 > [!IMPORTANT] Three specific things to know about this note
 > 1. `include/hrm/kernels/hrm_loop.hpp` **does not exist**. There is no C++ HRM loop anywhere in the repo.
@@ -165,4 +168,4 @@ ACCEPT fires only when ALL three hold:
 - [[HRM+LLM Fusion Architecture]] — System design and research foundation. *(never implemented)*
 - [[Engine Architecture & Memory Model]] — Memory allocation for the HRM loop. *(never implemented)*
 - [[Model Blueprint & Graph Layout]] — How this loop was to be declared in the Python blueprint. *(never implemented)*
-- [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] — **the H/L split that actually exists** (L = saturation, H = value of computation).
+- [[HRM-X Specification v0.5 - Structural Operator Inference]] — the current design target. Its **H/L split is unchanged from v0.4**: L = saturation + exact execution, H = value of computation. v0.5 changed what a hypothesis *is*, not how the loop allocates compute.

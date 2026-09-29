@@ -170,20 +170,23 @@ Open:
   describing a non-target package. Do **not** re-stamp these; the annotations are
   the fix, and removing them as "redundant" would resurrect the exact confusion
   they prevent.
-- ~~**`Dashboard.md` is wrong.**~~ **NOT OPEN — already correct; this entry was
-  stale.** Re-verified 2026-09-28: `vault/00 - Meta & Indexes/Dashboard.md` already
-  names HRM-X v0.4 in `hrm_x/` as the live model (its note at the top, the subsystem
-  table, and the architecture graph's "hrm_x/ — CURRENT (ADR-008, spec v0.4)"
-  subgraph) and already marks the ADR-001 C++/Python design as never built and
-  historical in `legacy/`. No edit needed; do not "fix" it.
+- ~~**`Dashboard.md` is wrong.**~~ **CLOSED 2026-09-29 — and the earlier "do not fix
+  it" note was itself the trap.** On 2026-09-28 the Dashboard said v0.4 and was correct
+  *at that date*, so this entry was struck with an instruction not to correct it. On
+  2026-09-29 the model moved to v0.5, the Dashboard's metrics block was updated with the
+  E13 result while its banner, subsystem table and architecture graph still said v0.4 —
+  so the file contradicted *itself*, and a standing "do not fix it" instruction would have
+  preserved that. All three are now on v0.5 (ADR-010) and the graph carries the new v0.5
+  modules. **The lesson: a struck item is closed, not frozen.** When the thing it
+  referred to changes, re-check it rather than trusting the strike-through.
 - **`scripts/simplify_graph.py` is orphaned — FIXED 2026‑09‑28.** It is wired back
   into `scripts/update_knowledge_graph.ps1`: update → prune to the module/class
-  skeleton (`graphify-out/graph.simple.json`, 2,933→554 nodes, 18.9%) and
-  `graph.html` from the *pruned* graph → curated `vault/09 - Code Map/` → 651
+  skeleton (`graphify-out/graph.simple.json`, 3,236→356 nodes, 11.0%) and
+  `graph.html` from the *pruned* graph → curated `vault/09 - Code Map/` → 445
   derived notes in the quarantined `vault/_graph-view/`. The full `graph.json` is
   never overwritten, so `query`/`path`/`affected` still get every symbol. Verified
   the loop guard holds: 0 graph nodes are sourced from `vault/_graph-view/`, and
-  the 57 real vault notes are untouched. `graphify` prints an
+  the 89 real vault notes are untouched. `graphify` prints an
   `.graphify_analysis.json is stale` warning during the export; that is expected
   (the sidecar describes the full graph, the export is handed the pruned one) and
   is documented in the script — do not "fix" it by exporting the full graph, which

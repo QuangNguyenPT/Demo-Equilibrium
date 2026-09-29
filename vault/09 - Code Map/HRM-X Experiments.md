@@ -42,6 +42,7 @@ tags:
 
 - [[ADR-009 Free Text Is Not Yet Supported]]
 - [[ADR-010 Structural Operator Inference]]
+- [[ADR-011 Reintroducing EQB Ideas into HRM-X]]
 - [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
 - [[HRM-X Specification v0.5 - Structural Operator Inference]]
 

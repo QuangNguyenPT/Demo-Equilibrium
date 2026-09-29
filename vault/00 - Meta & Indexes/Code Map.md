@@ -7,11 +7,12 @@ tags:
   - code-map
   - graph
 status: current
-date: 2026-09-27
-agent: "opencode/big-pickle"
-model: "big-pickle"
+date: 2026-09-29
+agent: "opencode/stealth/space-bunny-alpha"
+model: "space-bunny-alpha"
 related:
-  - "[[ADR-005 Neural HRM-Phi Replaces Program Search]]"
+  - "[[ADR-010 Structural Operator Inference]]"
+  - "[[HRM-X Specification v0.5 - Structural Operator Inference]]"
   - "[[HRM-EQB Specification v0.2 - Theorems and Proofs]]"
   - "[[ADR-004 Discriminating Benchmark and Reasoning Ceiling]]"
 ---
@@ -27,30 +28,53 @@ deterministic bridge: every module, and the document that is authoritative for
 it. It is maintained by hand because it is the part that must not depend on a
 credential or on an extraction that can hang.
 
-Three generations exist. **ADR-008** superseded `hrm_eqb/`, so `hrm_x/` is now
-the current model; `hrm_eqb/` is a retained baseline and `hrm/` is the
-program-search reasoner it is measured against.
+Three generations exist. **ADR-008** superseded `hrm_eqb/` and **ADR-010** changed what a
+hypothesis is, so `hrm_x/` is now the current model; `hrm_eqb/` is a retained baseline and
+`hrm/` is the program-search reasoner it is measured against.
 
 ## 0. `hrm_x/` — HRM-X, the current model
 
-Authoritative: [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] ·
-[[ADR-008 Operator Inference over Structured Situations]] ·
+Authoritative: [[HRM-X Specification v0.5 - Structural Operator Inference]] ·
+[[ADR-010 Structural Operator Inference]] ·
+[[ADR-011 Reintroducing EQB Ideas into HRM-X]] (proposed) ·
 [[ADR-009 Free Text Is Not Yet Supported]] ·
-[[Task Plan: verified state and next gates]]
+[[Task Plan]]
+
+### 0a. The v0.5 concept core — structural operator inference
 
 | module | role | evidence |
 |---|---|---|
-| `hrm_x/mind.py` | the loop: operator hypotheses, VOC controller, learned `Patience` λ, persistence | spec §14, §19; `tests/test_x_patience.py` |
+| `hrm_x/qlinalg.py` | exact RREF / rank / solve / row-space membership over ℚ (stdlib only) | `tests/test_x_concept.py` — the determinacy calculus |
+| `hrm_x/concepts.py` | 68 law-closed families, exact fit, Prop. 4 weighting, Def. 3 BOTTOM, Thm 3 determinacy, the open-world coverage rule | spec v0.5 §2–§3; `experiments/results/x_v05.json` |
+| `hrm_x/domains/concept.py` | the same mathematics as a `Domain`, driven by the existing `Mind.solve` | ADR-010 §4; `tests/test_x_concept.py` |
+| `hrm_x/consolidation.py` | corpus-MDL macro admission; the library becomes features | `tests/test_x_concept.py` — a single solved task is **rejected** (negative gain) |
+| `hrm_x/situation.py` | `Q^(E×I)` state, verb frames learned one example each, conservation check | `tests/test_x_concept.py` — refuses an untaught frame |
+| `hrm_x/algebra.py` | FHRR binding, exact unbind, characters, Prop. 8 cleanup bound | `tests/test_x_concept.py` |
+| `hrm_x/operators.py` | `D4 × Sym(colours)` global and object operators, solved not searched | `tests/test_x_concept.py` — Thm 6 composition exact |
+| `hrm_x/reader.py` | Place-Value Reader (Thm 5). **Requires torch; not imported by `__init__`** | `tests/test_x_concept.py` (torch-gated) |
+
+### 0b. The shared mind, and the v0.4 route it also serves
+
+| module | role | evidence |
+|---|---|---|
+| `hrm_x/mind.py` | the loop: operator hypotheses, VOC controller, learned `Patience` λ, persistence. **One mind for both routes.** | spec §14, §19; `tests/test_x_patience.py` |
 | `hrm_x/workspace.py` | e-graph with provenance, congruence closure, blame | [[ADR-008 Operator Inference over Structured Situations]] |
-| `hrm_x/rules.py` | law rules and saturation | spec §8 |
-| `hrm_x/induction.py` | Bayesian program induction, observational equivalence | spec §8 |
-| `hrm_x/library.py` | DreamCoder-style MDL primitive mining, exact expand, **measured** search credit | `experiments/x_dsl.json` — compresses correctly, costs more search; off by default |
-| `hrm_x/domains/arith.py` | arithmetic concepts, held-out search, opt-in library bound | spec §9; `tests/test_x_dsl.py` |
+| `hrm_x/rules.py` | law rules and saturation | spec v0.4 §8 |
+| `hrm_x/induction.py` | Bayesian program induction, observational equivalence (v0.4 route) | spec v0.4 §8 |
+| `hrm_x/library.py` | DreamCoder-style MDL **primitive** mining, exact expand, measured search credit (v0.4 route; program level, distinct from `consolidation.py`) | `experiments/x_dsl.json` — compresses correctly, costs more search; off by default |
+| `hrm_x/domains/arith.py` | arithmetic concepts by program search, laws, residue verifier (the baseline `x_v05` measures against) | `experiments/results/x_v05.json` |
 | `hrm_x/domains/story.py` | learned tagger + exact e-graph story situations, `reading_defect` guard | [[ADR-009 Free Text Is Not Yet Supported]] — closed templates only, not free text |
-| `hrm_x/domains/grid.py` | grid object programs, conditions verifier | spec §10 |
+| `hrm_x/domains/grid.py` | grid object programs, conditions verifier | spec v0.4 §10 |
+| `hrm_x/writer.py` | trace → answer + explanation | — |
 | `hrm_x/native/` | C++ e-graph and grid kernels behind a C ABI | `experiments/x_native.json` — parity identical, 3.79× / 1.47× |
+
+### 0c. Experiments
+
+| driver | measures | evidence |
+|---|---|---|
+| `experiments/x_v05.py` | **E13** — the v0.5 concept route vs the v0.4 arith route, same `Mind`, six conditions, two task lists | `experiments/results/x_v05.json` — in-language 13/15 at 593 ops vs 7/15 at 4,265; out-of-language 5 confidently wrong of 6 vs 0 wrong and 4 abstentions |
 | `experiments/x_perception.py` | held-out free text, scored by an independent reader | `experiments/results/x_perception.json` |
-| `experiments/x_patience.py` | learned λ judged against a fixed sweep over its own reachable range | `experiments/results/x_patience.json` — the learned price lost; the constant stays |
+| `experiments/x_patience.py` | learned λ against a fixed sweep over its own reachable range | `experiments/results/x_patience.json` — the learned price lost; the constant stays |
 
 ## 1. `hrm_eqb/` — HRM-Φ, the superseded model, kept as a baseline
 

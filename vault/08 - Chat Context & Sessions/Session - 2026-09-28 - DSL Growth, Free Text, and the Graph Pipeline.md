@@ -5,7 +5,7 @@ agent: "opencode/big-pickle"
 model: "big-pickle"
 date: 2026-09-28
 related:
-  - "[[Task Plan: verified state and next gates]]"
+  - "[[Task Plan]]"
   - "[[ADR-009 Free Text Is Not Yet Supported]]"
   - "[[ADR-008 Operator Inference over Structured Situations]]"
   - "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"

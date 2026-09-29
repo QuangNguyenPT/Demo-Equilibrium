@@ -21,8 +21,9 @@ supersedes: "[[ADR-001 Hybrid C++ Engine with Python Blueprint]]"
 > This design was built (P0–P6, 197 tests) and is measured, so the record stands —
 > but `hrm/` is now the **program-search baseline** that later work is compared
 > against, not the design target. It was superseded as *the model* by ADR-005
-> (HRM-Φ / HRM-EQB) and then by [[ADR-008 Operator Inference over Structured
-> Situations]] (HRM-X v0.4, in `hrm_x/`), whose specification is normative.
+> (HRM-Φ / HRM-EQB) and then by [[ADR-008 Operator Inference over Structured Situations]]
+> (HRM-X v0.4, in `hrm_x/`), whose specification was normative, and by
+> [[ADR-010 Structural Operator Inference]] (HRM-X v0.5), which is the current target.
 >
 > Two path corrections to the text below:
 > - The root `src/`, `include/` and `apps/` paths this ADR discusses under

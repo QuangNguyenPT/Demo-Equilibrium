@@ -66,7 +66,12 @@ independ of *who* changed it.
   files at its root that buried the 47 real notes and then re-indexed themselves.
   It now targets `vault/_graph-view/`, which is inside the vault (so Obsidian
   renders it) but quarantined in one subfolder and listed in `.graphifyignore`,
-  and it exports the **pruned** graph so note names are real symbols.
+  and it exports the **pruned** graph so note names are real symbols. Since
+  2026-09-29 the pruner also resolves **provenance**: a node survives only if
+  graphify attributed a `source_file` to it, or this repository's own source
+  defines its label — which is what keeps imported names (`Any`, `ndarray`,
+  `fixture`) and stdlib stubs out of the view. Measured on the real graph:
+  3,236 → 356 nodes (11.0%), 651 → 445 notes. See ADR-010.
   `vault/00 - Meta & Indexes/Code Map.md` is the human-facing code↔doc map.
 - **Never write core weights outside the sleep gate** (or a human
   promote/rollback). `hrm/learning` writes knowledge; the reasoner never does.
@@ -116,7 +121,8 @@ hand-editing the graph.
 | Concern | Location |
 |---|---|
 | **Which code implements which document** | `vault/00 - Meta & Indexes/Code Map.md` |
-| Architecture as built | `HRM-EQB Specification v0.2` (normative), `ADR-003 Unified Cognitive Model` |
+| Architecture as built (normative) | `HRM-X Specification v0.5 - Structural Operator Inference` (ADR-010) |
+| Baseline architectures (normative for their own package only) | `HRM-EQB Specification v0.2` (ADR-005/006), `ADR-003 Unified Cognitive Model` |
 | Why program search was replaced | `ADR-005 Neural HRM-Phi Replaces Program Search` |
 | What the benchmark can and cannot show | `ADR-004 Discriminating Benchmark and Reasoning Ceiling` |
 | Why v2 did not prove the model | `05 - Engineering & Guides/Why v2 Did Not Prove the Model.md` |
