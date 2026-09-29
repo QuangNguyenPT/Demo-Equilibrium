@@ -19,18 +19,40 @@ related:
 # Code Map
 
 The knowledge graph cannot do this job on its own. `graphify` indexes code with
-local AST parsing, but **markdown requires an LLM key** — so with no key the
-graph contains 1,665 code nodes and **0** note nodes, and the vault looks
-unconnected to the code no matter how the graph is drawn. This file is the
+local AST parsing, and markdown needs an LLM backend — the default `claude-cli`
+backend needs **no key** and works, but a full semantic pass over the corpus is
+slow enough to look like a hang, so routine runs are `-Mode code-only` and the
+graph holds 2,933 code nodes and **0** note nodes. This file is the
 deterministic bridge: every module, and the document that is authoritative for
 it. It is maintained by hand because it is the part that must not depend on a
-credential.
+credential or on an extraction that can hang.
 
-Two live architectures exist in parallel. **ADR-005** replaced program search
-with a neural design, so `hrm_eqb/` is now the target and `hrm/`'s program-search
-reasoner is the baseline being measured against.
+Three generations exist. **ADR-008** superseded `hrm_eqb/`, so `hrm_x/` is now
+the current model; `hrm_eqb/` is a retained baseline and `hrm/` is the
+program-search reasoner it is measured against.
 
-## 1. `hrm_eqb/` — HRM-Φ, the current model
+## 0. `hrm_x/` — HRM-X, the current model
+
+Authoritative: [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] ·
+[[ADR-008 Operator Inference over Structured Situations]] ·
+[[ADR-009 Free Text Is Not Yet Supported]] ·
+[[Task Plan: verified state and next gates]]
+
+| module | role | evidence |
+|---|---|---|
+| `hrm_x/mind.py` | the loop: operator hypotheses, VOC controller, learned `Patience` λ, persistence | spec §14, §19; `tests/test_x_patience.py` |
+| `hrm_x/workspace.py` | e-graph with provenance, congruence closure, blame | [[ADR-008 Operator Inference over Structured Situations]] |
+| `hrm_x/rules.py` | law rules and saturation | spec §8 |
+| `hrm_x/induction.py` | Bayesian program induction, observational equivalence | spec §8 |
+| `hrm_x/library.py` | DreamCoder-style MDL primitive mining, exact expand, **measured** search credit | `experiments/x_dsl.json` — compresses correctly, costs more search; off by default |
+| `hrm_x/domains/arith.py` | arithmetic concepts, held-out search, opt-in library bound | spec §9; `tests/test_x_dsl.py` |
+| `hrm_x/domains/story.py` | learned tagger + exact e-graph story situations, `reading_defect` guard | [[ADR-009 Free Text Is Not Yet Supported]] — closed templates only, not free text |
+| `hrm_x/domains/grid.py` | grid object programs, conditions verifier | spec §10 |
+| `hrm_x/native/` | C++ e-graph and grid kernels behind a C ABI | `experiments/x_native.json` — parity identical, 3.79× / 1.47× |
+| `experiments/x_perception.py` | held-out free text, scored by an independent reader | `experiments/results/x_perception.json` |
+| `experiments/x_patience.py` | learned λ judged against a fixed sweep over its own reachable range | `experiments/results/x_patience.json` — the learned price lost; the constant stays |
+
+## 1. `hrm_eqb/` — HRM-Φ, the superseded model, kept as a baseline
 
 Authoritative: [[HRM-EQB Specification v0.2 - Theorems and Proofs]] ·
 [[ADR-005 Neural HRM-Phi Replaces Program Search]] ·
@@ -104,8 +126,9 @@ Authoritative: [[HRM-Phi Design Document v0.1]] · [[ADR-005 Neural HRM-Phi Repl
 | path | governs |
 |---|---|
 | `scripts/make_benchmark.py` | frozen benchmark generation (refuses overwrite) |
-| `scripts/simplify_graph.py` | prunes the raw graph to a readable view |
-| `scripts/update_knowledge_graph.ps1` | the only sanctioned graph update path |
+| `scripts/simplify_graph.py` | prunes the raw graph to a readable view; wired into the update script |
+| `scripts/knowledge_map.py` | generates the curated `vault/09 - Code Map/` subsystem notes |
+| `scripts/update_knowledge_graph.ps1` | the only sanctioned graph update path: update → prune → code map → derived `vault/_graph-view/` |
 | `AGENTS.md` | credentials + attribution rules for all agents |
 
 ## Related

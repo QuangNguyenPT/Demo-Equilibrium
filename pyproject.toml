@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hrm"
 version = "0.1.0"
-description = "Unified cognitive model: PEM-derived reasoning, native language section, SSD-resident knowledge, metacognition"
+description = "HRM-X: operator inference over structured situations (hrm_x, current, ADR-008), with the HRM-EQB equilibrium baseline (hrm_eqb, ADR-005) and the HRM program-search baseline (hrm, ADR-003)"
 requires-python = ">=3.11"
 dependencies = ["numpy>=1.26"]
 
@@ -14,7 +14,7 @@ test = ["pytest>=8"]
 eqb = ["torch>=2.4"]
 
 [tool.setuptools.packages.find]
-include = ["hrm", "hrm.*", "hrm_eqb", "hrm_eqb.*"]
+include = ["hrm", "hrm.*", "hrm_eqb", "hrm_eqb.*", "hrm_x", "hrm_x.*", "experiments", "experiments.*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

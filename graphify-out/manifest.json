@@ -444,10 +444,10 @@
     "semantic_hash": "cd893a1ac7d59fc46898f8351bc1f867"
   },
   "pyproject.toml": {
-    "mtime": 1790489790.0359395,
-    "seen": 1790510186.4945152,
-    "ast_hash": "db53e21bfeec4a6abad757849d8c33b1",
-    "semantic_hash": "db53e21bfeec4a6abad757849d8c33b1"
+    "mtime": 1790601903.921221,
+    "seen": 1790605566.23924,
+    "ast_hash": "0bff76d7d169e473915455d8c0733734",
+    "semantic_hash": "0bff76d7d169e473915455d8c0733734"
   },
   "scripts/fetch_benchmarks.py": {
     "mtime": 1790494606.5444393,
@@ -456,10 +456,10 @@
     "semantic_hash": "42e98fd5f72ba3f903803c295ee043f4"
   },
   "scripts/knowledge_map.py": {
-    "mtime": 1790592432.6873376,
-    "seen": 1790593156.9192646,
-    "ast_hash": "4857e61c39c348d58d9395d6ca1e1c73",
-    "semantic_hash": "4857e61c39c348d58d9395d6ca1e1c73"
+    "mtime": 1790683105.9359434,
+    "seen": 1790684647.925217,
+    "ast_hash": "399a78bfef6bc72fd434ffc5f3acab47",
+    "semantic_hash": "399a78bfef6bc72fd434ffc5f3acab47"
   },
   "scripts/make_benchmark.py": {
     "mtime": 1790454519.712257,
@@ -468,16 +468,16 @@
     "semantic_hash": "d9397aa2e508489eaeb276e4b7904896"
   },
   "scripts/simplify_graph.py": {
-    "mtime": 1790500210.6897986,
-    "seen": 1790510186.4945152,
-    "ast_hash": "3dfe6b59b61c15e12313248a33eaa04e",
-    "semantic_hash": "3dfe6b59b61c15e12313248a33eaa04e"
+    "mtime": 1790681997.732718,
+    "seen": 1790684647.9262187,
+    "ast_hash": "5fc8b409bac98057bc26e88a00f032f1",
+    "semantic_hash": "5fc8b409bac98057bc26e88a00f032f1"
   },
   "scripts/update_knowledge_graph.ps1": {
-    "mtime": 1790509659.7547896,
-    "seen": 1790510186.4945152,
-    "ast_hash": "7dc7824a92b094fdf60ee979b685df59",
-    "semantic_hash": "7dc7824a92b094fdf60ee979b685df59"
+    "mtime": 1790682249.187004,
+    "seen": 1790684647.9262187,
+    "ast_hash": "8946068d8115b46289b9a3651342cf35",
+    "semantic_hash": "8946068d8115b46289b9a3651342cf35"
   },
   "tests/test_cli.py": {
     "mtime": 1790448322.8685782,
@@ -504,10 +504,10 @@
     "semantic_hash": "19a35f81b1ecedd5d53b451155ff9cc4"
   },
   "tests/test_eqb_theorems.py": {
-    "mtime": 1790494606.5105832,
-    "seen": 1790510186.4945152,
-    "ast_hash": "94cd66f24d92f00af242320095e3c63b",
-    "semantic_hash": "94cd66f24d92f00af242320095e3c63b"
+    "mtime": 1790668310.3715394,
+    "seen": 1790684647.9272194,
+    "ast_hash": "26461fee2feb8fe2f3afa51675ce7e2f",
+    "semantic_hash": "26461fee2feb8fe2f3afa51675ce7e2f"
   },
   "tests/test_knowledge_map.py": {
     "mtime": 1790510108.1151595,
@@ -552,10 +552,10 @@
     "semantic_hash": "a62d60a774106fb1c80908bbcf41fc12"
   },
   "tests/test_simplify_graph.py": {
-    "mtime": 1790507082.1986017,
-    "seen": 1790510186.4945152,
-    "ast_hash": "3601060a449a40544ebc2369e8d7ac64",
-    "semantic_hash": "3601060a449a40544ebc2369e8d7ac64"
+    "mtime": 1790684099.7569983,
+    "seen": 1790684647.9282172,
+    "ast_hash": "a96f605e5e9ca8f6def1962020be9b05",
+    "semantic_hash": "a96f605e5e9ca8f6def1962020be9b05"
   },
   "tests/test_sleep.py": {
     "mtime": 1790447182.0058486,
@@ -574,588 +574,6 @@
     "seen": 1790510186.4945152,
     "ast_hash": "8ffa3f393905a7ed5349b316424bd1a1",
     "semantic_hash": "8ffa3f393905a7ed5349b316424bd1a1"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/benchmarks/bench_kernels.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "61b1bd6994484b0796d5f6b61b2a7db1",
-    "semantic_hash": "61b1bd6994484b0796d5f6b61b2a7db1"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/benchmarks/memory-ladder.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "7a5d811bbf96fea65a40cb70b6ba07f1",
-    "semantic_hash": "7a5d811bbf96fea65a40cb70b6ba07f1"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/benchmarks/split-sweep.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "e408f8e53003de17e5027246f82491cf",
-    "semantic_hash": "e408f8e53003de17e5027246f82491cf"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/docs/images/_eq.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "23dd9cd1abd4cbf13f5325fd93523824",
-    "semantic_hash": "23dd9cd1abd4cbf13f5325fd93523824"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/docs/images/_gen.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "b93a1eb2d0b823acdaa635c02e60443b",
-    "semantic_hash": "b93a1eb2d0b823acdaa635c02e60443b"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/docs/images/_plots.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "ab609a116edcf50657069b2efab33c0e",
-    "semantic_hash": "ab609a116edcf50657069b2efab33c0e"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/docs/results/jetson-orin-nano-super/acceptance.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "e9e8dd22488a5beba966589fed8cd7dc",
-    "semantic_hash": "e9e8dd22488a5beba966589fed8cd7dc"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/docs/results/jetson-orin-nano-super/result-run-1.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "b6110bc43e756295c85c8f11f24e5ed5",
-    "semantic_hash": "b6110bc43e756295c85c8f11f24e5ed5"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/docs/results/jetson-orin-nano-super/result-run-2.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "d4d48bdf8c1d30c973ff41d246a9e532",
-    "semantic_hash": "d4d48bdf8c1d30c973ff41d246a9e532"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/docs/results/jetson-orin-nano-super/result-run-3.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "710af0e15e133739efec4a3ccba42b38",
-    "semantic_hash": "710af0e15e133739efec4a3ccba42b38"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/docs/results/jetson-orin-nano-super/result-run-4.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "b79e50136c50965bad6352f5efef9cd9",
-    "semantic_hash": "b79e50136c50965bad6352f5efef9cd9"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/examples/01-hello.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "6cc0a99ca23f446c22d5d4a252e05f58",
-    "semantic_hash": "6cc0a99ca23f446c22d5d4a252e05f58"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/examples/02-memory-budgets.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "659c1533a5ac1ab3a40c96a2c3932050",
-    "semantic_hash": "659c1533a5ac1ab3a40c96a2c3932050"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/examples/03-long-prompt.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "3cc2743f5b30f94b133f205d1c882bd6",
-    "semantic_hash": "3cc2743f5b30f94b133f205d1c882bd6"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/include/k3/k3.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "73758c407a2c222c1ea8ca307d2af672",
-    "semantic_hash": "73758c407a2c222c1ea8ca307d2af672"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/include/k3/k3_cfg.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "d2e894d081f1639055a2259762e8feee",
-    "semantic_hash": "d2e894d081f1639055a2259762e8feee"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/pyproject.toml": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "4edb163de44513722ef34a79e6ff8e40",
-    "semantic_hash": "4edb163de44513722ef34a79e6ff8e40"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/scripts/download-model.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "bc882a74bc1952e4372455d4b8a9cd86",
-    "semantic_hash": "bc882a74bc1952e4372455d4b8a9cd86"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/scripts/jetson-proof-of-life.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "e67b277d2074ab37b83220036c9c7f00",
-    "semantic_hash": "e67b277d2074ab37b83220036c9c7f00"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/scripts/k3-doctor.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "f073a5f52de83518d12215293087629c",
-    "semantic_hash": "f073a5f52de83518d12215293087629c"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/scripts/pack-trunk.sh": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "0319c3149f898238dbcc40a9a72aa450",
-    "semantic_hash": "0319c3149f898238dbcc40a9a72aa450"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/cache/k3_cache.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "46ccc855ba2006c48137667681763d4b",
-    "semantic_hash": "46ccc855ba2006c48137667681763d4b"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/cache/k3_cache.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "e167cf2d9e80e3749eb4dde36cd6b193",
-    "semantic_hash": "e167cf2d9e80e3749eb4dde36cd6b193"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/chat/k3_chat.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "ac8c914397413afcee4ad20945dc51c5",
-    "semantic_hash": "ac8c914397413afcee4ad20945dc51c5"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/chat/k3_chat.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "c2784219f729002a66b4961f6b856556",
-    "semantic_hash": "c2784219f729002a66b4961f6b856556"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/chat/k3_sampler.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "9f69ecabaab47fd02a051651c6472ec8",
-    "semantic_hash": "9f69ecabaab47fd02a051651c6472ec8"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/chat/k3_sampler.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "cda53debd7c645143117096525ccd29c",
-    "semantic_hash": "cda53debd7c645143117096525ccd29c"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/cli/k3_run.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "2037588b44eee04802bf231e28343312",
-    "semantic_hash": "2037588b44eee04802bf231e28343312"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/core/k3_ops.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "0a6c8e9ae2eaa23c98a1ad242bb442cb",
-    "semantic_hash": "0a6c8e9ae2eaa23c98a1ad242bb442cb"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/io/k3_load.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "71592a727ffb78ef92abb5b029071ce2",
-    "semantic_hash": "71592a727ffb78ef92abb5b029071ce2"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/io/k3_load.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "1991d7629ffb4115d56110174b84de43",
-    "semantic_hash": "1991d7629ffb4115d56110174b84de43"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/io/k3_portable_io.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "509183768dfd1cf6b35497324b464334",
-    "semantic_hash": "509183768dfd1cf6b35497324b464334"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/io/k3_st.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "0d7ef67a799c7de9bfbcd89f147123a0",
-    "semantic_hash": "0d7ef67a799c7de9bfbcd89f147123a0"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/io/k3_st.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "84d3111c06785137d71197d54554c53f",
-    "semantic_hash": "84d3111c06785137d71197d54554c53f"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/io/k3_trunk.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "c9583bb851e0b26e44e2d1d24c0b1d22",
-    "semantic_hash": "c9583bb851e0b26e44e2d1d24c0b1d22"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/io/k3_trunk.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "276167909dd858d93436e7a6125aeb13",
-    "semantic_hash": "276167909dd858d93436e7a6125aeb13"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/model/k3_bind.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "60f6e416b6e9a714f86cbcedc67be233",
-    "semantic_hash": "60f6e416b6e9a714f86cbcedc67be233"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/model/k3_bind.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "f2517acee4e50d6294380260abac947e",
-    "semantic_hash": "f2517acee4e50d6294380260abac947e"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/src/tokenizer/k3_tok.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "daef7bb77a848b48a649cbf196e4a259",
-    "semantic_hash": "daef7bb77a848b48a649cbf196e4a259"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/cfg/bad_layer_index.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "ac538a5a107e8c344b3f400bca6b3818",
-    "semantic_hash": "ac538a5a107e8c344b3f400bca6b3818"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/cfg/bad_topk.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "ba565d933b36c2af902dc047509650eb",
-    "semantic_hash": "ba565d933b36c2af902dc047509650eb"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/cfg/no_layermap.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "bde8c356513d998499bc7de5a87f8355",
-    "semantic_hash": "bde8c356513d998499bc7de5a87f8355"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/golden/c_run.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "1417a42ef2726dbe8841c5a106eda652",
-    "semantic_hash": "1417a42ef2726dbe8841c5a106eda652"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/MANIFEST.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "5fddcf300310477aa2b15ca9a34cfd89",
-    "semantic_hash": "5fddcf300310477aa2b15ca9a34cfd89"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/attnres.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "b5d43aba3bc3a964469e6f90a260a9b6",
-    "semantic_hash": "b5d43aba3bc3a964469e6f90a260a9b6"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/kda_decay.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "4bb8cbe5aeb3517133791a8f6531512d",
-    "semantic_hash": "4bb8cbe5aeb3517133791a8f6531512d"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/kda_layer1.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "f80b72a23cebdf55d1c8cf661e42f67b",
-    "semantic_hash": "f80b72a23cebdf55d1c8cf661e42f67b"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/kda_layer8.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "759c5755a4f0435d42e75a8c8d7aa19f",
-    "semantic_hash": "759c5755a4f0435d42e75a8c8d7aa19f"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/kda_recur1.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "b272de252143270dd64012cfb1b7de65",
-    "semantic_hash": "b272de252143270dd64012cfb1b7de65"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/kda_recur8.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "3f0539f8b0f7883bb325ccc950e17019",
-    "semantic_hash": "3f0539f8b0f7883bb325ccc950e17019"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/mla.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "88114bf5ec78a5c20c34a5b07c771bb6",
-    "semantic_hash": "88114bf5ec78a5c20c34a5b07c771bb6"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/rmsnorm.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "80f75e9c3b5f770869da741bdec1294d",
-    "semantic_hash": "80f75e9c3b5f770869da741bdec1294d"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/router.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "5003a71ad00741d41da68ac740232235",
-    "semantic_hash": "5003a71ad00741d41da68ac740232235"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/shortconv.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "02aee4e99ca2130686fe6d57aec1d528",
-    "semantic_hash": "02aee4e99ca2130686fe6d57aec1d528"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ops/situ_glu.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "c8240900c601eb665d11af26da415e22",
-    "semantic_hash": "c8240900c601eb665d11af26da415e22"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/ref_k3.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "dcf12e14f708442177b4ef6dac541d98",
-    "semantic_hash": "dcf12e14f708442177b4ef6dac541d98"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/fixtures/tiny_k3.json": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "288e733f689090a9a296610499babaf6",
-    "semantic_hash": "288e733f689090a9a296610499babaf6"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/k3_model.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "2ecfcf14ade7e888a8bd112a95a8f203",
-    "semantic_hash": "2ecfcf14ade7e888a8bd112a95a8f203"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/scale_test.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "dae15bf6ba97464044f373372890f82a",
-    "semantic_hash": "dae15bf6ba97464044f373372890f82a"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_cache.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "3ed96aef2c34b0a464bd8843e0fbe81e",
-    "semantic_hash": "3ed96aef2c34b0a464bd8843e0fbe81e"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_cfg.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "20bba69d2b4102127ca970b2c1104b8f",
-    "semantic_hash": "20bba69d2b4102127ca970b2c1104b8f"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_chat.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "fc83088c6fc2c1ff5bdd8dda0279f0c2",
-    "semantic_hash": "fc83088c6fc2c1ff5bdd8dda0279f0c2"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_expert.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "bfbf9b10fed0a853bc980ead33bdae3e",
-    "semantic_hash": "bfbf9b10fed0a853bc980ead33bdae3e"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_model_stream.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "1fd2819226a90e846a6a774194f7d398",
-    "semantic_hash": "1fd2819226a90e846a6a774194f7d398"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_ops.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "d1ff13028c3b5f4eedc316ec3b382c6d",
-    "semantic_hash": "d1ff13028c3b5f4eedc316ec3b382c6d"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_real_layer.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "58c1b82dba69a12c8ea13ee7c7e9195f",
-    "semantic_hash": "58c1b82dba69a12c8ea13ee7c7e9195f"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_st.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "b5d8d10a7cb91d028789a355498aadfb",
-    "semantic_hash": "b5d8d10a7cb91d028789a355498aadfb"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_st_faults.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "ba5552589d5efd1d760cac04d6627fd3",
-    "semantic_hash": "ba5552589d5efd1d760cac04d6627fd3"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_tok.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "a8bdc4ecb2f9bdea67eb02d862648408",
-    "semantic_hash": "a8bdc4ecb2f9bdea67eb02d862648408"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tests/unit/test_trunk.c": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "c43c25b1d7bc1f734852979d57fe8ad5",
-    "semantic_hash": "c43c25b1d7bc1f734852979d57fe8ad5"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/third_party/json.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "a304d82cb0542d63ad0915be6a8a3d38",
-    "semantic_hash": "a304d82cb0542d63ad0915be6a8a3d38"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/third_party/tok.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "5c61f935429fa13248d4f83417eedfd6",
-    "semantic_hash": "5c61f935429fa13248d4f83417eedfd6"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/third_party/tok_unicode.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "48512bf65cc303909eb7f518285e56a6",
-    "semantic_hash": "48512bf65cc303909eb7f518285e56a6"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/third_party/tok_unicode_o200k.h": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "31a0da7eb5ecf664060174a12cac2135",
-    "semantic_hash": "31a0da7eb5ecf664060174a12cac2135"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/_paths.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "b5ddc0d09b98fcd574e7fc8af6adce38",
-    "semantic_hash": "b5ddc0d09b98fcd574e7fc8af6adce38"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/budget.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "77e7134498c135da7f7afb77fabdff87",
-    "semantic_hash": "77e7134498c135da7f7afb77fabdff87"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/cmp_logits.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "4b0b0ac6961620849d960a7fcc107415",
-    "semantic_hash": "4b0b0ac6961620849d960a7fcc107415"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/conform_all.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "aab9020853579d382e5127869f5e3d7a",
-    "semantic_hash": "aab9020853579d382e5127869f5e3d7a"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/devbw.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "73e8d5a2f1fd76d75a095510c58d8e0c",
-    "semantic_hash": "73e8d5a2f1fd76d75a095510c58d8e0c"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/emit_fixtures.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "d0fc6594411f6f743fb662ce503d7a20",
-    "semantic_hash": "d0fc6594411f6f743fb662ce503d7a20"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/int8_trunk.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "8901cb7c10fc19ef5480a616991c7a8c",
-    "semantic_hash": "8901cb7c10fc19ef5480a616991c7a8c"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/k3_ref.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "8dfb97e302a71f9bbedd2b9d8fc68d10",
-    "semantic_hash": "8dfb97e302a71f9bbedd2b9d8fc68d10"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/make_cache_fixture.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "986cf50cc779a5929bdec9d46f791af8",
-    "semantic_hash": "986cf50cc779a5929bdec9d46f791af8"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/make_k3_oracle.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "0aab11414c00dbd93e817d278ee4698d",
-    "semantic_hash": "0aab11414c00dbd93e817d278ee4698d"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/make_st_fixture.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "525ace051985ce721376468161a1d611",
-    "semantic_hash": "525ace051985ce721376468161a1d611"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/make_tiny_checkpoint.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "45d3ced6d06ad5ddcd8f2f7f131d345d",
-    "semantic_hash": "45d3ced6d06ad5ddcd8f2f7f131d345d"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/pack_trunk.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "24f043637b2a80ee97cede360a06a4b1",
-    "semantic_hash": "24f043637b2a80ee97cede360a06a4b1"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/qdq_trunk.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "3dd945b0080a455891f19eafa25fe564",
-    "semantic_hash": "3dd945b0080a455891f19eafa25fe564"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/ref_forward.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "321e9e0eaad4ad0d7552fffa5181374a",
-    "semantic_hash": "321e9e0eaad4ad0d7552fffa5181374a"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/sim_cache.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "725c7ac90e5856e2ed9540087efb20a0",
-    "semantic_hash": "725c7ac90e5856e2ed9540087efb20a0"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/tok.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "dd3f068899fa806c45c325c4b5e19edc",
-    "semantic_hash": "dd3f068899fa806c45c325c4b5e19edc"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/tok_parity.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "7d4a3db1ced9c1d7888a319bf853a91c",
-    "semantic_hash": "7d4a3db1ced9c1d7888a319bf853a91c"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/verify_expert.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "3f34406fa7a5bbace4f22e5eafe3a259",
-    "semantic_hash": "3f34406fa7a5bbace4f22e5eafe3a259"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/verify_kda.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "f50b68abcd02e5ec0260748c6bcd7939",
-    "semantic_hash": "f50b68abcd02e5ec0260748c6bcd7939"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/verify_mla.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "6cc70e3b6644262cc3d4505f71e01bec",
-    "semantic_hash": "6cc70e3b6644262cc3d4505f71e01bec"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/verify_real_layer.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "ae76e42b3f4a64699b7a0e2f59a2ce6a",
-    "semantic_hash": "ae76e42b3f4a64699b7a0e2f59a2ce6a"
-  },
-  "docs/kimi-k3-in-c-main/kimi-k3-in-c-main/tools/verify_st.py": {
-    "mtime": 1790087376.0,
-    "seen": 1790593156.9022331,
-    "ast_hash": "98f1f61b5a7c78b8a57406c239ba20e9",
-    "semantic_hash": "98f1f61b5a7c78b8a57406c239ba20e9"
   },
   "experiments/__init__.py": {
     "mtime": 1790541299.3661437,
@@ -1254,10 +672,10 @@
     "semantic_hash": "4847ed76bfacb466e99c0d616ccd8eb5"
   },
   "hrm_x/__init__.py": {
-    "mtime": 1790523873.511009,
-    "seen": 1790593156.9182653,
-    "ast_hash": "4abf7b8e44ba24f80da75d852f24c147",
-    "semantic_hash": "4abf7b8e44ba24f80da75d852f24c147"
+    "mtime": 1790683105.9744804,
+    "seen": 1790684647.9232042,
+    "ast_hash": "ccd67eded051b98d413b234920646ed1",
+    "semantic_hash": "ccd67eded051b98d413b234920646ed1"
   },
   "hrm_x/domains/__init__.py": {
     "mtime": 1790523873.6739278,
@@ -1266,10 +684,10 @@
     "semantic_hash": "c41dfc6b34fc673ec08cd75ff4099a12"
   },
   "hrm_x/domains/arith.py": {
-    "mtime": 1790592733.7692728,
-    "seen": 1790593156.9182653,
-    "ast_hash": "cd9a5faf10481b9d0d8c6bafe5c7efd4",
-    "semantic_hash": "cd9a5faf10481b9d0d8c6bafe5c7efd4"
+    "mtime": 1790604710.110301,
+    "seen": 1790605566.2383604,
+    "ast_hash": "5478c517d0bf8d43c1947fb411e6d3f4",
+    "semantic_hash": "5478c517d0bf8d43c1947fb411e6d3f4"
   },
   "hrm_x/domains/grid.py": {
     "mtime": 1790590953.2013195,
@@ -1278,10 +696,10 @@
     "semantic_hash": "c9320ab49ccac86d30ca8de358c6427e"
   },
   "hrm_x/domains/story.py": {
-    "mtime": 1790592394.0688605,
-    "seen": 1790593156.9182653,
-    "ast_hash": "247fcb41c77bc09218d44544af4224dd",
-    "semantic_hash": "247fcb41c77bc09218d44544af4224dd"
+    "mtime": 1790605112.6844842,
+    "seen": 1790605566.2383604,
+    "ast_hash": "ce96c31a9f28f18254802b3bd1fb5787",
+    "semantic_hash": "ce96c31a9f28f18254802b3bd1fb5787"
   },
   "hrm_x/induction.py": {
     "mtime": 1790592394.0688605,
@@ -1290,10 +708,10 @@
     "semantic_hash": "fe0fe724d96f6f9e88a5a89b68fac304"
   },
   "hrm_x/mind.py": {
-    "mtime": 1790592169.8898466,
-    "seen": 1790593156.9182653,
-    "ast_hash": "3512d12b79529a9d6556502a628070bd",
-    "semantic_hash": "3512d12b79529a9d6556502a628070bd"
+    "mtime": 1790667043.704067,
+    "seen": 1790667221.1764674,
+    "ast_hash": "1fc854c32780f9658ba64933f22c6074",
+    "semantic_hash": "1fc854c32780f9658ba64933f22c6074"
   },
   "hrm_x/native/__init__.py": {
     "mtime": 1790590834.649552,
@@ -1338,10 +756,10 @@
     "semantic_hash": "c5c2de3071ca18a8f9f5e372c790cdf9"
   },
   "scripts/build_native.ps1": {
-    "mtime": 1790590537.0054262,
-    "seen": 1790593156.9192646,
-    "ast_hash": "b08dff363f368854af5722b6dd30e9aa",
-    "semantic_hash": "b08dff363f368854af5722b6dd30e9aa"
+    "mtime": 1790601916.6083088,
+    "seen": 1790605566.23924,
+    "ast_hash": "1f296286ae8f60891cfa382e3408c5e4",
+    "semantic_hash": "1f296286ae8f60891cfa382e3408c5e4"
   },
   "tests/test_x_core.py": {
     "mtime": 1790592394.0708604,
@@ -1350,10 +768,10 @@
     "semantic_hash": "cb34081eb91ccc09f8833386b918e3c6"
   },
   "tests/test_x_domains.py": {
-    "mtime": 1790592274.9476092,
-    "seen": 1790593156.9207711,
-    "ast_hash": "ca45966a754daf685b21c833e0eec550",
-    "semantic_hash": "ca45966a754daf685b21c833e0eec550"
+    "mtime": 1790603405.890565,
+    "seen": 1790605566.2407494,
+    "ast_hash": "0ffaa14e71d529b7b93601388e986da3",
+    "semantic_hash": "0ffaa14e71d529b7b93601388e986da3"
   },
   "tests/test_x_mind.py": {
     "mtime": 1790591341.5026643,
@@ -1366,5 +784,137 @@
     "seen": 1790593156.9207711,
     "ast_hash": "dd821d8590b3f439d229bda40978a116",
     "semantic_hash": "dd821d8590b3f439d229bda40978a116"
+  },
+  "experiments/results/x_dsl.json": {
+    "mtime": 1790604481.5966754,
+    "seen": 1790605566.2232356,
+    "ast_hash": "3550110f1be0a8735e2b0c1806bb55cd",
+    "semantic_hash": "3550110f1be0a8735e2b0c1806bb55cd"
+  },
+  "experiments/results/x_perception.json": {
+    "mtime": 1790605425.994648,
+    "seen": 1790605566.224235,
+    "ast_hash": "bb38a7c7010469f99200f64629ad4641",
+    "semantic_hash": "bb38a7c7010469f99200f64629ad4641"
+  },
+  "experiments/x_dsl.py": {
+    "mtime": 1790604454.034564,
+    "seen": 1790605566.2252347,
+    "ast_hash": "3ab25bf355c167ec30324253c89483c1",
+    "semantic_hash": "3ab25bf355c167ec30324253c89483c1"
+  },
+  "experiments/x_perception.py": {
+    "mtime": 1790605407.9485314,
+    "seen": 1790605566.2252347,
+    "ast_hash": "a66f11236b76ff6f9d98803a1f8744fe",
+    "semantic_hash": "a66f11236b76ff6f9d98803a1f8744fe"
+  },
+  "hrm_x/library.py": {
+    "mtime": 1790604363.2540154,
+    "seen": 1790605566.2383604,
+    "ast_hash": "67833b2931763ae7bf62d5cc0f7b6b9a",
+    "semantic_hash": "67833b2931763ae7bf62d5cc0f7b6b9a"
+  },
+  "tests/test_x_dsl.py": {
+    "mtime": 1790604575.3881524,
+    "seen": 1790605566.2407494,
+    "ast_hash": "58f34fcc6976e6300f01dd8b0a232ea6",
+    "semantic_hash": "58f34fcc6976e6300f01dd8b0a232ea6"
+  },
+  "tests/test_x_library.py": {
+    "mtime": 1790604203.3399346,
+    "seen": 1790605566.2407494,
+    "ast_hash": "0db1da65bbcedc0efca4e736a09c52e7",
+    "semantic_hash": "0db1da65bbcedc0efca4e736a09c52e7"
+  },
+  "tests/test_x_patience.py": {
+    "mtime": 1790666963.453918,
+    "seen": 1790667221.17997,
+    "ast_hash": "6f8f976dcebaad07f6c222828d068035",
+    "semantic_hash": "6f8f976dcebaad07f6c222828d068035"
+  },
+  "tests/test_x_perception.py": {
+    "mtime": 1790605376.0475206,
+    "seen": 1790605566.2417593,
+    "ast_hash": "127a65f2efb179ec182962f29fa5cec8",
+    "semantic_hash": "127a65f2efb179ec182962f29fa5cec8"
+  },
+  "experiments/results/x_patience.json": {
+    "mtime": 1790666882.6619117,
+    "seen": 1790667221.1679568,
+    "ast_hash": "facd7aaf2c7b79ac159239d3eceaffeb",
+    "semantic_hash": "facd7aaf2c7b79ac159239d3eceaffeb"
+  },
+  "experiments/x_patience.py": {
+    "mtime": 1790666837.6405692,
+    "seen": 1790667221.1689565,
+    "ast_hash": "a12339e0bd4ba7ef1f74e3cc38b46a48",
+    "semantic_hash": "a12339e0bd4ba7ef1f74e3cc38b46a48"
+  },
+  "experiments/results/x_v05.json": {
+    "mtime": 1790683035.899817,
+    "seen": 1790684647.9099429,
+    "ast_hash": "6eaccd58929356c5940c72235cc182f1",
+    "semantic_hash": "6eaccd58929356c5940c72235cc182f1"
+  },
+  "experiments/x_v05.py": {
+    "mtime": 1790682998.1717966,
+    "seen": 1790684647.9109478,
+    "ast_hash": "c228998b446e0c9878b1e149c37e371b",
+    "semantic_hash": "c228998b446e0c9878b1e149c37e371b"
+  },
+  "hrm_x/algebra.py": {
+    "mtime": 1790681894.7088437,
+    "seen": 1790684647.9232042,
+    "ast_hash": "c2d892b57df3afd6265f4d2f5604690f",
+    "semantic_hash": "c2d892b57df3afd6265f4d2f5604690f"
+  },
+  "hrm_x/concepts.py": {
+    "mtime": 1790681911.0798934,
+    "seen": 1790684647.9232042,
+    "ast_hash": "acac478fe9580ae46c90a0ac89fd0530",
+    "semantic_hash": "acac478fe9580ae46c90a0ac89fd0530"
+  },
+  "hrm_x/consolidation.py": {
+    "mtime": 1790681885.1999621,
+    "seen": 1790684647.9232042,
+    "ast_hash": "fdbf4e936f05da04ed0ecac2db1fda3c",
+    "semantic_hash": "fdbf4e936f05da04ed0ecac2db1fda3c"
+  },
+  "hrm_x/domains/concept.py": {
+    "mtime": 1790682679.6700606,
+    "seen": 1790684647.9232042,
+    "ast_hash": "f95520b72a0f800d44ae1b27a1f35e55",
+    "semantic_hash": "f95520b72a0f800d44ae1b27a1f35e55"
+  },
+  "hrm_x/operators.py": {
+    "mtime": 1790681946.7929983,
+    "seen": 1790684647.9242117,
+    "ast_hash": "358d378fd8219454101651b7ac338d93",
+    "semantic_hash": "358d378fd8219454101651b7ac338d93"
+  },
+  "hrm_x/qlinalg.py": {
+    "mtime": 1790681884.683637,
+    "seen": 1790684647.9242117,
+    "ast_hash": "35127a866bec78fa823114956fd8718d",
+    "semantic_hash": "35127a866bec78fa823114956fd8718d"
+  },
+  "hrm_x/reader.py": {
+    "mtime": 1790681928.6377082,
+    "seen": 1790684647.9242117,
+    "ast_hash": "9231e3d0a3de448f0cff8ad08993a072",
+    "semantic_hash": "9231e3d0a3de448f0cff8ad08993a072"
+  },
+  "hrm_x/situation.py": {
+    "mtime": 1790681894.6913028,
+    "seen": 1790684647.9242117,
+    "ast_hash": "3d21274840af391133e36479bf4dd85c",
+    "semantic_hash": "3d21274840af391133e36479bf4dd85c"
+  },
+  "tests/test_x_concept.py": {
+    "mtime": 1790683813.106546,
+    "seen": 1790684647.9292166,
+    "ast_hash": "e71df0917594d89a4ad9646dab4f5aad",
+    "semantic_hash": "e71df0917594d89a4ad9646dab4f5aad"
   }
 }

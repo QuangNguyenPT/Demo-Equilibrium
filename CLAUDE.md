@@ -4,7 +4,7 @@
 
 Every session MUST complete these steps before touching code:
 
-1. **Read vault session index** → `vault/08 - Chat Context & Sessions/00 - Session Index.md`
+1. **Read vault session index & CLAUDE.md** → `vault/08 - Chat Context & Sessions/00 - Session Index.md` + `CLAUDE.md at main folder`
    - Understand the decision chain: what was decided, why, what changed last session
 2. **Check ADR status** → `vault/06 - Devlogs & ADRs/` — know current phase (ADR-003..008; ADR-008 = HRM-X v0.4, current)
 3. **Run test suite** → `python -m pytest --tb=short -q` — baseline before any change
@@ -25,7 +25,7 @@ Every session MUST complete these steps before touching code:
 ### Information Path (traceability)
 ```
 Question → Research (vault/Knowledge Graph/) → Decision (vault/06 ADRs) 
-→ Implementation (hrm_eqb/) → Test (tests/) → Session log (vault/08)
+→ Implementation (hrm_x/) → Test (tests/) → Session log (vault/08)
 → Knowledge graph (graphify-out/) → vault/ sync
 ```
 
@@ -37,10 +37,15 @@ Engineering hybrid AI architecture combining Hierarchical Reasoning Model (HRM) 
 
 **Core Goal:** Merge deep structured reasoning (HRM: explicit multi-step iteration) with broad language understanding (LLM: next-token prediction on massive data). Test whether architectural fusion beats chain-of-thought prompting alone.
 
-## Repo Structure (as built, ADR-003)
+## Repo Structure (as built today, 2026-09-28)
+
+This is the **current** structure, not one ADR's. ADR-003 refers to the `hrm/` baseline
+(generation 1) and ADR-005 to `hrm_eqb/` (generation 2); the live implementation since ADR-008
+is `hrm_x/`, listed last because it was added after the other two.
 
 ```
-hrm/                       the model, numpy-first (torch only for the transformers backend)
+hrm/                       the ADR-003 program-search baseline, numpy-first (torch only for the
+                           transformers backend) — teacher, judge and ablation baseline
   config.py                ModelConfig: one dataclass per section, strict load
   substrate/               FHRR phasor algebra, name-derived codebook, backend validation gate
   perception/              Domain protocol; grid/ (PEM port), sequence.py; program language parser
@@ -53,7 +58,8 @@ hrm/                       the model, numpy-first (torch only for the transforme
   core.py                  core weights <-> JSON (per generation)
   model.py                 Model facade = one bundle directory; human controls
   __main__.py              CLI: python -m hrm create|ask|feedback|explain|sleep|study|report|...
-hrm_eqb/                   HRM-EQB (torch): the model (ADR-005, spec v0.2 incl. §14)
+hrm_eqb/                   HRM-EQB (torch): baseline (ADR-005, spec v0.2 incl. §14); superseded as
+                           the target, kept for its theorem tests and as a reference
   algebra.py               rotation-vector text (complex planes) + quaternion knowledge (4-D)
   certified.py             Cayley x sigmoid-diag weights, sub-stochastic routing, radial ReLU
   equilibrium.py           L/H equilibrium core; certificate (Γ, r_n) from SVD norms; halting
@@ -84,16 +90,23 @@ legacy/                    superseded C++ GRU engine + blueprint (reference only
 
 ### Architecture Candidates (Preferred: A)
 
-**Status note (2026-09-27).** The sections below that describe a transformer
+**Status note (2026-09-27, historical).** The sections below that describe a transformer
 stack, RoPE, FlashAttention, attention residuals, a 6-stage pretraining pipeline
 and MXFP4 compression are *design targets carried over from the original
-research brief*. Updated 2026-09-27 (ADR-005): `hrm_eqb/` now has a small
+research brief*. As of 2026-09-27 (ADR-005): `hrm_eqb/` had a small
 transformer prelude, rotation-bound (RoPE-as-binding) positions, Attention
 Residuals over the thinking chain, and a certified two-level equilibrium core
 trained with deep supervision. There is still no LLM pretraining pipeline,
 FlashAttention kernel, MoE or MXFP4, and the ACT Q-learning head is a supervised
 "is this answer right" halting head instead. `hrm/` remains the numpy
 program-search model of ADR-003/004.
+
+**Superseded (2026-09-28).** `hrm_eqb/` is no longer the target: it is a baseline
+now. The live implementation is **`hrm_x/`** (HRM-X v0.4, ADR-008, spec v0.4), which has
+no transformer stack at all beyond the story role-tagger. Therefore **none** of the following
+is live advice: candidates A–E, "FlashAttention (must-have)" below, and the "Recommended
+starting point: Architecture A + ACT-style halting" line. All are kept only as the record of
+what was considered. ADR-008 "Rejected" gives the measured reason.
 - **A (Separate HRM Module):** LLM encoder → HRM reasoning → decoder. Modular, reusable, trains as add-on.
 - **B (Hierarchical Inside Transformer):** Recurrent loops embedded in layers. Hard to train, breaks parallelism.
 - **C (Latent Reasoning Loop):** Extra hidden-state updates between tokens. Simple, but slow inference.
@@ -103,6 +116,26 @@ program-search model of ADR-003/004.
 **Recommended starting point:** Architecture A + ACT-style halting (variant D for cost control).
 
 ### Data Flow (Tensor Shapes)
+
+> **SUPERSEDED RESEARCH BRIEF — RETAINED FOR HISTORY, NOT THE DESIGN.**
+> Everything from here to the end of "Performance Optimizations" is the *original* brief for a
+> neural (B,T,D) LLM-plus-HRM stack: a 6-stage pretraining pipeline, FlashAttention as a
+> must-have, a (B,T,D) tensor flow, and an ACT halting loss that "requires target Q-values" /
+> "HRM code shows Q-learning pattern". **No such model exists in this repo and none is planned.**
+> The live design is **HRM-X v0.5** (`hrm_x/`, spec v0.5, ADR-010): no embedding layer, no
+> (B,T,D) tensor flow, no pretraining pipeline, no FlashAttention, no ACT Q-head. Its hierarchy
+> is unchanged from v0.4 — L = rule saturation to a least fixpoint plus exact execution (and, on
+> the v0.5 concept route, a single exact linear solve), and H = the same
+> value-of-computation controller over {propose, derive-group, verify, ask, stop}. What changed is
+> the hypothesis: a reading is a law-closed family fitted exactly over ℚ, not a program found by
+> enumeration, and verification is the dual solve `A^T λ = r` rather than a replay. The v0.4
+> program-search route is retained in `hrm_x/domains/arith.py` and `hrm_x/library.py` as the
+> baseline `experiments/x_v05.py` measures against. The only transformer is a 40,908-parameter
+> surface→role tagger for stories; exact rational arithmetic is Fractions in Python.
+> **Do not implement anything in this block.** The text is left verbatim so the earlier decision
+> chain stays readable — see ADR-008 "Rejected" for why the neural route was dropped (ADR-006:
+> it measured no arithmetic), and ADR-010 for why the program-search route was kept.
+
 ```
 Input: (B, T) token IDs
   ↓ Embedding + RoPE/learned pos: (B, T, D)
@@ -347,8 +380,8 @@ Use normal mode for:
 ---
 
 **Last updated:** 2026-09-28  
-**Status:** Unified model built (ADR-003 P0–P6): reasoning, SSD knowledge, metacognition, learning loops, language section. Native backend deferred by measurement (P7).
-**Current (ADR-008, 2026-09-28):** HRM-X v0.4 in `hrm_x/` is the measured PoC; spec `vault/01 - Architecture Blueprint/HRM-X Specification v0.4 - Operator Inference over Structured Situations.md`. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only, exact Fraction arithmetic stays in Python. Hormones = only signals with a computational role (rho, feedback, volatility; lambda fixed); do not add others without an ablation.
+**Status:** Unified model built (ADR-003 P0–P6): reasoning, SSD knowledge, metacognition, learning loops, language section. The earlier "native backend deferred by measurement (P7)" note is **FALSE as of 2026-09-28** — that measurement was about BLAS matmuls, not this repo's real hot paths. The native backend now exists as `hrm_x/native/` (`include/hrmx.h`, `src/egraph.cpp`, `src/grid.cpp` → `hrm_x/native/bin/hrmx_native.dll`), built by `.\scripts\build_native.ps1` (clang++ -O2 -std=c++17) and selected by `HRMX_BACKEND=python|native|auto`. Measured: **identical results, grid 3.79× faster, arithmetic 1.47×** (`experiments/results/x_native.json`), with differential parity tests in `tests/test_x_native.py`.
+**Current (ADR-008, 2026-09-28):** HRM-X v0.4 in `hrm_x/` is the measured PoC; spec `vault/01 - Architecture Blueprint/HRM-X Specification v0.4 - Operator Inference over Structured Situations.md`. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only, exact Fraction arithmetic stays in Python. Hormones = only signals with a computational role (rho, feedback, volatility; lambda fixed); do not add others without an ablation. The `hrm_eqb/` rules below (certified maps, the VRAM cap) do **not** apply to `hrm_x/`, which is CPU-only.
 **Earlier direction (ADR-005):** HRM-EQB replaces program search as the model. The spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md` (§14 = construction lemmas). N0–N7 are built and tested; N8 (training + benchmarks) is recorded in ADR-006. `hrm/` is teacher, judge and baseline.
 **Rule:** anything that changes a certified map, the routing normalization or σ must keep `tests/test_eqb_theorems.py` green. The proofs depend on those invariants.
 **GPU rule (two crashes, 2026-09-27):** all CUDA work goes through `hrm_eqb.device.select_device()` (70 % VRAM cap) with pair/token-budgeted batches; probe peak memory on a worst-case batch before any long run; stop background jobs only by task ID. See `vault/05 - Engineering & Guides/GPU Safety - VRAM Oversubscription and DPC Watchdog.md`.
@@ -362,15 +395,26 @@ Use normal mode for:
 ```
 
 Options:
-- `.\scripts\update_knowledge_graph.ps1 -Mode deep` — richer semantic extraction (needs API key)
-- `.\scripts\update_knowledge_graph.ps1 -Mode code-only` — code-only, no key needed
+- `.\scripts\update_knowledge_graph.ps1 -Mode deep` — richer semantic extraction of the markdown
+  notes; the default `claude-cli` backend drives the `claude` CLI and **needs no API key**
+  (`-Mode deep` fails or degrades only when that CLI is unavailable or rate-limited)
+- `.\scripts\update_knowledge_graph.ps1 -Mode code-only` — code-only, the no-LLM fallback
 - `.\scripts\update_knowledge_graph.ps1 -NoObsidian` — skip vault sync
+
+There is no `GEMINI_API_KEY` anywhere in this repo and `.env` stays empty; a hosted backend
+(`kimi`, `claude`, `openai`, `deepseek`) is the only case that would need the project's key,
+in `.env` (see `.env.example`).
 
 Graph written to `graphify-out/` and synced to `vault/` automatically.
 
-## PEM Integration Notes (2026-09-26) — superseded by ADR-003
+## PEM Integration Notes (2026-09-26) — superseded by ADR-003, pointing at the `hrm/` baseline
 
-These notes describe the legacy C++ engine (now in `legacy/`). The PEM port lives in `hrm/`:
+These notes describe the legacy C++ engine (now in `legacy/`) and the **superseded `hrm/`
+ADR-003 program-search baseline** — *not* the current model (`hrm_x/`, ADR-008) and not
+`hrm_eqb/`. In particular `hrm/reasoning/qhead.py` is dead history: the 9-feature Q-head was
+never wired for training and has no successor in HRM-X, whose H level is a
+value-of-computation controller, not a Q-head. Keep these files only as a record of the port.
+The PEM port lives in `hrm/`:
 conjunctive halt, false-attractor restart and the 9-feature Q-head are in
 `hrm/reasoning/controller.py` and `hrm/reasoning/qhead.py`.
 

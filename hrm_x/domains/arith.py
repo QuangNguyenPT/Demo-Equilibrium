@@ -24,6 +24,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Sequence, Tupl
 import numpy as np
 
 from hrm_x.induction import Law, behaviour_classes, consistent, discover_laws
+from hrm_x.library import Library, abstract_all, expand, grow, size
 from hrm_x.mind import UNKNOWN, Hyp, Mind, Result
 from hrm_x.rules import Rule, saturate
 from hrm_x.workspace import EGraphAPI as Workspace, Why, make_workspace, natural
@@ -98,6 +99,67 @@ def programs(max_size: int) -> Iterator[Tuple[Tuple, int]]:
                     for right in table.get(s - 1 - s1, []):
                         if repr(left) <= repr(right):
                             table[s].append(("add", left, right))
+        for s1 in range(1, s):
+            for s2 in range(1, s - s1):
+                s3 = s - 1 - s1 - s2
+                if s3 < 1:
+                    continue
+                for n in outer[s1]:
+                    for b in body[s2]:
+                        if not uses(b, "a") or b == A:
+                            continue
+                        for init in outer[s3]:
+                            outer[s].append(("iter", n, b, init))
+    for s in range(1, max_size + 1):
+        for p in outer[s]:
+            yield p, s
+
+
+def _prim_apps(prim, tables, total: int):
+    """Every application of `prim` whose arguments have total size exactly `total`."""
+    arity = len(prim.holes)
+    if arity == 0 or total < arity:
+        return
+
+    def rec(i: int, remaining: int, acc: Tuple):
+        if i == arity - 1:
+            for s in range(1, remaining + 1):
+                for arg in tables.get(s, ()):
+                    yield acc + (arg,)
+            return
+        for s in range(1, remaining - (arity - 1 - i) + 1):
+            for arg in tables.get(s, ()):
+                yield from rec(i + 1, remaining - s, acc + (arg,))
+
+    yield from rec(0, total, ())
+
+
+def programs_with(max_size: int, prims: Sequence = ()) -> Iterator[Tuple[Tuple, int]]:
+    """`programs`, but the learned primitives are additional constructors.
+
+    This is the point of the library. Enumeration is by size, so a concept that needs a program of
+    base size 9 is only reachable at a bound of 9 -- and the enumeration grows fast enough that the
+    bound is most of the cost. Once a step is named, the same concept has an expression of size 5 in
+    the extended language, so the bound can be lowered and the enumeration shrinks with it. Without
+    this, compression would only make the *description* shorter while leaving the search exactly as
+    expensive, which is the whole thing the library was supposed to fix.
+    """
+    outer: Dict[int, List[Tuple]] = {1: [X, Y, ZERO, ONE]}
+    body: Dict[int, List[Tuple]] = {1: [X, Y, ZERO, ONE, A]}
+    for s in range(2, max_size + 1):
+        outer[s], body[s] = [], []
+        for table in (outer, body):
+            for s1 in range(1, s - 1):
+                for left in table[s1]:
+                    for right in table.get(s - 1 - s1, []):
+                        if repr(left) <= repr(right):
+                            table[s].append(("add", left, right))
+        for table, may_use_a in ((outer, False), (body, True)):
+            for prim in prims:
+                for args in _prim_apps(prim, table, s - 1):
+                    app = ("prim", prim.name) + args
+                    if may_use_a or not uses(app, "a"):
+                        table[s].append(app)
         for s1 in range(1, s):
             for s2 in range(1, s - s1):
                 s3 = s - 1 - s1 - s2
@@ -372,13 +434,62 @@ def law_rules(law: Law) -> List[Rule]:
 class Arith:
     name = "arith"
 
-    def __init__(self, max_size: Tuple[int, ...] = (6, 7), rewrite_budget: int = 400) -> None:
+    def __init__(self, max_size: Tuple[int, ...] = (6, 7), rewrite_budget: int = 400,
+                 library=None, use_library_bound: bool = False) -> None:
         self.max_size = max_size
         self.rewrite_budget = rewrite_budget
+        self.use_library_bound = use_library_bound
         self.code = ResidueCode()
+        self.library = library if library is not None else Library()
         self._trees: Dict[str, Tuple] = {}
         self._goal_cache: Dict[Tuple[int, str], Any] = {}
         self._plans: Dict[Tuple[int, str], Any] = {}
+
+    # ----- the DSL -----
+
+    ARITY_VARS = ("x", "y", "a")
+    ARITY_TAGS = ("add", "iter")
+
+    def mine(self, mind: Mind) -> List[Dict[str, Any]]:
+        """Sleep step: grow the DSL from the programs the mind already knows.
+
+        The corpus is every program still standing in semantic memory -- the surviving version
+        space of every concept, not just the winner -- because a structure is worth naming if it
+        recurs across the concepts the mind has, and the version space is the only place the losing
+        hypotheses are still available to be evidence.
+        """
+        memory = self._memory(mind)
+        corpus = [p for entry in memory["concepts"].values() for p, _w in entry["hypotheses"]]
+        if not corpus:
+            return []
+        corpus = [expand(p, self.library.prims) for p in corpus]   # already named? keep the names
+        _, log = grow(corpus, self.library, tag="g", arity_vars=self.ARITY_VARS,
+                      tags=self.ARITY_TAGS)
+        return log
+
+    def bound(self, level: int) -> int:
+        """The size bound for this search: the configured one, less what the library has earned.
+
+        The credit is `Library.credit` -- nodes the library measurably removes per program on the
+        corpus it was mined from -- subtracted, not multiplied in. A search bound counts nodes, so a
+        node saving is worth exactly one node of bound. The floor of 2 keeps the language from
+        degenerating into a library lookup.
+
+        It is off by default (`use_library_bound=False`) because the measurement came out against it
+        in this domain. `experiments/x_dsl.py` sweeps the trade and finds the extended language 2-4x
+        *larger* per size at every bound from 4 to 10, because one arity-1 constructor multiplies the
+        number of programs of each size while the repeated step it names is worth a single node of
+        bound. The compressed program is reachable one node sooner; the enumeration that has to be
+        searched to reach it grew far more than one node's worth. So the library shortens the
+        description of a concept without making the concept cheaper to find, and enabling it by
+        default would have made search worse while looking like a demonstration. It stays available
+        because that trade reverses when the repeated structure is a large share of the program,
+        which the experiment also measures.
+        """
+        base = self.max_size[level]
+        if not self.use_library_bound or not len(self.library):
+            return base
+        return max(2, base - int(round(self.library.credit)))
 
     # ----- memory -----
 
@@ -409,6 +520,7 @@ class Arith:
         counter = Counter(10 ** 9)
 
         def ev(prog: Tuple, xy: Tuple[Fraction, Fraction]) -> Any:
+            prog = expand(prog, self.library.prims)     # a named program runs as its body
             try:
                 sub = Counter(2000)
                 value = run(prog, xy[0], xy[1], sub)
@@ -417,9 +529,22 @@ class Arith:
             except Exhausted:
                 return None
 
-        classes = behaviour_classes(programs(self.max_size[level]), ev, PROBES)
+        # The extended enumeration is used only when the bound is being reduced, because adding a
+        # constructor multiplies the number of programs at every size: measured on a mined step,
+        # enumeration at the *same* bound cost 9.4x more (39,511 vs 4,218 ops). A library that is
+        # merely present must not be able to slow the mind down, so it is a description facility
+        # until `use_library_bound` says it is a search facility.
+        prims = self.library.prims if self.use_library_bound else ()
+        bound = self.bound(level)
+        classes = behaviour_classes(programs_with(bound, prims), ev, PROBES)
         fits = consistent(classes, task.evidence(), ev)
-        hyps = [Hyp(f"concept:{show(h.program)}", h.weight, h.program, note=f"{h.members} programs") for h in fits]
+        # The hypothesis stores the *expanded* program. The library is a device for finding the
+        # concept, not a new thing the rest of the domain has to know how to run: every consumer
+        # downstream -- laws, the verifier, semantic memory, the notation rule -- keeps working on
+        # the base language, and the only thing the library changes is how far the search had to go.
+        hyps = [Hyp(f"concept:{show(expand(h.program, self.library.prims))}", h.weight,
+                    expand(h.program, self.library.prims), note=f"{h.members} programs")
+                for h in fits]
         return hyps, counter.used
 
     # ----- derive -----

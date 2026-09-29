@@ -13,6 +13,7 @@ related:
   - "[[ADR-007 Grounded Algebra and Executable Concepts]]"
   - "[[ADR-006 HRM-EQB Training and Benchmark Results]]"
   - "[[ADR-001 Hybrid C++ Engine with Python Blueprint]]"
+  - "[[ADR-009 Free Text Is Not Yet Supported]]"
   - "[[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]]"
 ---
 
@@ -104,6 +105,15 @@ representation.
 | curiosity | × identified with 1.0 question vs 4.8 random; later accuracy 0.86 vs 0.71 (none: 0.67, 33% wrong) |
 | volatility | 2 wrong answers after a regime change vs 6 without the signal |
 | native | identical results; grid 3.8×, arithmetic 1.5× |
+
+Added 2026-09-28, after the ADR was accepted. These qualify its claims rather
+than overturn it, and the decision stands; the gates they touch stay off.
+
+| Claim | Result |
+|---|---|
+| DSL library growth | real MDL compression (40→38) and exact expansion, but a merely *present* library made search 9.4× worse; the mined step never pays at one use per program and only pays on a high-redundancy corpus. `use_library_bound` defaults off |
+| learned price of computation (patience) | measured against a fixed lambda swept over patience's own reachable range: −0.90 / −0.36 accuracy. The fixed constant stays; the shipped E9 baseline is unchanged |
+| free-text perception | held-out transfer fails — 1.00 exact on seen forms, 0.50 unseen verb, **0.00** changed clause order, 76–93% of held-out stories misread. See [[ADR-009 Free Text Is Not Yet Supported]]; closed templates only |
 
 ## Consequences
 

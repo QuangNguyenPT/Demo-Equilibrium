@@ -51,7 +51,7 @@ def ratio(num, den) -> float:
     return float(torch.linalg.vector_norm(num) / torch.linalg.vector_norm(den))
 
 
-# ---------- Â§2 algebra ----------
+# ---------- §2 algebra ----------
 
 def test_t1_rope_is_phasor_binding():
     m = 8
@@ -148,7 +148,7 @@ def test_n1_radial_relu_is_1_lipschitz_and_equivariant():
         assert torch.allclose(lhs, rhs, atol=TOL)
 
 
-# ---------- Â§3 equilibrium ----------
+# ---------- §3 equilibrium ----------
 
 def test_c1_measured_lipschitz_within_certificate():
     core, ctx = random_core(), random_context()
@@ -288,7 +288,7 @@ def test_e6_residual_certifies_distance_to_equilibrium():
     assert float(torch.linalg.vector_norm(halted.high - star.high)) <= 1e-4 + 1e-12
 
 
-# ---------- Â§4 knowledge ----------
+# ---------- §4 knowledge ----------
 
 def test_k1_relations_are_4d_rotations():
     k = 5
@@ -311,7 +311,7 @@ def test_m1_product_topk_equals_brute_force():
         assert torch.equal(full.gather(-1, slots), values)
 
 
-# ---------- Â§5 language ----------
+# ---------- §5 language ----------
 
 def test_l1_l2_codebook_separates_and_decodes_stably():
     m = size = 256
@@ -341,7 +341,7 @@ def test_a1_attention_residual_stays_in_convex_hull():
     assert bool((torch.linalg.vector_norm(out, dim=-1) <= per_token_max + TOL).all())
 
 
-# ---------- Â§6 hormones ----------
+# ---------- §6 hormones ----------
 
 def test_h1_hormones_stay_in_box_and_converge():
     mods = Neuromodulators.create(lower=(0.1, 0.2, 0.1, 0.05), upper=(0.9, 0.95, 0.8, 0.5), rate=0.2)
@@ -357,7 +357,7 @@ def test_h1_hormones_stay_in_box_and_converge():
     assert mods.segment_budget() == math.ceil(1 / (1 - mods.get("serotonin")))
 
 
-# ---------- Â§7 curiosity ----------
+# ---------- §7 curiosity ----------
 
 def test_q1_expected_information_gain_is_vote_entropy():
     probes = torch.randint(0, 3, (10, 8, 2, 2))
@@ -371,7 +371,7 @@ def test_q1_expected_information_gain_is_vote_entropy():
     assert vote_entropy(probes[best]) == bits and vote_entropy(probes[4]) == 0.0
 
 
-# ---------- Â§8 gate ----------
+# ---------- §8 gate ----------
 
 def test_g1_keep_gate_false_keep_rate():
     assert abs(keep_margin(108, 0.05) - 0.2355) < 1e-3

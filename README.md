@@ -1,192 +1,201 @@
-# HRM-EQB — hierarchical reasoning by certified equilibrium
+# HRM-X — structural operator inference
 
-`hrm_eqb/` is the model (ADR-005). It is a two-level reasoning core, contractive for every
-weight value. So its thinking provably converges, its halting rule carries a certified
-error bound, and the certificate is recomputed from the weights every time the model file
-is loaded.
+The current model is **HRM-X v0.5** (ADR-010), in `hrm_x/`. It is not a neural net and not a
+chain-of-thought prompt. A task is a **situation + operator + question**; understanding means
+inferring the operator exactly, with a check written in a different representation from the one
+that produced the answer.
 
-**Spec and proofs:** `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md`.
-Every theorem there (§2–§9 and §14) has an executable check, and several of those checks
-are mutation-tested.
+v0.5 changed what a hypothesis *is*. It is no longer a program the mind has to search for: it is
+a **family** — the exact solution set of a law set — whose rational parameters are fitted
+exactly, and which may answer a query only where the determinacy theorem says the evidence fixes
+it. The v0.4 program-search route is still in the tree, because it is the baseline the new route
+is measured against.
+
+- **Normative design:** `vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md`
+- **Decision record:** `vault/06 - Devlogs & ADRs/ADR-010 Structural Operator Inference.md`
+- **Previous:** spec v0.4 and ADR-008, program search over a hand-written DSL.
+- `python -m pytest` → **436 passed, 1 skipped**; 60 of those tests are HRM-X, including
+  differential parity for the C++ backend.
+- **Gates G1–G3 (mathematics, representation, capability) are closed. G4 — refusing operators
+  outside the hypothesis language — is not.** On out-of-language operators the v0.5 route gives
+  5 confident wrong answers out of 6, where v0.4 gave 0 wrong and 4 abstentions. That regression
+  is measured, explained and pinned by a test. Read ADR-010 before quoting any headline here.
+
+The motivating example is the one in the spec: from `2×2=4` and `2×3=6` the model must reach
+`10×3.1=31` through a *reusable* operation, not by interpolating. It does, exactly, and the
+answer comes with the program and the rule that produced it.
 
 ## How it thinks
 
 ```
-task (demos + query)  ->  token field: content ⊛ rotation(row, col, slot)        (T1)
-                      ->  prelude (small transformer)
-for each segment s:                                                            (deep supervision)
-    routing A_L, A_H  =  S1(Sinkhorn(attention))  per head, fixed during the solve (R1, S2)
-    context c_L       =  input + knowledge read (quaternion product-key memory)    (K2, E5)
-    context c_H       =  input + AttnRes over earlier equilibria                   (A1, E2')
-    (h*, l*)          =  certified solve of  l <- T_L(l; h),  h <- T_H(h; l)      (C1, E2, E3)
-    halt when r/(1-r) * step <= tol                                              (E6)
-answer = readout(h* at answer cells) · Embedᵀ      (the solution is read in token space, L2)
-words  = coda(detached thinking chain)             (language cannot change the answer, L3)
+task (demos + query)                     ->  situation + operator + question
+  workspace: e-graph with provenance     ->  congruence closure; a conflict is refused and blamed   (I1-I3)
+  hypotheses: programs, prior 2^-size    ->  belief is a POSTERIOR over behaviour classes,
+                                              not a winner: concepts are stored as version spaces
+  H  (a few decisions per task):         ->  value of computation over {propose, derive-group,
+                                              verify, ask, stop}; stops when VOC <= 0
+  L  (work inside one decision):         ->  saturate rules to a least fixpoint, extract the
+                                              cheapest term, execute it exactly (Fractions)
+  laws: QuickSpec over concepts         ->  proposed by testing, pruned by congruence, domain-guarded
+  verification: independent              ->  arithmetic: the *definition* in residue-phasor space
+                                              (repeated addition as exponentiation), ignoring laws
+                                              stories: dictionary replay + conservation of items
+                                              grids: applicability conditions, not outputs
+  answer argmax q(y) if U > 0, else abstain with the reason and the culprits
+  writer.py renders the trace as an answer + an explanation
 ```
 
-- **Convergence.** Four norm budgets decide it: if Γ = v_h + v_l s_h/(1−s_l) < 1, every
-  segment converges for every input, memory state, hormone state and fast/slow schedule.
-  The number of fast steps changes the speed, never the answer (E3; tested on the model).
-- **Cognition.** A committee of augmented views either agrees, and the model returns an
-  **Answer**, or it disagrees or cannot re-derive its own demonstrations, and the model
-  asks a **Question**. The question carries the candidate answers and the bits of
-  information the reply would give (Q1).
-- **Hormones.** Dopamine, serotonin, noradrenaline and acetylcholine set the reward
-  signal, patience, exploration and learning rate. They act only outside the certified
-  maps, so they cannot break convergence (H1).
-- **Learning.** A taught answer becomes a test-time update of the knowledge rows the task
-  read. It reaches the SSD only if every demonstration is then re-derived and a canary set
-  does not get worse (V1).
-- **Self-study.** An autoresearch-style loop practises weak families for a fixed budget,
-  then keeps or discards the result with a Hoeffding gate on a frozen, hash-locked harness
-  (G1). Every experiment is logged in `results.tsv`.
+- **The controller.** `q(y)` weights each hypothesis by its weight and by `ρ` (its reliability:
+  1 if verified, else the running pass rate). The value of the state is
+  `U = max(0, (1 + L)·max_y q(y) − L)`, and each cycle takes `argmax_a E[U | a] − U − λ·cost(a)`.
+  Two corrections were needed and are tested: hypotheses predicted to agree are derived
+  *together* (otherwise two agreeing 50% readings look worthless one at a time), and cost is
+  estimated **after** rewriting, or the controller refuses computations that laws make cheap.
+- **Neuromodulators, only where they compute.** ACh-like: the reliability `ρ`. DA-like: outcome
+  feedback. NE-like: volatility, meaning surprise *in excess of* the mind's own expected surprise
+  `H(ρ)`, which discounts stale evidence. 5-HT-like: `λ`, fixed, with no learning rule proposed.
+  Nothing else from the original hormone layout is implemented, and none of it may be added
+  without an ablation.
+- **Curiosity** is expected information gain over a concept's version space, weighted by use,
+  during sleep. Sleep also consolidates laws and re-tests them on imagined values.
+- **Abstention is a feature.** If no reading answers, the mind says so and names the culprits.
+  Similarity never creates an equality, and an answer only ever comes from derivation plus
+  verification.
 
-## The two files
+The two things this is *not*: a library lookup dressed up as reasoning, and a model of
+perception. The story verifier replays the same reading the story domain produced, so a
+mis-parse passes it — that blind spot is measured and reported, not solved (E10 below).
+
+## Native backend (it exists, and it is faster)
+
+`hrm_x/native/` is a real C++ backend behind a pure C ABI, loaded by ctypes:
 
 ```
-models/<name>/
-  model.hrmc     the whole core: every weight, budgets, certificate claims, probe logits,
-                 SHA-256s. Pickle-free. The loader recomputes Γ and r_n from SVD norms,
-                 re-runs the probes, and refuses a corrupted or forged file.
-  knowledge.pt   the knowledge: a normal torch archive (quaternion values, keys, usage,
-                 confidence). Rows are rewritten in place on SSD through a write-ahead
-                 journal; `seal` restores the zip checksums. Without it: an empty brain.
-  state.json     hormones, counters, generation, harness lock
-  results.tsv    self-study ledger
+hrm_x/native/include/hrmx.h     C ABI
+hrm_x/native/src/egraph.cpp     union-find, hash-cons, rebuild, e-matching, explanations
+hrm_x/native/src/grid.cpp       connected components and the object step
+hrm_x/native/bin/hrmx_native.dll  (gitignored build output)
 ```
-
-## Quick start
 
 ```powershell
-python -m pip install numpy pytest torch
-python -m pytest                                          # all tests
-python scripts/fetch_benchmarks.py                        # ARC-AGI-1 + Sudoku-Extreme (optional)
-python -m hrm_eqb create models/eqb-small --minutes 120 --arc-train data/external/arc/training --pause 0.15
-python -m hrm_eqb info models/eqb-small                   # certificate, lineage, state
-python -m hrm_eqb ask models/eqb-small task.json          # Answer, or Question + candidates + bits
-python -m hrm_eqb learn models/eqb-small task.json answer.json
-python -m hrm_eqb study models/eqb-small --minutes 10
-python -m hrm_eqb bench models/eqb-small --suites generated,language,sudoku,arc,empty_brain,schedule
+.\scripts\build_native.ps1                 # clang++ -O2 -std=c++17 -shared -> hrm_x\native\bin\hrmx_native.dll
+.\scripts\build_native.ps1 -Debug          # -O0 -g
+$env:HRMX_BACKEND = "python"               # python | native | auto (default: auto)
+python -m experiments.x_native             # parity + timing
 ```
 
-A task file is ARC-style JSON with a `domain` (`grid`, `sequence`, `text` or `sudoku`).
-Text may be given as strings:
+Measured (`experiments/results/x_native.json`, best of 3, `perf_counter`):
 
-```json
-{"domain": "text", "train": [{"input": "cat", "output": "CAT"}, {"input": "owl", "output": "OWL"}],
- "test": [{"input": "river"}]}
-```
+| Workload | Python | Native | Speedup | Results |
+|---|---|---|---|---|
+| grid: 2-step induction | 0.387 s | 0.102 s | **3.79×** | identical |
+| arithmetic: laws + 60 questions | 2.120 s | 1.442 s | **1.47×** | identical |
 
-**GPU safety.** All CUDA work goes through `select_device()` (allocator capped at 70 % of
-VRAM), and batches are budgeted by attention pairs. An unbounded batch once spilled into
-system RAM and crashed Windows. `--pause` lowers the duty cycle on a hot laptop GPU.
+Python is the blueprint and the reference; C++ runs only the profiled hot paths, and exact
+rational arithmetic deliberately stays in Python because arbitrary precision *is* the guarantee
+(Amdahl caps that speedup at ~1.5×, which is accepted). Porting the e-graph was not just a
+speed change: it surfaced two real reference bugs — union-by-size swapped the roots but not the
+constants, dropping a value, and a congruence conflict did not name its argument premises. Both
+are fixed and regression-tested.
 
-<!-- EQB-RESULTS -->
+<!-- HRMX-RESULTS -->
 
----
+## Measured (`experiments/results/`)
 
-# Baseline: HRM program-search model (ADR-003)
+Every number below is read from a JSON file in `experiments/results/`.
 
-The numpy model below is kept as teacher, judge and ablation baseline (ADR-005).
+| # | Hypothesis | HRM-X | Baseline |
+|---|---|---|---|
+| E1 | extrapolate an induced operator (4 splits) | **1.000** on all four | kNN 0.41 → 0; MLP 0.00; log-MLP 0.00 |
+| E2 | compose learned `×` with `+` | **1.000** at depths 1, 2, 3 | — |
+| E12 | abstraction pays for itself | `1000×3.1` **1,021 → 192 ops**; `10⁴×3.1` 10,020 → 411; `10⁵×3.1` refused without laws, computed in 779 with them | — |
+| E9 | adaptive compute beats fixed | VOC **1.000** / 248 ops easy, **0.975** / 4,346 hard, 0 wrong | fixed 3,836 / 10,182; greedy 0.750 on hard |
+| E10 | verification under injected faults | false law: **0** wrong with the verifier, 9 without | perception role swap: 10 wrong either way (blind spot) |
+| E3/E4/E8 | variable binding, role swaps, counterfactual edits | **1.000** | story baseline 0.60 on unseen names at 16k |
+| E5 | long chains (3 people, 4–6 events) | **0.993**–1.000, 0 wrong answers | 0.040 |
+| E6 | rule composition (grids, never a task) | **0.931** (seed 0) / **0.833** (seed 1) | pixel LUT 0.034; no-objects 0.000 |
+| E7 | new grid arrangements | **0.984** (seed 0) / **1.000** (seed 1) | pixel LUT 0.25–0.29 |
+| C | curiosity vs random study | `×` identified with **1.0** question vs **4.8**; later accuracy **0.86** vs 0.71 | no study: 0.67, and a third of the answers are wrong |
+| V | volatility under a regime change | **2** wrong answers before verification resumes | 6 without the signal |
+| N | native parity and speed | identical results; **3.79×** grid, **1.47×** arithmetic | — |
 
-One model with four sections that think together:
+Curiosity detail: with `×` seeded by two examples, curious study asks **1.0** question where
+random asks 4.8; unaided accuracy afterwards is 0.86 (curious), 0.71 (random), 0.67 (none).
+Volatility detail: with a false law planted after 100 tasks and verification made expensive,
+the NE-like signal cuts wrong answers from 6 to 2 and shortens the blind window from 6 tasks
+to 2.
+
+The story domain is the clearest single result. On i.i.d. splits, unseen names and items, large
+numbers, long chains and contradictory premises, HRM-X is 1.000 with zero wrong answers against
+a 3-layer transformer trained on 4,000 stories (0.21 / 0.17 / 0.00 / 0.03 / 0.00); the
+transformer improves to 0.65 / 0.60 on the first two when trained on 16,000 stories, and HRM-X
+drops to 0.993 only on long chains.
+
+### E13 — the v0.5 concept route against the v0.4 program route (2026-09-29)
+
+Both routes, one `Mind`, one value-of-computation controller, 26 solves per condition
+(`experiments/x_v05.py` → `experiments/results/x_v05.json`). Correct / wrong / abstain:
+
+| E13a, 21 queries | correct | wrong | abstain | mean ops |
+|---|---|---|---|---|
+| **concept v0.5** | **14** | 7 | 0 | **751.5** |
+| arith v0.4 | 9 | 4 | 8 | 4247.2 |
+
+| split | concept v0.5 | arith v0.4 |
+|---|---|---|
+| in-language (15) | **13 / 2 / 0** at 593 ops | 7 / 4 / 4 at 4265 ops |
+| out-of-language (6) | 1 / **5** / 0 at 1147 ops | 2 / **0** / 4 at 4202 ops |
+
+Read this table in both directions. **Where the hypothesis language covers the operator, v0.5 is
+better on every axis and 7.2× cheaper**, because deriving stopped being a search. **Where it does
+not, v0.5 is worse than the route it replaces**: five confident wrong answers out of six, against
+none. The mechanism is known and pinned by a test — one question brings a second value of an
+argument into the evidence, so the open-world coverage rule stops firing, and a *simpler wrong*
+family that fits the evidence exactly gets confirmed by the dual check. That is the coincidental-fit
+channel (doc 13, Q1), and closing it is the next design decision, not a tuning problem.
+
+Two further measurements from the same run: the closed-world ablation moves the pinned-argument
+task list by 14 ops out of 1618, so on these operators the open-world machinery is close to inert;
+and the delivery's answer threshold `L = 4` abstains on **21 of 21** here, because before any
+verification `rho` is 0.8 and `(1+4)(0.8) − 4 = 0` exactly.
+
+## Three generations, all still in the tree
+
+| Package | Size | Role | Status |
+|---|---|---|---|
+| `hrm_x/` | 20 py, 4,339 lines (non-blank) + 545 lines of C++ | **HRM-X v0.5, the current model.** Structural operator inference: law-closed families fitted exactly over ℚ, determinacy, open-world coverage, VOC control, independent verifiers. The v0.4 program-search route is kept inside it as the comparison baseline. | Current (ADR-010, spec v0.5) |
+| `hrm_eqb/` | 23 py, 2,427 lines | HRM-Phi equilibrium baseline: a two-level solver whose convergence certificate is recomputed from the weights at load. | Superseded as the target; kept as a reference and for its theorem tests |
+| `hrm/` | 49 py, 4,991 lines | Program-search baseline: numpy-first, FHRR substrate, SSD knowledge store, learning loops. | Superseded (ADR-003); kept as teacher, judge and ablation baseline |
+
+Line counts are non-blank source lines, excluding `__pycache__`. The three coexisting
+generations are deliberate: each is a baseline for the next, and the older ones carry the
+negative results that justify the current design.
+
+### Generation 2, in brief: `hrm_eqb/` (ADR-005, spec v0.2)
+
+Two-level reasoning core, contractive for every weight value, so thinking provably converges
+and the halting rule carries a certified error bound recomputed from the weights each time the
+model file is loaded. A model directory holds `model.hrmc` (the whole core: weights, budgets,
+certificate claims, probe logits, SHA-256s — the loader recomputes `Γ` and `r_n` from SVD
+norms, re-runs the probes, and refuses a corrupted or forged file), `knowledge.pt` (quaternion
+values, keys, usage, confidence; rows are rewritten in place through a write-ahead journal), a
+`state.json` and a `results.tsv` self-study ledger. Theorem checks live in
+`tests/test_eqb_theorems.py` (§2–§8) and are mutation-tested. ADR-006 recorded what it does
+*not* do: it learned patterns, and no arithmetic.
+
+### Generation 1, in brief: `hrm/` (ADR-003, program search)
 
 | Section | Package | What it does |
 |---|---|---|
-| Reasoning | `hrm/reasoning` | Two levels, PEM-derived: **fast** recognition (L) and **deep** equilibrium reasoning (H), then program synthesis. Abstains when nothing explains the input. |
-| Language | `hrm/language` | A native section, not a translator: it proposes hypotheses in words while the model reasons (inner speech), reads tasks written as text, explains answers, and feeds the intent matrix. |
-| Knowledge | `hrm/knowledge` | A dynamic model file **on SSD, not RAM**: memmapped keys + sqlite, read inside the reasoning pass, written only with verified knowledge, crash-safe, reversible. |
-| Metacognition | `hrm/metacognition` | Knows what it knows (competence map), chooses what to study (curiosity), infers what you want from an input (intent regression). |
+| Reasoning | `hrm/reasoning` | Two levels, PEM-derived: fast recognition (L) and deep equilibrium reasoning (H), then program synthesis. Abstains when nothing explains the input. |
+| Language | `hrm/language` | A native section, not a translator: inner speech proposes hypotheses in words, reads text tasks, explains answers, feeds the intent matrix. |
+| Knowledge | `hrm/knowledge` | A dynamic model file on SSD, not RAM: memmapped keys + sqlite, read inside the reasoning pass, written only with verified knowledge. |
+| Metacognition | `hrm/metacognition` | Competence map, curiosity, intent regression. |
 
-The learning section (`hrm/learning`) closes the loop: every interaction can add verified
-knowledge; a sleep cycle consolidates proven knowledge into the core ("into the neurons")
-behind a frozen, hash-locked benchmark; a self-study loop practises its own gaps; human
-feedback outranks the model's own.
-
-Design record: `vault/06 - Devlogs & ADRs/ADR-003 Unified Cognitive Model.md`.
-
-## What "understanding" means here
-
-An input is understood when the model finds a compact executable explanation (a program)
-that **reproduces every example exactly**, preferring the simplest. It answers with that
-program. If no program passes the independent verifier, it **abstains**; it does not guess.
-Confidence is the share of all exact explanations that agree with the answer, so an
-ambiguous task never looks certain.
-
-## How it thinks
-
-```
-input ─► perception (domain encoder: grid / sequence) ─► task core in phasor space
-          │
-          ├─ fast (L)      rank by algebra + consolidated priors + SSD knowledge; verify top few
-          ├─ language      inner speech proposes rules in the domain's program language; verified
-          ├─ deep (H)      equilibrium: resonator ticks inside refresh cycles, restarts, re-parsing
-          ├─ synthesis     compose new programs by bounded search
-          └─ abstain       nothing reproduces the examples
-```
-
-## How it learns
-
-| Loop | Trigger | Judge | Boundary |
-|---|---|---|---|
-| Online | every answer | exact replay of the examples | never writes unverified knowledge |
-| Feedback | you | you | "wrong" quarantines the knowledge used; a correction is learned as a new example |
-| Sleep | `sleep()` / every N study tasks | frozen benchmark: no regression, **zero decoy false accepts**, store integrity | benchmark + scorer are hash-locked; a changed judge refuses to run until a human re-signs |
-| Self-study | `study()` | the task generator's known answer | budgets; stops when nothing learnable is left or after repeated discarded cycles |
-
-Promotion is `auto` (a passing core goes live) or `staged` (waits for `promote`). Every
-generation is kept; `rollback` restores an earlier core and reactivates knowledge graduated
-after it. Every cycle is a row in `ledger/results.tsv`.
-
-## Quick start
-
-```powershell
-python -m pip install numpy pytest
-python -m pytest                                  # full suite (hrm + hrm_eqb)
-
-python -m hrm create models/main --benchmark data/benchmark/benchmark-v1.json
-python -m hrm ask models/main "1 2 3 -> 3 2 1 ; 4 5 6 -> ?" --task-id t1
-python -m hrm explain models/main t1
-python -m hrm feedback models/main t1 wrong --correction "6 5 4"
-python -m hrm study models/main --tasks 100 --minutes 480      # overnight self-study
-python -m hrm report models/main                                # what it knows / doesn't
-python -m hrm rollback models/main 0                            # human controls
-```
-
-Python:
-
-```python
-from hrm.model import Model
-from hrm.metacognition import Message
-
-with Model.create("models/demo", benchmark="data/benchmark/benchmark-v1.json") as m:
-    sol = m.solve([([1, 2, 3], [2, 4, 6]), ([5, 1], [10, 2])], [7, 3], task_id="t1")
-    print(sol.status, sol.answer, sol.program.describe(), sol.confidence)
-    m.perceive(Message(text="4 5 -> 5 4 ; 1 2 3 -> ?"))        # intent inferred, text read
-    m.study()                                                    # practise its gaps
-```
-
-## Model bundle (the dynamic model file)
-
-```
-models/main/
-  manifest.json            generations, active generation, harness lock
-  config.json              strict config (missing or unknown fields are refused)
-  core/gen-NNNN.json       core weights per generation (small, RAM-resident)
-  knowledge/               SSD: keys.<n>.f16 (memmap) + knowledge.sqlite
-  harness/benchmark.json   frozen judge of the learning loop
-  ledger/results.tsv       one row per sleep cycle
-  metacognition.json       competence map + intent matrix
-```
-
-## Language backends
-
-`LanguageConfig.backend`: `none` (default), `hashing` (dependency-free), `transformers`
-(local Hugging Face model; `pip install torch transformers`), `ollama` (local server).
-Everything a language model says is untrusted: program proposals and rewritten tasks are
-parsed strictly and verified before they can influence an answer.
-
-## Measured (2026-09-27, D=4096)
+An input is understood when the model finds a compact executable explanation that reproduces
+every example exactly, preferring the simplest; if no program passes the independent verifier
+it abstains. Its benchmark is generated from the model's own vocabulary, so it measures
+reasoning correctness and honest abstention, not general intelligence:
 
 | benchmark v1 (51 tasks) | |
 |---|---|
@@ -201,73 +210,74 @@ parsed strictly and verified before they can influence an answer.
 | beyond-search-budget | 4 tasks, 0 solved — the depth-4 ceiling, reported not hidden |
 | benchmark time | 30 s |
 
-The benchmark is generated from the model's own vocabulary: it measures reasoning
-correctness and honest abstention, not general intelligence.
+**What the depth axis found, and what it did not.** Building a benchmark that could actually
+fail surfaced four defects v1 could not see, because every v1 task was solvable in one or two
+steps: `Vector3DDomain.from_json` truncated vectors to int64 (so `0.861382` became `0`, and
+only the JSON round trip failed, never the in-memory probes); `complexity_limit` capped
+reasoning at depth 2, so the reasoner looked unable to reason past two steps because a guard had
+forbidden it; `redundant()` pruned every rotate pair, true for grid translations and false for
+3D rotations, so depth 3 was unreachable; and `Project` made the `gravity` decoy solvable,
+producing 2 false accepts against a gate that tolerates none. The first version of the axis
+also measured nothing, because the enumerated rotations generate the octahedral group (order
+24) and a product of k random rotations collapses to one or two steps. The generator now
+*searches* for a product whose shortest explanation is k and raises rather than shipping a
+mislabelled task.
 
-### What the depth axis found
+Its honest limitations, still the reason ADR-008 was written: **the deep engine and the phasor
+ranking are not load-bearing.** Ablating the H-engine, the phasor similarity, and the
+priors/SSD knowledge all leave v2 at 100%; the synthesizer ranks by `verifier.energy`, a
+per-domain similarity heuristic that sees the whole candidate list, and finds every task within
+budget on its own. The flagship machinery costs runtime (30 s vs 13 s) and returns nothing
+measurable. Reasoning depth is bounded by `reasoning.synthesis_depth` (3). Verified
+understanding exists only where a domain has an exact check. An earlier note here also claimed
+C++ "would not pay off yet" — that measurement was about BLAS matmuls, not about this repo's
+actual hot paths, and it is now false: see the native backend section above.
 
-Building a benchmark that could actually *fail* surfaced four defects that v1
-could not see, because every v1 task was solvable by a one-or-two step program:
+## Quick start
 
-1. **`Vector3DDomain.from_json` truncated vectors to int64** (inherited from the
-   base `Domain`, correct for the grid/sequence alphabets). `0.861382` became
-   `0`, so every stored demonstration described a different function than the one
-   generated and the domain scored 0 on all composed tasks. In-memory probes
-   passed throughout; only the JSON round trip failed.
-2. **`complexity_limit` capped reasoning at depth 2.** It derived a cap from
-   input width, but a 3-vector is size 3 at any depth, so three demonstrations
-   implied a limit of 2 and every program of complexity 3+ was rejected as
-   "memorization". The reasoner looked unable to reason past two steps because a
-   guard had forbidden it.
-3. **`redundant()` pruned every rotate pair.** The base test prunes two single
-   steps of a family declared closed under composition — true for grid
-   translations, false for 3D rotations. `rotate(x,90)` then `rotate(z,90)` is
-   not a single rotation, so synthesis could not reach depth 3 at all.
-4. **`Project` made the `gravity` decoy solvable** (as `Project(0)` then
-   `Project(2)`), producing 2 false accepts against a gate that tolerates none.
+```powershell
+python -m pip install numpy pytest                      # HRM-X itself needs numpy only
+python -m pytest                                        # 436 passed, 1 skipped
+.\scripts\build_native.ps1                              # optional, enables the C++ backend
 
-The first version of the depth axis also measured nothing: the enumerated
-rotations generate the octahedral group (order 24), so a product of k random
-rotations collapses to one or two steps and every "deep" family was secretly a
-depth-1 family. The generator now *searches* for a product whose shortest
-explanation is k and raises rather than shipping a mislabelled task.
+python -m experiments.x_arith                           # E1, E2, E12 + kNN / MLP baselines
+python -m experiments.x_story                           # stories, variable binding, counterfactuals
+python -m experiments.x_grid                            # grids, two seeds via x_grid_seed1
+python -m experiments.x_control                         # E9 value-of-computation policies
+python -m experiments.x_metacog                         # curiosity, volatility
+python -m experiments.x_native                          # differential parity + timing
+```
 
-## Limitations (honest)
+Each runner writes `experiments/results/<name>.json`; nothing is claimed here that is not in one
+of those files. `experiments/common.py` holds the shared seeds, splits and baselines.
 
-- **The deep engine and the phasor ranking are not load-bearing.** Ablating the
-  H-engine, the phasor similarity, and the priors/SSD knowledge all leave v2 at
-  100%. The synthesizer ranks candidates by `verifier.energy` — a per-domain
-  similarity heuristic that sees the whole candidate list — and finds every task
-  within budget on its own. The phasor substrate is consulted only for the fast
-  path's top-8, which synthesis then subsumes. Until synthesis is either capped
-  below the true program depth or made to rank by phasor signature, the
-  flagship machinery costs runtime (30 s vs 13 s) and returns nothing
-  measurable. This is the open question, not a solved one.
-- Reasoning depth is bounded by `reasoning.synthesis_depth` (3). The fast path
-  verifies single ops only, so nothing reaches depth 4; the 4 such v2 tasks are
-  reported as an explicit ceiling rather than dropped.
-- Verified understanding exists only where a domain has an exact check. New
-  domains plug in through `hrm/perception/base.py:Domain`, and must set
-  `size_bounds_complexity = False` if their input width does not track program
-  depth.
-- Knowledge retrieval is strong for programs with phasor algebra (translate, color cycle,
-  offset, rotate) and weak for the rest at scale; invariant descriptors in the task key are
-  the planned fix.
-- The latent bridge between language-model hidden states and phasor space is not trained yet;
-  language currently acts through proposals, text perception and intent features.
-- No native kernels: profiling showed the hot paths are BLAS matmuls and per-program Python
-  overhead, so C++ would not pay off yet (see ADR-003).
+The older generations still have their own CLIs (`python -m hrm …`, `python -m hrm_eqb …`); see
+`CLAUDE.md` for those.
 
 ## Repository
 
 ```
-hrm_eqb/        HRM-EQB, the model (certified core, field, memory, files, mind, study, bench, CLI)
-hrm/            baseline program-search model (substrate, perception, reasoning, verify,
-                knowledge, language, metacognition, learning, core, model, CLI)
-tests/          pytest suite (one file per section)
-data/benchmark/ frozen benchmarks v1, v2 (data/external/: downloaded ARC + Sudoku, gitignored)
-scripts/        make_benchmark.py, update_knowledge_graph.ps1
-vault/          Obsidian knowledge vault (ADRs, session logs, concepts)
-legacy/         superseded C++ GRU engine + blueprint layer (reference only)
-docs/           Executive Summary.pdf (original design study)
+hrm_x/              HRM-X v0.5, the current model (workspace, rules, induction, mind, writer)
+                    v0.5 concept core: qlinalg, concepts (law-closed families), consolidation,
+                    situation, algebra, operators, reader (torch; not imported by __init__)
+  domains/          concept (v0.5 structural route), arith (v0.4 search + residue verifier),
+                    story (parser + situation), grid
+  native/           C ABI, egraph.cpp, grid.cpp, ctypes wrapper
+hrm_eqb/            HRM-EQB baseline: certified core, field, memory, files, mind, study, bench, CLI
+hrm/                ADR-003 program-search baseline (substrate, perception, reasoning, verify,
+                    knowledge, language, metacognition, learning, core, model, CLI)
+experiments/        x_arith, x_story, x_grid, x_control, x_metacog, x_native, common
+                    results/ holds the 8 recorded JSON results
+tests/              pytest suite, 20 files: one per ADR-003 section, test_eqb_*, test_x_*
+scripts/            update_knowledge_graph.ps1, knowledge_map.py, simplify_graph.py,
+                    build_native.ps1, make_benchmark.py, fetch_benchmarks.py
+data/benchmark/     frozen benchmarks v1, v2 (data/external/ holds downloaded ARC + Sudoku)
+vault/              Obsidian knowledge vault (specs, ADRs, session logs, code map)
+legacy/             superseded ADR-001 C++ GRU engine + blueprint (reference only)
+graphify-out/       the raw knowledge graph; the full graph is what `query`/`path`/`affected` read
+models/, runs/      gitignored trained artifacts and logs
+docs/               Executive Summary.pdf and the two reference papers
 ```
+
+The knowledge graph is regenerated with `.\scripts\update_knowledge_graph.ps1`; the default
+`claude-cli` backend needs no API key, and `-Mode code-only` is the no-LLM fallback.

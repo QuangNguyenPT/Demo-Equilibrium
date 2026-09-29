@@ -426,7 +426,7 @@ neuromodulators [E, Doya 2002; Yu & Dayan 2005]. No other hormones are added.
 | ACh-like: expected uncertainty | reliability ρ of unverified derivations | Beta mean of verify passes, per domain | [R] used in q and VOC |
 | DA-like: prediction error | outcome feedback | `Mind.feedback`: Beta update of ρ on external right/wrong | [R] |
 | NE-like: unexpected uncertainty | volatility v | surprise −log p(outcome) traced by an EMA; v = excess over the mind's own expected surprise H(ρ), clipped to [0, 1]; on each observation old counts are discounted toward the prior by 1 − 0.6·v | [R] tested (below) |
-| 5-HT-like: patience | cost of computation λ | fixed constant | [U] no learning rule proposed; left fixed on purpose |
+| 5-HT-like: patience | cost of computation λ | fixed constant | [R] learning rule implemented and **measured worse**; the constant stays. See below |
 
 **Why volatility is needed [R].** With a stale ρ ≈ 0.99, verification looks worthless, so a
 fault that enters memory is never caught. When a false law is planted after 100 tasks, with
@@ -468,12 +468,21 @@ Each check is structurally different from the predictor:
 errors. It catches reasoning faults; parse faults are caught only if they produce a
 contradiction (E10).
 
+**Limit [R] is measured, not assumed** ([[ADR-009 Free Text Is Not Yet Supported]]).
+Scored against an independent hand-written reader, 76–93% of held-out stories
+contain a misread sentence, and only **2 of 91** misread stories produced a
+confident wrong answer. That safety is *not* the verifier's doing: it comes from
+`reading_defect`, which rejects a reading missing a slot so the mind abstains. A
+misread that is structurally **complete** is confirmed — "eats" read as "acquire"
+derives the wrong number, verifies, and is confidently wrong. Any claim that this
+domain fails safe must name `reading_defect` as the reason.
+
 ## 17. Learning objectives and curriculum
 
 | Problem | Method | Why |
 |---|---|---|
 | perception (roles, schemas) | supervised gradient descent, CE on tags and schema | conventional knowledge |
-| concepts / operators | Bayesian program induction (enumerate, observational equivalence, posterior) + active questions | exactness, identifiability |
+| perception, on *unseen wording* | — **fails, measured** | exact reading 100% on seen forms, 50% with the verb changed, **0%** with the clause order changed ([[ADR-009 Free Text Is Not Yet Supported]]) || concepts / operators | Bayesian program induction (enumerate, observational equivalence, posterior) + active questions | exactness, identifiability |
 | relations / events | given schemas (TRANSFER, ACQUIRE, CONSUME); parser learns to map to them | [U] schema learning |
 | laws (abstractions) | theory exploration (testing + congruence-closure pruning) | shortens derivations |
 | search prior | counts of actions in solved programs | reduces search 50 → 30 programs (E12) |
@@ -636,18 +645,38 @@ C-ABI note).
   contradiction refusal. Then structure is unnecessary.
 - **(b)** Library learning cannot grow the operator languages needed for a new domain (e.g.
   ARC-AGI evaluation) from these primitives. Then D4 does not scale beyond hand-given DSLs.
+  — *Partly measured 2026-09-28* (`hrm_x/library.py`, `experiments/x_dsl.py`). MDL mining works
+  and the expansion is exact, but a mined step makes search **more** expensive at one use per
+  program (4,218→9,615 propose ops) and only pays when the repeated structure is a large share of
+  the program. So growth is real, the economics are not yet, and (b) stands for ARC-AGI.
 - **(c)** On free text, perception errors dominate (§20.2–3), so the exact core rarely receives
-  a correct situation.
+  a correct situation. — **Confirmed and quantified 2026-09-28** ([[ADR-009 Free Text Is Not
+  Yet Supported]]): 76–93% of held-out stories contain a misread sentence and the answer is right
+  ≤25% of the time. What fails is clause order, not vocabulary.
 
 **Most dangerous unresolved assumption: that the hypothesis languages (arithmetic primitives,
 object selectors and actions, event schemas) can be learned and grown rather than hand-given.**
 Everything exact in this design is exact *relative to* those languages. The PoC gives them;
-DreamCoder-style compression is the proposed mechanism for growing them, and it is the next
-experiment.
+DreamCoder-style compression is the proposed mechanism for growing them. It has now been built
+(`hrm_x/library.py`) and it compresses correctly, but it is not yet cheaper than the search it
+replaces — and both failures found so far (this one and (c)) are failures of *representation*
+rather than of the exact core, which is where the evidence points for the next effort.
 
 **Further open questions:**
 - Concept extension beyond the defining domain (fractional counts).
-- Non-myopic value of computation.
-- Learning event schemas from text.
+- Non-myopic value of computation — *rule implemented and measured, and it lost* (18 tests,
+  `Patience`, `hrm_x/mind.py`, off by default). `experiments/results/x_patience.json`: judged
+  against a fixed λ swept over patience's own reachable range [1e-7, 1e-1] on held-out
+  arithmetic and novel grid streams, the learned price reached −0.90 and −0.36 accuracy
+  against the best fixed price. Cause, not a tuning miss: the rule's fixed point is
+  **average** value density `U/ops`, while VOC needs **marginal** gain/cost. Where those
+  coincide it is fine (the synthetic test in `tests/test_x_patience.py` sits at 1.6e-4 and
+  works); where the episode is cheap they differ by orders of magnitude — arithmetic costs
+  ~6 ops at U≈1, so the rule climbs toward 0.167, four decades above the λ≤1e-4 band where
+  the mind still acts, and the price then freezes because `update` cannot sample from a
+  zero-op episode. A sound rule needs marginal-value telemetry that does not exist yet;
+  until then the fixed constant is the correct default and the defect is pinned by test.
+- Learning event schemas from text. The schema head is the healthier half of the perception
+  stack (0.67 exact even where roles failed), so this looks more tractable than roles.
 - Two-rational law probing.
 - Whether an HRM-Text-style neural hierarchy helps the Reader/Writer at small scale.

@@ -8,7 +8,7 @@ from hrm_x.domains.arith import Arith, ArithTask, Counter, parse, programs, run
 from hrm_x.domains.grid import GridTask, Grids, objects
 from hrm_x.domains.story import Parser, Story, StoryTask
 from hrm_x.induction import Law
-from hrm_x.mind import Controller, Mind
+from hrm_x.mind import UNKNOWN, Controller, Mind
 
 TIMES = lambda a, b: a * b
 
@@ -77,6 +77,42 @@ def story():
     parser = Parser()
     parser.train()
     return Story(parser)
+
+
+def test_a_reading_with_no_number_is_unknown_not_a_crash(story):
+    """Regression: perception can read an item without its amount ("Bob has zzitem .").
+
+    The None amount used to reach `Fraction(None)` and raise TypeError from inside a cycle of
+    Mind.solve(). It is a perception error the mind should survive -- "not defined for me" is
+    the honest answer -- not an exception the whole process dies on."""
+    r = Mind().solve(story, StoryTask(["Bob has zzitem.", "Bob gives zzitem to Alice."],
+                                      "How many zzitem does Alice have?"))
+    assert r.status in ("abstain", "answer")
+    assert r.hypotheses, "the mind must still form hypotheses about a reading it cannot quantify"
+    assert all(h.answer is UNKNOWN or h.answer is not None for h in r.hypotheses)
+    assert not r.hypotheses[0].verified, "an amount-free reading cannot pass the verifier"
+
+
+def test_a_transfer_missing_a_party_is_unknown_not_a_crash(story):
+    """Same class of defect on the other side: an item and a number, but no destination."""
+    r = Mind().solve(story, StoryTask(["Bob has 3 apples.", "Bob gives 2 apples to nobody."],
+                                      "How many apples does Bob have?"))
+    assert r.status in ("abstain", "answer")
+
+
+def test_the_verifier_reports_the_defect_instead_of_returning_an_answer(story):
+    from hrm_x.domains.story import frames_for, reading_defect
+    frames = [f for f, _ in frames_for(story.parser, "Bob has zzitem.")]
+    assert reading_defect(type("R", (), {"frames": frames, "question": frames[0]})()) is not None
+    assert reading_defect(type("R", (), {"frames": [], "question": type("Q", (), {
+        "show": lambda self: "ask()",
+        "schema": "Q_ONE",
+        "amount": 1,
+        "item": "x",
+        "owner": ("A",),
+        "src": None,
+        "dst": None,
+    })()})()) is None
 
 
 def test_story_state_changes_are_derived(story):

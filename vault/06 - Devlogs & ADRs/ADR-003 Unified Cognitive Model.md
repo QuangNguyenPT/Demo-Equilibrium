@@ -10,12 +10,28 @@ tags:
   - knowledge
   - metacognition
   - self-study
-status: accepted
+status: accepted-baseline
 date: 2026-09-27
 supersedes: "[[ADR-001 Hybrid C++ Engine with Python Blueprint]]"
 ---
 
 # ADR-003: Unified Cognitive Model
+
+> [!NOTE] Status: accepted **as the baseline**, not as the model
+> This design was built (P0–P6, 197 tests) and is measured, so the record stands —
+> but `hrm/` is now the **program-search baseline** that later work is compared
+> against, not the design target. It was superseded as *the model* by ADR-005
+> (HRM-Φ / HRM-EQB) and then by [[ADR-008 Operator Inference over Structured
+> Situations]] (HRM-X v0.4, in `hrm_x/`), whose specification is normative.
+>
+> Two path corrections to the text below:
+> - The root `src/`, `include/` and `apps/` paths this ADR discusses under
+>   "Decision — C++ backend" **no longer exist at the repository root**. They were
+>   moved to `legacy/` by the same decision, and were never live.
+> - Phase **P7 (native C++ backend)** was deferred by measurement here (see
+>   "P7 native backend — deferred by measurement") and did **not** land as a
+>   rewrite of this design. It landed later, scoped to the e-graph kernels of a
+>   different model, as `hrm_x/native/` under ADR-008.
 
 ## Context
 

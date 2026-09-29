@@ -1,24 +1,412 @@
 {
-	"nodes":[
-		{"id":"concept_hrm","type":"text","text":"### 🧠 Hierarchical Reasoning Model (HRM)\n- **Multi-Timescale Architecture**: Nested recurrent loops\n- **High-Level Planner ($z_H$)**: Operates slowly on abstract plans\n- **Low-Level Executor ($z_L$)**: Operates rapidly on detail steps\n- **Deep Algorithmic Thinking**: Multi-step forward pass without verbose chain-of-thought token emission","x":-450,"y":180,"width":400,"height":360,"color":"5"},
-		{"id":"problem_memory_wall","type":"text","text":"### 🛑 The Memory Wall & Scale Bottleneck\n- **2.78 Trillion Parameters** = 5.56 TB in standard BF16\n- **O(T²) Quadratic Attention**: Standard KV cache grows linearly with context, blowing past consumer VRAM/DRAM\n- **Wall is Capacity, Not Compute**: Waiting for faster GPUs doesn't fix models that physically exceed RAM","x":-1280,"y":-570,"width":380,"height":330,"color":"1"},
-		{"id":"reduction_cascade","type":"text","text":"### 📉 The Four Memory Reductions\n- **5,560 GB** (Baseline BF16)\n  ⬇️ *Reduction 1: MXFP4 Quantization*\n- **1,560 GB** (Shipped Checkpoint: 0.53B/param)\n  ⬇️ *Reduction 2: MoE Dynamic Routing (16 of 896 experts)*\n- **113.49 GB** (Always-Active Dense Trunk)\n  ⬇️ *Reduction 3 & 4: KDA/MLA + O_DIRECT NVMe Streaming*\n- **8.24 GB** (Measured Peak RSS on 1 CPU, 0 GPUs)\n\n**Total: 675× Memory Reduction with Byte-Identical Output**","x":-780,"y":-340,"width":420,"height":400,"color":"4"},
-		{"id":"concept_kda","type":"text","text":"### 🔁 KDA: Kimi Delta Attention\n- **69 of 93 layers** in Kimi K3\n- **Recurrent Linear Attention**: Constant $O(1)$ memory footprint\n- **Input-Dependent Decay Gate**: Bounded by $\\text{gate\\_lb} = -5.0$\n- **Depthwise 1D Causal Conv**: $k=4$, SiLU fused\n- **KV Cache Never Grows**: Eliminates sequence length memory scaling!","x":40,"y":-675,"width":380,"height":210,"color":"2"},
-		{"id":"concept_mla","type":"text","text":"### 🎯 MLA: Multi-Head Latent Attention\n- **24 of 93 layers** (Global attention checkpoints)\n- **Latent Low-Rank KV Compression**: Compresses 96 attention heads into a single 512-dim latent vector\n- **NoPE Mechanism**: Rotary position embedding bypassed on 64 dimensions while maintaining head slot geometry\n- **Dramatic Bandwidth Reduction** during autoregressive decode","x":40,"y":-370,"width":380,"height":210,"color":"2"},
-		{"id":"concept_moe","type":"text","text":"### 🔀 Block-Sparse Mixture of Experts (MoE)\n- **896 Routed Experts** + **2 Resident Shared Experts**\n- **Top-16 Sparse Activation**: Only 3.7% of parameters active per token; 96.3% remain asleep on disk\n- **1.447 TB of Experts** streamed directly on-demand\n- **Unbiased Sigmoid Scoring**: Router bias steers expert selection only; combination preserves unskewed weights","x":40,"y":-100,"width":380,"height":220,"color":"3"},
-		{"id":"concept_systems_c","type":"text","text":"### ⚙️ Systems Engineering & Bare-Metal C/C++\n- **Zero-Allocation Arena**: 64-byte cache line aligned bump arena; zero runtime `malloc` during passes\n- **Direct I/O (`O_DIRECT`)**: Bypasses OS page cache, achieving 5.9 GB/s NVMe throughput\n- **Bit-Identical Contract (`-ffp-contract=off`)**: Enforces bit-for-bit equivalence across scalar, OpenMP, and AVX2\n- **176 KB Engine Binary**: Zero external framework dependencies","x":820,"y":-220,"width":420,"height":230,"color":"6"},
-		{"id":"concept_act","type":"text","text":"### ⏱️ Adaptive Computation Time (ACT)\n- **Learned $Q$-Head Halting**: $q = [q_{\\text{halt}}, q_{\\text{continue}}]$\n- **Dynamic Compute Allocation**: Simple queries exit at Step 1; complex puzzles iterate up to $R_{\\text{max}}$\n- **Softmax Confidence Threshold**: Terminates iteration when $p_{\\text{halt}} \\ge \\tau$\n- **Saves Up to 80% Compute** in production inference","x":300,"y":310,"width":380,"height":200,"color":"5"},
-		{"id":"concept_agentic_kg","type":"text","text":"### 🕸️ Agentic Knowledge Graph & Non-Parametric Grounding\n- **Structured Curated Edges Over Model Extraction**: Avoids costly LLM extraction ($33k GraphRAG indexing) by parsing structured metadata (PubMed/MeSH)\n- **Zero-Hallucination Grounding**: Longest-match entity lookup directly onto graph entry points\n- **Verifiable Traversal**: Agent walks explicit knowledge paths, cites graph triples, and refuses when no valid path exists","x":-1260,"y":160,"width":400,"height":380,"color":"4"}
-	],
-	"edges":[
-		{"id":"edge_wall_to_reductions","fromNode":"problem_memory_wall","fromSide":"right","toNode":"reduction_cascade","toSide":"left","label":"SOLVED BY"},
-		{"id":"edge_reductions_to_kda","fromNode":"reduction_cascade","fromSide":"right","toNode":"concept_kda","toSide":"left","label":"REDUCTION 2: O(1) MEMORY"},
-		{"id":"edge_reductions_to_mla","fromNode":"reduction_cascade","fromSide":"right","toNode":"concept_mla","toSide":"left","label":"REDUCTION 3: LATENT KV"},
-		{"id":"edge_reductions_to_moe","fromNode":"reduction_cascade","fromSide":"right","toNode":"concept_moe","toSide":"left","label":"REDUCTION 1: SPARSITY"},
-		{"id":"edge_kda_to_systems","fromNode":"concept_kda","fromSide":"right","toNode":"concept_systems_c","toSide":"top","label":"COMPILED AS AVX2 KERNEL"},
-		{"id":"edge_moe_to_systems","fromNode":"concept_moe","fromSide":"right","toNode":"concept_systems_c","toSide":"left","label":"STREAMED VIA O_DIRECT"},
-		{"id":"edge_hrm_to_act","fromNode":"concept_hrm","fromSide":"right","toNode":"concept_act","toSide":"left","label":"HALTING GOVERNED BY"},
-		{"id":"edge_act_to_systems","fromNode":"concept_act","fromSide":"right","toNode":"concept_systems_c","toSide":"bottom","label":"EARLY EXIT DISPATCH"},
-		{"id":"edge_kg_to_hrm","fromNode":"concept_agentic_kg","fromSide":"right","toNode":"concept_hrm","toSide":"left","label":"GROUNDS REASONING PATHS"}
-	]
+  "nodes": [
+    {
+      "id": "aim",
+      "type": "text",
+      "text": "### 🧭 What this vault is for\n\n**HRM / HRM-X** is a study of *understanding as operator inference*.\n\nA task is a **situation + operator + question**. Understanding means inferring the operator and executing it exactly, then checking the answer in a representation different from the one that produced it.\n\nSince v0.5 a hypothesis is not a program the mind searches for. It is a **family** — the exact solution set of a law set — fitted exactly over ℚ.\n\nWhat this project is **not**:\n- not a language model, and not a chain-of-thought prompt;\n- not a library lookup dressed up as reasoning;\n- not a model of perception (ADR-009 measured that as the broken component);\n- not a description of any large trained checkpoint.",
+      "x": -1780,
+      "y": -760,
+      "width": 460,
+      "height": 460,
+      "color": "5"
+    },
+    {
+      "id": "rules",
+      "type": "text",
+      "text": "### 📐 How to read this canvas\n\nFour columns, left to right:\n\n1. **The model** — the code that runs today.\n2. **The baselines** — kept alive so every claim has something to be compared against.\n3. **The evidence** — the specs and ADRs that say what is claimed and what is refused.\n4. **The concepts** — background for our own design only.\n\nEverything in `External Research/` is deliberately *outside* this picture. See [[00 - Knowledge Graph Index]].",
+      "x": -1780,
+      "y": -260,
+      "width": 460,
+      "height": 340,
+      "color": "1"
+    },
+    {
+      "id": "g_current",
+      "type": "group",
+      "label": "HRM-X — the current model (hrm_x/)",
+      "x": -1260,
+      "y": -760,
+      "width": 720,
+      "height": 460,
+      "color": "4"
+    },
+    {
+      "id": "x_mind",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM-X Mind & Induction.md",
+      "x": -1240,
+      "y": -730,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "x_concept",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM-X Concept Induction (v0.5).md",
+      "x": -890,
+      "y": -730,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "x_dom",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM-X Domains.md",
+      "x": -1240,
+      "y": -620,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "x_ws",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM-X Workspace & Rules.md",
+      "x": -890,
+      "y": -620,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "x_dsl",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM-X DSL Library.md",
+      "x": -1240,
+      "y": -510,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "x_exp",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM-X Experiments.md",
+      "x": -890,
+      "y": -510,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "x_native",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM-X Native Backend.md",
+      "x": -1240,
+      "y": -400,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "g_base",
+      "type": "group",
+      "label": "Baselines — measured against, never deleted",
+      "x": -440,
+      "y": -760,
+      "width": 720,
+      "height": 460,
+      "color": "5"
+    },
+    {
+      "id": "eqb_core",
+      "type": "file",
+      "file": "vault/09 - Code Map/EQB Equilibrium Core.md",
+      "x": -420,
+      "y": -730,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "eqb_alg",
+      "type": "file",
+      "file": "vault/09 - Code Map/EQB Algebra & Certified Maps.md",
+      "x": -70,
+      "y": -730,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "eqb_coda",
+      "type": "file",
+      "file": "vault/09 - Code Map/EQB Model & Language Coda.md",
+      "x": -420,
+      "y": -620,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "eqb_train",
+      "type": "file",
+      "file": "vault/09 - Code Map/EQB Training, Study & Bench.md",
+      "x": -70,
+      "y": -620,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "hrm_reason",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM Reasoning.md",
+      "x": -420,
+      "y": -510,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "hrm_verify",
+      "type": "file",
+      "file": "vault/09 - Code Map/HRM Verification.md",
+      "x": -70,
+      "y": -510,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "g_evid",
+      "type": "group",
+      "label": "Evidence — what is claimed, and what is refused",
+      "x": 380,
+      "y": -760,
+      "width": 720,
+      "height": 460,
+      "color": "3"
+    },
+    {
+      "id": "spec_x",
+      "type": "file",
+      "file": "vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md",
+      "x": 400,
+      "y": -730,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "spec_eqb",
+      "type": "file",
+      "file": "vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md",
+      "x": 750,
+      "y": -730,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "adr10",
+      "type": "file",
+      "file": "vault/06 - Devlogs & ADRs/ADR-010 Structural Operator Inference.md",
+      "x": 400,
+      "y": -620,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "adr8",
+      "type": "file",
+      "file": "vault/06 - Devlogs & ADRs/ADR-008 Operator Inference over Structured Situations.md",
+      "x": 750,
+      "y": -620,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "adr9",
+      "type": "file",
+      "file": "vault/06 - Devlogs & ADRs/ADR-009 Free Text Is Not Yet Supported.md",
+      "x": 400,
+      "y": -510,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "adr3",
+      "type": "file",
+      "file": "vault/06 - Devlogs & ADRs/ADR-003 Unified Cognitive Model.md",
+      "x": 750,
+      "y": -510,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "adr5",
+      "type": "file",
+      "file": "vault/06 - Devlogs & ADRs/ADR-005 Neural HRM-Phi Replaces Program Search.md",
+      "x": 400,
+      "y": -400,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "g_conc",
+      "type": "group",
+      "label": "Concepts that are ours",
+      "x": 1200,
+      "y": -760,
+      "width": 720,
+      "height": 300,
+      "color": "6"
+    },
+    {
+      "id": "c_hrm",
+      "type": "file",
+      "file": "vault/Knowledge Graph/Entities & Concepts/Concept - Hierarchical Multi-Timescale Reasoning (HRM).md",
+      "x": 1220,
+      "y": -730,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "c_act",
+      "type": "file",
+      "file": "vault/Knowledge Graph/Entities & Concepts/Concept - Adaptive Computation Time (ACT).md",
+      "x": 1570,
+      "y": -730,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "c_pem",
+      "type": "file",
+      "file": "vault/Knowledge Graph/Entities & Concepts/Concept - PEM Phasor Equilibrium Machine.md",
+      "x": 1220,
+      "y": -620,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "c_attn",
+      "type": "file",
+      "file": "vault/Knowledge Graph/Entities & Concepts/Concept - Attention Residuals (RealFormer & AttnRes).md",
+      "x": 1570,
+      "y": -620,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "g_ext",
+      "type": "group",
+      "label": "External — studied, quarantined, not our system",
+      "x": 1200,
+      "y": -360,
+      "width": 720,
+      "height": 180,
+      "color": "2"
+    },
+    {
+      "id": "ext_idx",
+      "type": "file",
+      "file": "vault/Knowledge Graph/External Research (Kimi K3)/00 - External Research Index.md",
+      "x": 1220,
+      "y": -330,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "g_start",
+      "type": "group",
+      "label": "Start here",
+      "x": -1260,
+      "y": -180,
+      "width": 720,
+      "height": 330,
+      "color": "1"
+    },
+    {
+      "id": "start_subs",
+      "type": "file",
+      "file": "vault/09 - Code Map/00 - Code Subsystems.md",
+      "x": -1240,
+      "y": -150,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "start_map",
+      "type": "file",
+      "file": "vault/00 - Meta & Indexes/Code Map.md",
+      "x": -890,
+      "y": -150,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "start_plan",
+      "type": "file",
+      "file": "vault/00 - Meta & Indexes/Task Plan.md",
+      "x": -1240,
+      "y": -40,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "start_sess",
+      "type": "file",
+      "file": "vault/08 - Chat Context & Sessions/00 - Session Index.md",
+      "x": -890,
+      "y": -40,
+      "width": 330,
+      "height": 80
+    },
+    {
+      "id": "start_now",
+      "type": "file",
+      "file": "vault/08 - Chat Context & Sessions/Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup.md",
+      "x": -1065,
+      "y": 70,
+      "width": 330,
+      "height": 80
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_aim_current",
+      "fromNode": "aim",
+      "fromSide": "right",
+      "toNode": "g_current",
+      "toSide": "left",
+      "label": "IS"
+    },
+    {
+      "id": "e_current_base",
+      "fromNode": "g_current",
+      "fromSide": "right",
+      "toNode": "g_base",
+      "toSide": "left",
+      "label": "MEASURED AGAINST"
+    },
+    {
+      "id": "e_current_evid",
+      "fromNode": "g_evid",
+      "fromSide": "left",
+      "toNode": "g_current",
+      "toSide": "right",
+      "label": "GOVERNS"
+    },
+    {
+      "id": "e_evid_conc",
+      "fromNode": "g_evid",
+      "fromSide": "right",
+      "toNode": "g_conc",
+      "toSide": "left",
+      "label": "DRAWS ON"
+    },
+    {
+      "id": "e_ext_sep",
+      "fromNode": "g_ext",
+      "fromSide": "left",
+      "toNode": "g_conc",
+      "toSide": "bottom",
+      "label": "SEPARATE FROM"
+    },
+    {
+      "id": "e_start_current",
+      "fromNode": "g_start",
+      "fromSide": "top",
+      "toNode": "g_current",
+      "toSide": "bottom",
+      "label": "ORIENTATION"
+    },
+    {
+      "id": "e_rules_evid",
+      "fromNode": "rules",
+      "fromSide": "right",
+      "toNode": "g_evid",
+      "toSide": "left",
+      "label": "READ"
+    }
+  ]
 }

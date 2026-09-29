@@ -30,7 +30,20 @@ tags:
 
 ## Governed by (specs, ADRs, concepts, guides)
 
+- [[ADR-001 Hybrid C++ Engine with Python Blueprint]]
+- [[ADR-003 Unified Cognitive Model]]
+- [[Build & Toolchain Guide]]
+- [[C-ABI & Interop Specification]]
+- [[Configuration & Hyperparameters]]
+- [[Development Workflow & Conventions]]
+- [[Devlog - 2026-09 - Project Foundation]]
+- [[Engine Architecture & Memory Model]]
+- [[HRM Recurrent Stepper & ACT]]
 - [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
+- [[Hybrid System Philosophy]]
+- [[Kernel Specifications]]
+- [[Model Blueprint & Graph Layout]]
+- [[Tensor Flow & Data Pipelines]]
 
 ## Changed or discussed in sessions
 

@@ -13,12 +13,12 @@ tags:
 
 | module | what it does | lines |
 |---|---|---|
-| `scripts/build_native.ps1` | Build the HRM-X native backend (C ABI, loaded by hrm_x/native via ctypes). | 29 |
+| `scripts/build_native.ps1` | Build the HRM-X native backend (C ABI, loaded by hrm_x/native via ctypes). | 30 |
 | `scripts/fetch_benchmarks.py` | Download ARC-AGI-1 and Sudoku-Extreme (test split) into data/external/ (gitignored). | 41 |
-| `scripts/knowledge_map.py` | Curated Obsidian code map: one note per subsystem, linked to the notes that govern and changed it. | 424 |
+| `scripts/knowledge_map.py` | Curated Obsidian code map: one note per subsystem, linked to the notes that govern and changed it. | 435 |
 | `scripts/make_benchmark.py` | Build a frozen benchmark (run once, keep the output). | 62 |
-| `scripts/simplify_graph.py` | Prune graphify's raw graph down to a human-reviewable graph. | 180 |
-| `scripts/update_knowledge_graph.ps1` | Update knowledge graph after modifying the project. | 129 |
+| `scripts/simplify_graph.py` | Prune graphify's raw graph down to a human-reviewable graph. | 315 |
+| `scripts/update_knowledge_graph.ps1` | Update knowledge graph after modifying the project. | 178 |
 
 ## Depends on
 
@@ -30,6 +30,7 @@ tags:
 
 ## Governed by (specs, ADRs, concepts, guides)
 
+- [[Configuration & Hyperparameters]]
 - [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
 
 ## Changed or discussed in sessions
@@ -39,7 +40,9 @@ tags:
 - [[Session - 2026-09-27 - Graph Rebuild and Benchmarks]] — commits `6e892b3`
 - [[Session - 2026-09-27 - HRM-EQB Full Build]] — commits `483c0c1`
 - [[Session - 2026-09-27 - Understanding by Construction]] — commits `6b28b26`
+- [[Session - 2026-09-28 - DSL Growth, Free Text, and the Graph Pipeline]] — named in the log
 - [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] — commits `d5bacb1`
+- [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — named in the log
 
 ## Tests
 

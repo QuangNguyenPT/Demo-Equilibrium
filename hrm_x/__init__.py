@@ -1,4 +1,13 @@
-"""HRM-X v0.4: operator inference over structured situations, under value-of-computation control.
+"""HRM-X v0.5: structural operator inference, under value-of-computation control.
 
-Spec: vault/01 - Architecture Blueprint/HRM-X Specification v0.4 - Operator Inference over Structured Situations.md
+A hypothesis is no longer a program that has to be found by search. It is a
+*family* -- the exact solution set of a law set -- whose rational parameters are
+fitted exactly, and which may answer a query only where Theorem 3 says the
+evidence determines it. The v0.4 program-search route is still here in
+`hrm_x/domains/arith.py` and `hrm_x/library.py`, because it is the baseline the
+new route is measured against in `experiments/x_v05.py`, not because it is the
+default.
+
+Spec: vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structure-Preserving Operator Inference.md
+Decision: vault/06 - Devlogs & ADRs/ADR-010 Structural Operator Inference.md
 """

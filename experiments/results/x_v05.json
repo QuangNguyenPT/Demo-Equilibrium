@@ -1,0 +1,303 @@
+{
+  "experiment": "x_v05",
+  "config": {
+    "experiment": "E13 v0.5 concept route vs v0.4 arith route, one mind",
+    "tables": {
+      "E13a general": 10,
+      "E13b pinned-argument": 5
+    }
+  },
+  "metrics": {
+    "concept, open world + teacher [E13a general, all]": {
+      "n": 21,
+      "correct": 14,
+      "wrong": 7,
+      "abstain": 0,
+      "mean_ops": 751.5,
+      "mean_asks": 0.667
+    },
+    "concept, open world + teacher [E13a general, in-language]": {
+      "n": 15,
+      "correct": 13,
+      "wrong": 2,
+      "abstain": 0,
+      "mean_ops": 593.2,
+      "mean_asks": 0.533
+    },
+    "concept, open world + teacher [E13a general, out-of-language]": {
+      "n": 6,
+      "correct": 1,
+      "wrong": 5,
+      "abstain": 0,
+      "mean_ops": 1147.3,
+      "mean_asks": 1.0
+    },
+    "concept, open world + teacher [E13b pinned-argument, all]": {
+      "n": 5,
+      "correct": 2,
+      "wrong": 3,
+      "abstain": 0,
+      "mean_ops": 1618.2,
+      "mean_asks": 1.6
+    },
+    "concept, open world + teacher [E13b pinned-argument, in-language]": {
+      "n": 2,
+      "correct": 2,
+      "wrong": 0,
+      "abstain": 0,
+      "mean_ops": 599.0,
+      "mean_asks": 1.0
+    },
+    "concept, open world + teacher [E13b pinned-argument, out-of-language]": {
+      "n": 3,
+      "correct": 0,
+      "wrong": 3,
+      "abstain": 0,
+      "mean_ops": 2297.7,
+      "mean_asks": 2.0
+    },
+    "concept, closed world + teacher [E13a general, all]": {
+      "n": 21,
+      "correct": 14,
+      "wrong": 7,
+      "abstain": 0,
+      "mean_ops": 751.5,
+      "mean_asks": 0.667
+    },
+    "concept, closed world + teacher [E13a general, in-language]": {
+      "n": 15,
+      "correct": 13,
+      "wrong": 2,
+      "abstain": 0,
+      "mean_ops": 593.2,
+      "mean_asks": 0.533
+    },
+    "concept, closed world + teacher [E13a general, out-of-language]": {
+      "n": 6,
+      "correct": 1,
+      "wrong": 5,
+      "abstain": 0,
+      "mean_ops": 1147.3,
+      "mean_asks": 1.0
+    },
+    "concept, closed world + teacher [E13b pinned-argument, all]": {
+      "n": 5,
+      "correct": 2,
+      "wrong": 3,
+      "abstain": 0,
+      "mean_ops": 1604.4,
+      "mean_asks": 1.6
+    },
+    "concept, closed world + teacher [E13b pinned-argument, in-language]": {
+      "n": 2,
+      "correct": 2,
+      "wrong": 0,
+      "abstain": 0,
+      "mean_ops": 576.5,
+      "mean_asks": 1.0
+    },
+    "concept, closed world + teacher [E13b pinned-argument, out-of-language]": {
+      "n": 3,
+      "correct": 0,
+      "wrong": 3,
+      "abstain": 0,
+      "mean_ops": 2289.7,
+      "mean_asks": 2.0
+    },
+    "concept, no teacher [E13a general, all]": {
+      "n": 21,
+      "correct": 9,
+      "wrong": 8,
+      "abstain": 4,
+      "mean_ops": 643.1,
+      "mean_asks": 0.0
+    },
+    "concept, no teacher [E13a general, in-language]": {
+      "n": 15,
+      "correct": 9,
+      "wrong": 4,
+      "abstain": 2,
+      "mean_ops": 678.4,
+      "mean_asks": 0.0
+    },
+    "concept, no teacher [E13a general, out-of-language]": {
+      "n": 6,
+      "correct": 0,
+      "wrong": 4,
+      "abstain": 2,
+      "mean_ops": 555.0,
+      "mean_asks": 0.0
+    },
+    "concept, no teacher [E13b pinned-argument, all]": {
+      "n": 5,
+      "correct": 2,
+      "wrong": 3,
+      "abstain": 0,
+      "mean_ops": 577.0,
+      "mean_asks": 0.0
+    },
+    "concept, no teacher [E13b pinned-argument, in-language]": {
+      "n": 2,
+      "correct": 2,
+      "wrong": 0,
+      "abstain": 0,
+      "mean_ops": 617.5,
+      "mean_asks": 0.0
+    },
+    "concept, no teacher [E13b pinned-argument, out-of-language]": {
+      "n": 3,
+      "correct": 0,
+      "wrong": 3,
+      "abstain": 0,
+      "mean_ops": 550.0,
+      "mean_asks": 0.0
+    },
+    "concept, open world + L=4 [E13a general, all]": {
+      "n": 21,
+      "correct": 0,
+      "wrong": 0,
+      "abstain": 21,
+      "mean_ops": 502.0,
+      "mean_asks": 0.0
+    },
+    "concept, open world + L=4 [E13a general, in-language]": {
+      "n": 15,
+      "correct": 0,
+      "wrong": 0,
+      "abstain": 15,
+      "mean_ops": 515.2,
+      "mean_asks": 0.0
+    },
+    "concept, open world + L=4 [E13a general, out-of-language]": {
+      "n": 6,
+      "correct": 0,
+      "wrong": 0,
+      "abstain": 6,
+      "mean_ops": 469.0,
+      "mean_asks": 0.0
+    },
+    "concept, open world + L=4 [E13b pinned-argument, all]": {
+      "n": 5,
+      "correct": 0,
+      "wrong": 0,
+      "abstain": 5,
+      "mean_ops": 467.8,
+      "mean_asks": 0.0
+    },
+    "concept, open world + L=4 [E13b pinned-argument, in-language]": {
+      "n": 2,
+      "correct": 0,
+      "wrong": 0,
+      "abstain": 2,
+      "mean_ops": 475.0,
+      "mean_asks": 0.0
+    },
+    "concept, open world + L=4 [E13b pinned-argument, out-of-language]": {
+      "n": 3,
+      "correct": 0,
+      "wrong": 0,
+      "abstain": 3,
+      "mean_ops": 463.0,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, teacher [E13a general, all]": {
+      "n": 21,
+      "correct": 9,
+      "wrong": 4,
+      "abstain": 8,
+      "mean_ops": 4247.2,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, teacher [E13a general, in-language]": {
+      "n": 15,
+      "correct": 7,
+      "wrong": 4,
+      "abstain": 4,
+      "mean_ops": 4265.2,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, teacher [E13a general, out-of-language]": {
+      "n": 6,
+      "correct": 2,
+      "wrong": 0,
+      "abstain": 4,
+      "mean_ops": 4202.3,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, teacher [E13b pinned-argument, all]": {
+      "n": 5,
+      "correct": 3,
+      "wrong": 0,
+      "abstain": 2,
+      "mean_ops": 4243.2,
+      "mean_asks": 0.2
+    },
+    "arith v0.4, teacher [E13b pinned-argument, in-language]": {
+      "n": 2,
+      "correct": 2,
+      "wrong": 0,
+      "abstain": 0,
+      "mean_ops": 4301.5,
+      "mean_asks": 0.5
+    },
+    "arith v0.4, teacher [E13b pinned-argument, out-of-language]": {
+      "n": 3,
+      "correct": 1,
+      "wrong": 0,
+      "abstain": 2,
+      "mean_ops": 4204.3,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, no teacher [E13a general, all]": {
+      "n": 21,
+      "correct": 9,
+      "wrong": 4,
+      "abstain": 8,
+      "mean_ops": 4247.2,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, no teacher [E13a general, in-language]": {
+      "n": 15,
+      "correct": 7,
+      "wrong": 4,
+      "abstain": 4,
+      "mean_ops": 4265.2,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, no teacher [E13a general, out-of-language]": {
+      "n": 6,
+      "correct": 2,
+      "wrong": 0,
+      "abstain": 4,
+      "mean_ops": 4202.3,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, no teacher [E13b pinned-argument, all]": {
+      "n": 5,
+      "correct": 2,
+      "wrong": 0,
+      "abstain": 3,
+      "mean_ops": 4233.8,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, no teacher [E13b pinned-argument, in-language]": {
+      "n": 2,
+      "correct": 1,
+      "wrong": 0,
+      "abstain": 1,
+      "mean_ops": 4278.0,
+      "mean_asks": 0.0
+    },
+    "arith v0.4, no teacher [E13b pinned-argument, out-of-language]": {
+      "n": 3,
+      "correct": 1,
+      "wrong": 0,
+      "abstain": 2,
+      "mean_ops": 4204.3,
+      "mean_asks": 0.0
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-29 19:43:56"
+}

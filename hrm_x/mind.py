@@ -23,6 +23,9 @@ from typing import Any, Dict, FrozenSet, List, Optional, Protocol, Tuple
 UNKNOWN = "undefined"
 
 
+DEFAULT_LAM = 2e-5
+
+
 @dataclass
 class Hyp:
     key: str
@@ -74,16 +77,107 @@ class Domain(Protocol):
 
 
 @dataclass
+class Patience:
+    """5-HT-like: the price of one inference op, in utility units. Learns instead of being fixed.
+
+    Spec v0.4 §14 left lambda "[U] no learning rule proposed; left fixed on purpose", and
+    Modulators had to carry that as a caveat. This is the rule.
+
+    The economic reading: lambda is the exchange rate between utility and ops. A controller
+    that acts when VOC(a) = E[U after a] - U - lambda*cost(a) > 0 stops paying exactly when
+    the marginal value of an op falls to its price, so the *correct* price is the marginal
+    value density, not a constant chosen by hand. The mind observes that density directly:
+    over an episode it spent `ops` and ended holding utility `utility`, so
+
+        d = utility / ops
+
+    is a sample of value-per-op. Lambda is driven to that sample by log-space dual ascent,
+
+        lam <- lam * exp(eta * (log d - log lam)),
+
+    whose fixed point is lam = d. Multiplicative because lambda and d are both positive and
+    the update must be scale-free; log-space because the interesting range spans decades
+    (2e-5 is the default and d can be 1e-1). `shrink` keeps the estimate anchored to `base`,
+    so a single unrepresentative episode cannot drag the price somewhere absurd, and
+    `bound` keeps it positive and finite.
+
+    Under volatility the old reliability evidence is stale, so the price is scaled up
+    (1 + coupling * volatility): after the world changes, being patient is how you waste the
+    most compute on a model you no longer trust. That is the NE-high / 5-HT-low direction,
+    and it is the one coupling here that is a prediction rather than a tautology -- it is
+    tested in tests/test_x_patience.py.
+
+    Off by default, and now measured rather than merely unproven. `experiments/x_patience.py`
+    judged this rule against a fixed lambda swept over this class's own reachable range
+    [1e-7, 1e-1] on held-out arithmetic and novel grid streams; the learned price reached
+    -0.90 and -0.36 accuracy against the best fixed price, so the fixed constant stays.
+
+    The cause is structural, not a tuning miss. The fixed point above is *average* value
+    density U/ops, while the VOC rule needs *marginal* gain/cost. Where the two coincide the
+    rule is fine -- `test_the_price_is_a_live_control_variable_and_learning_it_beats_both_extremes`
+    builds a domain whose density is 1.6e-4, right at break-even. Where an episode is cheap
+    they differ by orders of magnitude: arithmetic costs ~6 ops at U~1, so the rule climbs
+    toward 0.167, four decades above the band (lambda <= 1e-4) where the mind still acts. It
+    then freezes, because `update` cannot take a density sample from a zero-op episode, which
+    makes being priced out an absorbing state rather than an oscillation.
+
+    So do not simply turn this on. A replacement needs marginal-value telemetry that does not
+    exist yet, and therefore a decision record of its own. Two tests in test_x_patience.py
+    characterize the defect on purpose; if you change `update`, expect them to fail.
+    """
+
+    lam: float = DEFAULT_LAM
+    base: Optional[float] = None          # None = inherit Mind.control.lam, the one source of truth
+    eta: float = 0.15
+    shrink: float = 0.9
+    coupling: float = 1.0
+    bound: Tuple[float, float] = (1e-7, 1e-1)
+    density: float = 0.0
+    seen: float = 0.0
+
+    def prior(self) -> float:
+        """The value lambda returns to. `None` base means "whatever the Controller says"."""
+        return DEFAULT_LAM if self.base is None else self.base
+
+    def price(self, volatility: float = 0.0) -> float:
+        """The lambda the loop should use now: the learned price, raised while the world is unstable."""
+        return min(self.bound[1], self.lam * (1.0 + self.coupling * max(0.0, volatility)))
+
+    def update(self, ops: int, utility: float) -> float:
+        """Fold one finished episode into the price. Returns the new lambda.
+
+        There is no special case for a worthless episode. A density of 0 enters the EMA like
+        any other sample, drags the density down, and the ascent toward the lower target does
+        the work at a bounded step. (An earlier version decayed lambda directly by
+        `1 - shrink`; with shrink=0.99 that moved the price 99% on one bad episode, which is
+        the anchoring this class is supposed to provide.)
+        """
+        if ops <= 0:
+            return self.lam                      # no ops, no density sample
+        d = max(utility, 0.0) / ops
+        self.density = d if self.seen == 0.0 else self.shrink * self.density + (1.0 - self.shrink) * d
+        self.seen += 1.0
+        target = max(self.density, self.bound[0])
+        self.lam = min(self.bound[1], max(self.bound[0],
+                                         self.lam * math.exp(self.eta * (math.log(target) - math.log(self.lam)))))
+        return self.lam
+
+    def reset(self) -> None:
+        self.lam, self.density, self.seen = self.prior(), 0.0, 0.0
+
+
+@dataclass
 class Controller:
     """Knobs of the metareasoning; `lam` prices one inference op in utility units."""
 
-    lam: float = 2e-5
+    lam: float = DEFAULT_LAM
     wrong_penalty: float = 1.0
     verify_ops: float = 50.0
     ask_ops: float = 2000.0
     max_cycles: int = 40
     use_verifier: bool = True
     use_questions: bool = True
+    learn_patience: bool = False       # opt in; measured worse than the constant (see Patience)
 
 
 @dataclass
@@ -97,8 +191,10 @@ class Modulators:
         exceeds the surprise the mind itself expects, the entropy H(rho) (its expected uncertainty).
         High volatility means the world changed, so old reliability evidence is discounted before
         the new outcome is counted.
-    patience (5-HT-like) is the price of computation Controller.lam; fixed here, since nothing
-        measured so far needs it to adapt.
+    patience (5-HT-like) is the price of computation. It is a fixed constant in
+        `Controller.lam` unless `Controller.learn_patience` is set, in which case
+        `Patience` drives it from the value-per-op the mind actually observes. This
+        modulator's job is to supply the volatility that scales that price.
     """
 
     enabled: bool = True
@@ -127,6 +223,28 @@ class Mind:
     episodes: List[Tuple[str, Any, Result]] = field(default_factory=list)
     stats: Dict[str, List[float]] = field(default_factory=dict)
     modulators: Modulators = field(default_factory=Modulators)
+    patience: Patience = field(default_factory=Patience)
+
+    def __post_init__(self) -> None:
+        # One source of truth for the price's prior. `Controller.lam` is it: the value the mind
+        # starts from and returns to. Patience inherits it, and starts at it, so enabling
+        # learning moves the price away from the published constant rather than ignoring it.
+        # (Two independent knobs -- Controller.lam and Patience.base -- were a silent footgun:
+        # setting one while learning was off did nothing at all.)
+        if self.patience.base is None:
+            self.patience.base = self.control.lam
+        if self.patience.lam == DEFAULT_LAM and self.control.lam != DEFAULT_LAM:
+            self.patience.lam = self.control.lam
+
+    def price_of_computation(self) -> float:
+        """The lambda this episode should use: learned when enabled, the fixed constant otherwise.
+
+        Read once per cycle so that a volatility spike raised mid-episode takes effect on the
+        next decision instead of being frozen at the value the episode started with.
+        """
+        if self.control.learn_patience:
+            return self.patience.price(self.modulators.volatility)
+        return self.control.lam
 
     # ---------- learned metareasoning statistics (Beta means) ----------
 
@@ -159,7 +277,7 @@ class Mind:
         import pickle
         with open(path, "wb") as f:
             pickle.dump({"knowledge": self.knowledge, "stats": self.stats, "modulators": self.modulators,
-                         "control": self.control}, f)
+                         "control": self.control, "patience": self.patience}, f)
 
     @staticmethod
     def load(path: str) -> "Mind":
@@ -167,7 +285,8 @@ class Mind:
         with open(path, "rb") as f:
             state = pickle.load(f)
         return Mind(control=state["control"], knowledge=state["knowledge"], stats=state["stats"],
-                    modulators=state["modulators"])
+                    modulators=state["modulators"],
+                    patience=state.get("patience", Patience()))
 
 
     # ---------- belief ----------
@@ -230,6 +349,7 @@ class Mind:
         ops, level, exhausted = 0, 0, False
         rho_key = f"{domain.name}:verify-pass"
         for cycle in range(1, c.max_cycles + 1):
+            lam = self.price_of_computation()
             rho = self.rate(rho_key)
             q, mass = self._belief(hyps, rho)
             u_now = self._utility(q)
@@ -237,7 +357,7 @@ class Mind:
 
             if mass <= 0 and not exhausted:
                 p_found = self.rate(f"{domain.name}:propose@{level}", prior=(1.0, 1.0))
-                options.append((p_found - c.lam * domain.propose_cost(task, level), "propose", level, ""))
+                options.append((p_found - lam * domain.propose_cost(task, level), "propose", level, ""))
 
             alive = [h for h in hyps if h.weight > 0 and h.verified is not False]
             # Derive-group macro-action: hypotheses the domain cheaply predicts to give the same answer
@@ -265,7 +385,7 @@ class Mind:
                     continue
                 gain = self._utility(trial) - u_now
                 cost = sum(domain.derive_cost(task, m, self) for m in members)
-                options.append((gain - c.lam * cost, "derive", members, ""))
+                options.append((gain - lam * cost, "derive", members, ""))
             for h in alive:
                 p_h = h.weight / mass if mass > 0 else 0.0
                 if h.derived and c.use_verifier and h.verified is None and h.answer is not None \
@@ -279,12 +399,12 @@ class Mind:
                         if x.derived and x.answer is not None:
                             failed[x.answer] = failed.get(x.answer, 0.0) + x.weight / max(rest_mass, 1e-12) * (1.0 if x.verified else rho)
                     gain = rho * self._utility(passed) + (1 - rho) * self._utility(failed) - u_now
-                    options.append((gain - c.lam * c.verify_ops, "verify", h, ""))
+                    options.append((gain - lam * c.verify_ops, "verify", h, ""))
 
             if c.use_questions and len(alive) > 1:
                 for question, at_q, goals, cost in domain.questions(task, alive, self):
                     voi = self._value_of_question(alive, at_q, goals, rho)
-                    options.append((voi - c.lam * (c.ask_ops + cost), "ask", question, f"voi={voi:.3f}"))
+                    options.append((voi - lam * (c.ask_ops + cost), "ask", question, f"voi={voi:.3f}"))
 
             if not options:
                 break
@@ -326,6 +446,9 @@ class Mind:
         else:
             result = Result("abstain", None, max(q.values(), default=0.0), self._why_not(hyps, q),
                             trace, ops, hyps)
+        if c.learn_patience:
+            # The sample that drives the price: utility actually held at the end, per op spent.
+            self.patience.update(ops, self._utility(q))
         domain.remember(task, result, self)
         self.episodes.append((domain.name, task, result))
         return result

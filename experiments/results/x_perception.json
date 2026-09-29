@@ -1,0 +1,138 @@
+{
+  "experiment": "x_perception",
+  "config": {
+    "seed": 0,
+    "parser_params": 40908,
+    "parser_train_seconds": 7.833115339279175,
+    "parser_training_data": "the 12 TEMPLATES only; no held-out form is trained on",
+    "reference_reader": "hand-written regex+lexicon grammar over the held-out forms, independent of the parser, used only for scoring",
+    "held_out": [
+      "clause order",
+      "control (seen form)",
+      "question order",
+      "unseen verb, same order"
+    ],
+    "unseen_names": [
+      "Zoltan",
+      "Quenby",
+      "Xavier",
+      "Wendell",
+      "Priya",
+      "Kofi",
+      "Leilani",
+      "Oskar"
+    ],
+    "unseen_items": [
+      "oranges",
+      "pencils",
+      "stamps"
+    ]
+  },
+  "metrics": {
+    "perception_by_group": {
+      "control (seen form)": {
+        "n": 3,
+        "schema": 1.0,
+        "exact": 1.0,
+        "slots": 1.0,
+        "item": 1.0,
+        "parties": 1.0,
+        "no_reading": 0.0
+      },
+      "unseen verb, same order": {
+        "n": 6,
+        "schema": 0.6666666666666666,
+        "exact": 0.5,
+        "slots": 0.9333333333333333,
+        "item": 0.8333333333333334,
+        "parties": 0.8333333333333334,
+        "no_reading": 0.0
+      },
+      "clause order": {
+        "n": 3,
+        "schema": 0.6666666666666666,
+        "exact": 0.0,
+        "slots": 0.4,
+        "item": 0.0,
+        "parties": 0.0,
+        "no_reading": 0.0
+      },
+      "question order": {
+        "n": 3,
+        "schema": 1.0,
+        "exact": 0.6666666666666666,
+        "slots": 0.9333333333333333,
+        "item": 0.6666666666666666,
+        "parties": 1.0,
+        "no_reading": 0.0
+      }
+    },
+    "end_to_end": {
+      "events held out": {
+        "n": 120,
+        "correct": 0.25,
+        "abstain": 0.7333333333333333,
+        "wrong": 0.016666666666666666,
+        "misread": 0.7583333333333333,
+        "confident_wrong_on_misread": 0.02197802197802198,
+        "safe_on_misread": 0.978021978021978,
+        "counts": {
+          "n": 120,
+          "correct": 30,
+          "abstain": 88,
+          "wrong": 2,
+          "misread": 91,
+          "confident_wrong_on_misread": 2,
+          "safe_on_misread": 89
+        }
+      },
+      "events + state held out": {
+        "n": 120,
+        "correct": 0.11666666666666667,
+        "abstain": 0.875,
+        "wrong": 0.008333333333333333,
+        "misread": 0.9333333333333333,
+        "confident_wrong_on_misread": 0.008928571428571428,
+        "safe_on_misread": 0.9910714285714286,
+        "counts": {
+          "n": 120,
+          "correct": 14,
+          "abstain": 105,
+          "wrong": 1,
+          "misread": 112,
+          "confident_wrong_on_misread": 1,
+          "safe_on_misread": 111
+        }
+      },
+      "events + question held out": {
+        "n": 120,
+        "correct": 0.11666666666666667,
+        "abstain": 0.8666666666666667,
+        "wrong": 0.016666666666666666,
+        "misread": 0.9,
+        "confident_wrong_on_misread": 0.018518518518518517,
+        "safe_on_misread": 0.9814814814814815,
+        "counts": {
+          "n": 120,
+          "correct": 14,
+          "abstain": 104,
+          "wrong": 2,
+          "misread": 108,
+          "confident_wrong_on_misread": 2,
+          "safe_on_misread": 106
+        }
+      }
+    },
+    "held_out_verbs_transfer": 0.5,
+    "clause_order_transfers": 0.0,
+    "question_order_transfers": 0.6666666666666666,
+    "control_exact": 1.0,
+    "events held out :: confident wrong on misread": 0.02197802197802198,
+    "events + state held out :: confident wrong on misread": 0.008928571428571428,
+    "events + question held out :: confident wrong on misread": 0.018518518518518517,
+    "conclusion": "Held-out free text does not transfer, and the part that fails is syntax rather than vocabulary. The top reading is exact 100% of the time on seen forms, 50% with only the verb changed, 0% with only the clause order changed and 67% with the question reordered. End to end, 76% of held-out stories (91 of 120) contain at least one misread sentence, and the answer is right 25% of the time at best. The tagger learned template positions, not a compositional reader: an unseen verb is fine if its slots land where training put them, and reordering them loses the roles. On the second question the measurement went against the expectation, which is worth stating plainly: `Story.verify` replays the tagger's own reading through a plain dictionary, so it cannot see a misreading, yet only 2 of 91 misread stories came back as a confident wrong answer. That safety comes from `reading_defect`, which rejects a reading that is missing a slot and makes the mind abstain -- not from verification. The remaining confident errors are the dangerous class: readings that are complete and wrong (a consume verb read as an acquire, say), which no structural check can catch. So free text is unsupported today, and the honest reason is the reader, not the reasoner; the reasoner's own guard is what keeps the failure from being worse."
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-28 21:23:45"
+}

@@ -70,4 +70,4 @@ In a production serving environment:
 - [[Concept - Hierarchical Multi-Timescale Reasoning (HRM)]] — Host architecture for ACT.
 - [[HRM Recurrent Stepper & ACT]] — C++ implementation.
 - [[Concept - The Four Memory Reductions]] — Synergistic compute/memory optimization.
-- [[Semantic Relationship Matrix]] — Ontological links.
+- [[System Knowledge Graph.canvas]] — the project's own system map (Obsidian canvas).

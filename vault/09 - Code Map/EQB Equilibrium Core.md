@@ -26,7 +26,7 @@ tags:
 
 ## Governed by (specs, ADRs, concepts, guides)
 
-- none
+- [[Concept - Attention Residuals (RealFormer & AttnRes)]]
 
 ## Changed or discussed in sessions
 

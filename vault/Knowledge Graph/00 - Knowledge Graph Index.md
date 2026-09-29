@@ -5,68 +5,82 @@ tags:
   - knowledge-graph
   - ontology
   - concepts
-  - information
 status: active
 created: 2026-09-26
+updated: 2026-09-29
+agent: "opencode/stealth/space-bunny-alpha"
+model: "space-bunny-alpha"
 ---
 
-# 🌎 Conceptual Knowledge Graph: Information, Systems & Reasoning
+# 🌎 Knowledge Graph: what this project understands
 
-This Knowledge Graph captures the **theoretical foundations, conceptual relationships, mathematical principles, and systems mechanisms** underlying the hybrid architecture, drawing deep insights from:
-1. **Hierarchical Reasoning Model (HRM)** (Wang et al., 2025; sapientinc/HRM)
-2. **Kimi K3 & Extreme Systems Inference in C** (Fareed Khan, 2026, `kimi-k3-in-c`)
-3. **Agentic Knowledge Graphs & Non-Parametric Grounding** (Fareed Khan, 2026)
+This page is the index for **this project's own concepts**. It is deliberately
+small. On 2026-09-29 it was rewritten because it had drifted: six of its ten
+concept notes described *Kimi K3*, an unrelated 2.78-trillion-parameter model
+with 896 routed experts, and the Obsidian canvas beside it presented that
+model's systems engineering as this project's system knowledge. The notes were
+not wrong; they were filed as if they were ours. They now live in
+[[00 - External Research Index]], which says what transfers and what does not.
 
 ---
 
-## 🗺️ Visual Knowledge Graph (Obsidian Canvas)
+## 🗺️ Visual map (Obsidian Canvas)
 
 > [!TIP]
-> Open the hierarchical spatial graph in Obsidian:
-> **[[vault/Knowledge Graph/System Knowledge Graph.canvas|Open System Knowledge Graph Canvas]]**
-> It maps out all entity relationships, mitigation edges, and architectural cascades on a 2D zoomable plane.
+> **[[System Knowledge Graph.canvas|Open System Knowledge Graph Canvas]]**
+>
+> Four columns: the model that runs today, the baselines it is measured against,
+> the specs and ADRs that say what is and is not claimed, and the concepts behind
+> our own design. External research is drawn outside the picture on purpose.
+
+The machine-generated view lives elsewhere and is not curated:
+`vault/_graph-view/` holds one note per node of the pruned knowledge graph plus
+its own canvas. It is written by `.\scripts\update_knowledge_graph.ps1`, listed
+in `.graphifyignore`, and excluded from git. Open it only when you want to browse
+symbols; open the curated [[00 - Code Subsystems]] instead when you want to
+understand the code.
 
 ---
 
-## 🔭 Entity & Concept Nodes
+## 🔭 This project's concepts
 
-### 1. Architectural Paradigms & Attention Mechanics
-- [[Concept - Kimi Delta Attention (KDA)]] — Recurrent linear attention, $O(1)$ constant memory footprint, depthwise causal conv, bounded state decay.
-- [[Concept - Multi-Head Latent Attention (MLA)]] — Low-rank KV projection into a single latent vector (512-dim), NoPE positional embedding.
-- [[Concept - Block Sparse Mixture of Experts (MoE)]] — 896 routed experts, top-16 active per token, 2 residual shared experts, routing bias vs unbiased combination.
-- [[Concept - Hierarchical Multi-Timescale Reasoning (HRM)]] — Nested recurrence between Low-Level Executor ($z_L$) and High-Level Planner ($z_H$).
-- [[Concept - Adaptive Computation Time (ACT)]] — $Q$-learning dynamic halting mechanism, early exit confidence, compute allocation.
+### Architecture and control
 
-### 2. Systems, Storage & Precision Engineering
-- [[Concept - The Four Memory Reductions]] — the mathematical cascade taking a 2.78T model from $5,560\text{ GB} \to 8.24\text{ GB}$ (675× reduction).
-- [[Concept - Microscaling MXFP4 & E8M0 Quantization]] — Sub-byte weight representation ($0.53125$ bytes/param) and zero-copy unpack.
-- [[Concept - Direct IO & NVMe Streaming]] — Why `O_DIRECT` beats operating system page caches, turning memory floors into dollars.
-- [[Concept - Bit-Identical Floating Point Contracts]] — the role of `-ffp-contract=off` in cross-hardware and cross-compiler determinism.
+- [[Concept - Hierarchical Multi-Timescale Reasoning (HRM)]] — nested recurrence between a high-level planner ($z_H$) and a low-level executor ($z_L$); deep algorithmic thinking without emitting chain-of-thought tokens. The architectural ancestor. Our hierarchy is a *computational* one, not two networks: L is rule saturation plus exact execution, H is value-of-computation control.
+- [[Concept - Adaptive Computation Time (ACT)]] — decide when to stop. In this project halting is a learned Q-head in the retired `hrm_eqb` baseline and a value-of-computation controller in `hrm_x`; the controller is the version that survived measurement.
 
-### 3. Agentic Knowledge & Grounding
-- [[Concept - Agentic Knowledge Graphs & Grounding]] — Structuring millions of entities into verified graphs, longest-match lookup, deterministic traversal without LLM hallucination.
+### Representation
 
-### 4. Attention Residuals & Cross-Layer Communication
-- [[Concept - Attention Residuals (RealFormer & AttnRes)]] — Pre-softmax score passthrough between layers (RealFormer), softmax over preceding layer outputs (AttnRes/Kimi Linear), dual residuals (ResiDual), associative memory (RMT).
+- [[Concept - PEM Phasor Equilibrium Machine]] — FHRR phasor algebra, resonator, Birkhoff mixing. It survives as the **verifier's** representation in `hrm_x/domains/arith.py` (residue phasors), not as the model's substrate.
+- [[Concept - Attention Residuals (RealFormer & AttnRes)]] — pre-softmax score passthrough between layers. Verified against arXiv 2603.15031 and used in the HRM-EQB baseline; the same paper corrected an earlier 1.25x misattribution.
 
-### 5. VSA & Non-Parametric Reasoning
-- [[Concept - PEM Phasor Equilibrium Machine]] — FHRR phasor algebra, Resonator (L-module), Birkhoff mixing (H-module), 9-feature QHead, conjunctive halting, annealed reshare. PEM = VSA-native HRM.
+### Method
+
+- **Graph as a view, not the truth** — `graphify` extracts, `scripts/simplify_graph.py` prunes for display, `scripts/knowledge_map.py` writes the curated [[00 - Code Subsystems]]. The full graph stays on disk for `query` / `path` / `affected`. See [[00 - Session Index]] for the two vault-explosion incidents that produced this rule.
 
 ---
 
-## 🔗 Ontological Relationships
+## 🔗 Where the machine-readable relationships live
 
-- [[Semantic Relationship Matrix]] — Formal RDF/OWL-style triples connecting all conceptual nodes (`ENABLES`, `MITIGATES`, `COMPRESSES`, `DISPATCHES`, `GROUNDS`).
-- [[Information Flow & Reasoning Graph]] — Step-by-step trace of knowledge from input query to reasoning state and output generation.
+There is no hand-written RDF/OWL triple matrix in this vault, and there is not
+going to be one. Two earlier attempts at that note were deleted as dead weight.
+The relationships that exist are generated:
+
+| what | where |
+|---|---|
+| symbol-level edges | `graphify-out/graph.json` (full) and `graphify-out/graph.simple.json` (pruned), queried with `graphify query` / `path` / `affected` |
+| subsystem ↔ code ↔ session | [[00 - Code Subsystems]], regenerated by `scripts/knowledge_map.py` |
+| decision chain | [[00 - Session Index]] and `vault/06 - Devlogs & ADRs/` |
 
 ---
 
-## 💬 Chat Session Logs (Information Path)
+## 💬 Session logs
 
-Session logs capture decisions, research, file changes, and open questions per session.
-These are knowledge nodes — graphify indexes them semantically in deep mode, using the project-scoped key in `.env` (see `AGENTS.md`).
+Session logs are knowledge nodes. `.\scripts\update_knowledge_graph.ps1` extracts
+them with the default backend **`claude-cli`**, which drives the `claude` CLI on
+PATH and needs **no API key**; `.env` stays empty. If that CLI is unavailable the
+script falls back to `-Mode code-only` and the graph holds code nodes but **zero**
+note nodes — the missing note edges are then a missing run, not a fault in the
+drawing.
 
-- [[Session - 2026-09-26 - Foundation & Research]] — CLAUDE.md creation, PEM analysis, Kimi/DeepSeek research, PEM↔HRM integration, attention residuals implementation
-- [[Session - 2026-09-26 - Knowledge Graph Expansion]] — KG expanded to chat context, Kimi K3 deep architecture research, information path system design
-
-**Index**: [[vault/08 - Chat Context & Sessions/00 - Session Index|Session Index]] — full registry + decision chain
+**Index**: [[00 - Session Index]] — full registry, ADR list and decision chain.

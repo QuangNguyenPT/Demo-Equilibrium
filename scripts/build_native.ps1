@@ -1,7 +1,8 @@
 # Build the HRM-X native backend (C ABI, loaded by hrm_x/native via ctypes).
 #   .\scripts\build_native.ps1            # release build -> hrm_x\native\bin\hrmx_native.dll
 #   .\scripts\build_native.ps1 -Debug     # -O0 -g
-# Follows the project's clang++ one-liner convention (vault: Build & Toolchain Guide). CPU only:
+# Follows the spec v0.4 §23 native-backend convention (ADR-008): Python is the blueprint and
+# reference semantics, C++ executes the profiled hot paths behind a pure C ABI. CPU only:
 # the hot paths are pointer-chasing symbolic code, not matrix math (spec v0.4 §23).
 param([switch]$Debug)
 

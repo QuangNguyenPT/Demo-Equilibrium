@@ -6,11 +6,29 @@ tags:
   - architecture
   - cpp
   - python
-status: accepted
+status: superseded-not-implemented
 created: 2026-09-26
+superseded_by: "[[ADR-003 Unified Cognitive Model]]"
 ---
 
 # ADR-001: Hybrid C++ Engine with Python Blueprint Architecture
+
+> [!WARNING] Never implemented — superseded, kept for the record
+> This ADR was **accepted on paper but never built**. The C++ engine, the Python
+> blueprint layer and the C-ABI bridge described below were never live in any
+> measured run; [[ADR-003 Unified Cognitive Model]] moved all of them to `legacy/`
+> after evaluation on 2026-09-27 (fp32-only tensors, no phasor kernels, a global
+> `-ffast-math` that broke the deterministic FP contract, and a stale build that
+> did not compile).
+>
+> The **C-ABI idea** is the one survivor: it was re-landed, scoped to the
+> e-graph kernels, as `hrm_x/native/include/hrmx.h`. The current model is
+> **HRM-X v0.4 — Operator Inference over Structured Situations**
+> ([[ADR-008 Operator Inference over Structured Situations]]) in `hrm_x/`, and
+> [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] is
+> the normative design.
+>
+> Do not implement against this ADR.
 
 ## Context & Problem Statement
 Machine learning frameworks frequently suffer from a fundamental tension:

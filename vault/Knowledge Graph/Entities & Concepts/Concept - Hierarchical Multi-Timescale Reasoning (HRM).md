@@ -80,4 +80,4 @@ Recurrent backpropagation across many unrolled steps causes exploding or vanishi
 - [[Concept - Adaptive Computation Time (ACT)]] — How the HRM loop decides to stop.
 - [[HRM+LLM Fusion Architecture]] — System integration with Transformer backbone.
 - [[HRM Recurrent Stepper & ACT]] — Bare-metal C++ kernel implementation.
-- [[Semantic Relationship Matrix]] — Ontological links.
+- [[System Knowledge Graph.canvas]] — the project's own system map (Obsidian canvas).

@@ -29,7 +29,10 @@ tags:
 
 ## Governed by (specs, ADRs, concepts, guides)
 
+- [[HRM+LLM Fusion Architecture]]
 - [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
+- [[Model Blueprint & Graph Layout]]
+- [[Tensor Flow & Data Pipelines]]
 
 ## Changed or discussed in sessions
 

@@ -89,4 +89,4 @@ Together, all 82,432 routed experts equal **1.447 terabytes**, accounting for **
 - [[Concept - The Four Memory Reductions]] — How MoE sparsity reduces active RAM.
 - [[Concept - Microscaling MXFP4 & E8M0 Quantization]] — The 0.53125 byte/param encoding.
 - [[Concept - Direct IO & NVMe Streaming]] — Streaming the 82,432 experts from disk.
-- [[Semantic Relationship Matrix]] — Ontological links.
+- [[00 - External Research Index]] — the rest of the Kimi K3 study, and why it is external.

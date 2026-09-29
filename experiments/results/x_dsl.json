@@ -1,0 +1,286 @@
+{
+  "experiment": "x_dsl",
+  "config": {
+    "seed": 0,
+    "max_size": [
+      6,
+      7
+    ],
+    "tags": [
+      "add",
+      "iter"
+    ],
+    "vars": [
+      "x",
+      "y",
+      "a"
+    ],
+    "corpus_programs": 6,
+    "held_out_examples": [
+      [
+        "2",
+        "3",
+        "6"
+      ],
+      [
+        "3",
+        "2",
+        "6"
+      ],
+      [
+        "4",
+        "3",
+        "12"
+      ]
+    ],
+    "held_out_question": "10 \u00d7 3 + 1",
+    "note": "use_library_bound defaults to False; see metrics.verdict.conclusion"
+  },
+  "metrics": {
+    "experiment": "x_dsl",
+    "question": "does a mined DSL reduce concept-search cost on a held-out symbol?",
+    "mining": {
+      "seconds": 0.0,
+      "log": [
+        {
+          "name": "g1",
+          "arity": 1,
+          "body": "add(a, x)",
+          "occurrences": 6,
+          "saving": 1,
+          "gain": 2,
+          "mdl_before": 40,
+          "mdl_after": 38,
+          "uses": 6
+        }
+      ],
+      "library": {
+        "primitives": [
+          {
+            "name": "g1",
+            "arity": 1,
+            "body": "add(a, x)",
+            "saving": 1,
+            "uses": 6,
+            "corpus": 6
+          }
+        ],
+        "n": 1,
+        "declared_cost": 4
+      },
+      "credit_nodes_per_program": 1.0,
+      "programs": 6
+    },
+    "dense_corpus": {
+      "library": {
+        "primitives": [
+          {
+            "name": "h1",
+            "arity": 1,
+            "body": "add(add(add(add(add(add(a, x), x), x), x), x), x)",
+            "saving": 11,
+            "uses": 3,
+            "corpus": 3
+          }
+        ],
+        "n": 1,
+        "declared_cost": 14
+      },
+      "log": [
+        {
+          "name": "h1",
+          "arity": 1,
+          "body": "add(add(add(add(add(add(a, x), x), x), x), x), x)",
+          "occurrences": 3,
+          "saving": 11,
+          "gain": 19,
+          "mdl_before": 54,
+          "mdl_after": 35,
+          "uses": 3
+        }
+      ],
+      "credit_nodes_per_program": 11.0
+    },
+    "held_out": {
+      "examples": [
+        [
+          "2",
+          "3",
+          "6"
+        ],
+        [
+          "3",
+          "2",
+          "6"
+        ],
+        [
+          "4",
+          "3",
+          "12"
+        ]
+      ],
+      "question": "10 \u00d7 3 + 1",
+      "baseline": {
+        "symbol": "\u00d7",
+        "status": "answer",
+        "answer": "31",
+        "verified": true,
+        "bound": 6,
+        "library": 0,
+        "propose_ops": 4218,
+        "total_ops": 4269,
+        "cycles": 4,
+        "seconds": 0.017,
+        "programs_at_bound": 134
+      },
+      "library_available": {
+        "symbol": "\u00d7",
+        "status": "answer",
+        "answer": "31",
+        "verified": true,
+        "bound": 6,
+        "library": 1,
+        "propose_ops": 4218,
+        "total_ops": 4269,
+        "cycles": 4,
+        "seconds": 0.015,
+        "programs_at_bound": 840
+      },
+      "library_bound_applied": {
+        "symbol": "\u00d7",
+        "status": "answer",
+        "answer": "31",
+        "verified": true,
+        "bound": 5,
+        "library": 1,
+        "propose_ops": 9615,
+        "total_ops": 9637,
+        "cycles": 3,
+        "seconds": 0.027,
+        "programs_at_bound": 234
+      }
+    },
+    "crossover": {
+      "one_step_per_program": [
+        {
+          "bound": 4,
+          "base_programs": 14,
+          "reduced_bound_programs": 26,
+          "ratio": 0.538,
+          "library_pays": false
+        },
+        {
+          "bound": 5,
+          "base_programs": 54,
+          "reduced_bound_programs": 68,
+          "ratio": 0.794,
+          "library_pays": false
+        },
+        {
+          "bound": 6,
+          "base_programs": 134,
+          "reduced_bound_programs": 234,
+          "ratio": 0.573,
+          "library_pays": false
+        },
+        {
+          "bound": 7,
+          "base_programs": 349,
+          "reduced_bound_programs": 840,
+          "ratio": 0.415,
+          "library_pays": false
+        },
+        {
+          "bound": 8,
+          "base_programs": 1629,
+          "reduced_bound_programs": 3199,
+          "ratio": 0.509,
+          "library_pays": false
+        },
+        {
+          "bound": 9,
+          "base_programs": 2889,
+          "reduced_bound_programs": 12898,
+          "ratio": 0.224,
+          "library_pays": false
+        },
+        {
+          "bound": 10,
+          "base_programs": 18189,
+          "reduced_bound_programs": 52215,
+          "ratio": 0.348,
+          "library_pays": false
+        }
+      ],
+      "six_steps_per_program": [
+        {
+          "bound": 4,
+          "base_programs": 14,
+          "reduced_bound_programs": 8,
+          "ratio": 1.75,
+          "library_pays": true
+        },
+        {
+          "bound": 5,
+          "base_programs": 54,
+          "reduced_bound_programs": 8,
+          "ratio": 6.75,
+          "library_pays": true
+        },
+        {
+          "bound": 6,
+          "base_programs": 134,
+          "reduced_bound_programs": 8,
+          "ratio": 16.75,
+          "library_pays": true
+        },
+        {
+          "bound": 7,
+          "base_programs": 349,
+          "reduced_bound_programs": 8,
+          "ratio": 43.625,
+          "library_pays": true
+        },
+        {
+          "bound": 8,
+          "base_programs": 1629,
+          "reduced_bound_programs": 8,
+          "ratio": 203.625,
+          "library_pays": true
+        },
+        {
+          "bound": 9,
+          "base_programs": 2889,
+          "reduced_bound_programs": 8,
+          "ratio": 361.125,
+          "library_pays": true
+        },
+        {
+          "bound": 10,
+          "base_programs": 18189,
+          "reduced_bound_programs": 8,
+          "ratio": 2273.625,
+          "library_pays": true
+        }
+      ]
+    },
+    "verdict": {
+      "library_learned": true,
+      "primitive_learned": [
+        "add(a, x)"
+      ],
+      "baseline_correct": true,
+      "available_correct": true,
+      "applied_correct": true,
+      "bound_applied": 5,
+      "propose_ops_saved_by_applying": -5397,
+      "library_pays_anywhere": false,
+      "library_pays_on_dense_corpus": true,
+      "worth_applying_by_default": false,
+      "conclusion": "The library compresses correctly and verifiably (MDL falls, expansion is exact), and the compressed program is reachable one node sooner -- but in this language the search does not get cheaper, because adding an arity-1 constructor multiplies the number of programs at every size while the step it names is worth a single node of bound. Measured across bounds 4-10 the extended enumeration is 2-4x larger than the base one at the reduced bound. Applying the bound reduction by default would have made search ~2.3x more expensive while looking like a successful demonstration, so it is off by default. The trade depends on how large a share of a program the repeated structure is: see the dense-corpus rows."
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-28 21:08:01"
+}

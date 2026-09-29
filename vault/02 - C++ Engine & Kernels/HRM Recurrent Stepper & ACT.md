@@ -6,13 +6,32 @@ tags:
   - hrm
   - act
   - recurrence
-status: active
+status: superseded-not-implemented
 created: 2026-09-26
+updated: 2026-09-28
+superseded_by: "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"
+relates_to:
+  - "[[ADR-005 Neural HRM-Phi Replaces Program Search]]"
+  - "[[ADR-006 HRM-EQB Training and Benchmark Results]]"
+  - "[[HRM+LLM Fusion Architecture]]"
 ---
 
 # 🔁 HRM Recurrent Stepper & ACT Halting Logic
 
-The Hierarchical Reasoning Model kernel (`include/hrm/kernels/hrm_loop.hpp`) implements the nested multi-timescale recurrence loop and dynamic Adaptive Computation Time (ACT) halting.
+> [!WARNING] Not implemented as described
+> This note describes the ADR-001 C++/Python hybrid engine, which was **never built**; ADR-003 moved it to `legacy/`. The live C++ is only `hrm_x/native/` (`egraph.cpp`, `grid.cpp`) behind the `hrmx.h` C ABI. The current model is [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (ADR-008), in `hrm_x/`. Kept as design history.
+
+> [!IMPORTANT] Three specific things to know about this note
+> 1. `include/hrm/kernels/hrm_loop.hpp` **does not exist**. There is no C++ HRM loop anywhere in the repo.
+> 2. The **performance numbers in "Performance Characteristics" below were never measured** — no benchmark, no run, no file. Treat them as aspirational, not as results. The only measured native numbers in the project are grid 3.79× and arithmetic 1.47× (`experiments/results/x_native.json`).
+> 3. The **PEM section and `attention.cpp` never existed** either. `src/kernels/attention.cpp` is not in the tree (it survives only under `legacy/cpp_engine/`).
+
+Everything below is the 2026-09-26 design, kept because the *structure* it describes (fast/slow
+timescales, a halting decision) is the part that survived into the current model — in a very
+different form. In HRM-X, L is **saturation, extraction and exact execution** on an e-graph, and
+H is a **value-of-computation controller** over {propose, derive-group, verify, ask, stop}, not a
+GRU with a Q-head (ADR-008 §4). Exact `Fraction` arithmetic stays in Python; no GRU state vector
+is materialised anywhere in the current codebase.
 
 ---
 
@@ -92,12 +111,21 @@ If $p_{\text{halt}} \ge \tau_{\text{ACT}}$, the C++ function breaks immediately 
 ---
 
 ## ⚡ Performance Characteristics
+> [!CAUTION] Unmeasured
+> The figures below have no measurement behind them. There is no C++ HRM loop, and no benchmark
+> was ever run to produce 300–400 µs or the "80% saved" figure. Kept only as the original
+> expectation.
+
 - **Execution Speed**: In standalone benchmarks, a full HRM iteration with $D=256$ executes in **$300\mu\text{s}$ – $400\mu\text{s}$** on a single CPU core.
 - **Compute Scaling**: On simple inputs, early exit triggers on step 1, saving up to **80% of inference compute** compared to static unrolled loops!
 
 ---
 
 ## PEM Integration (2026-09-26)
+> [!CAUTION] Never implemented
+> The `ControllerFeatures` struct, the conjunctive halt rails, the annealed restart and the
+> RealFormer attention residuals below were specified here and built nowhere. There is no
+> `ControllerFeatures` type and no `attention.cpp` in the tree.
 
 ### 9-Feature Q-Head (ControllerFeatures)
 
@@ -134,6 +162,7 @@ ACCEPT fires only when ALL three hold:
 `score_l += prev_scores_{l-1}` before softmax. Optional `prev_scores` / `scores_out` params on `flash_attention_f32`. Block variant: pass scores only every `attn_residual_block_size` layers.
 
 ## 🔗 Related Notes
-- [[HRM+LLM Fusion Architecture]] — System design and research foundation.
-- [[Engine Architecture & Memory Model]] — Memory allocation for the HRM loop.
-- [[Model Blueprint & Graph Layout]] — How this loop is declared in the Python blueprint.
+- [[HRM+LLM Fusion Architecture]] — System design and research foundation. *(never implemented)*
+- [[Engine Architecture & Memory Model]] — Memory allocation for the HRM loop. *(never implemented)*
+- [[Model Blueprint & Graph Layout]] — How this loop was to be declared in the Python blueprint. *(never implemented)*
+- [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] — **the H/L split that actually exists** (L = saturation, H = value of computation).

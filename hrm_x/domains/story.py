@@ -25,7 +25,7 @@ from typing import Dict, List, Optional, Tuple
 import torch
 from torch import nn
 
-from hrm_x.mind import Hyp, Mind, Result
+from hrm_x.mind import UNKNOWN, Hyp, Mind, Result
 from hrm_x.rules import Rule, saturate
 from hrm_x.workspace import EGraphAPI as Workspace, Why, make_workspace
 
@@ -260,8 +260,51 @@ def _fold(op: str) -> Rule:
 FOLD = [_fold("add"), _fold("sub")]
 
 
+def reading_defect(reading: Reading) -> Optional[str]:
+    """Why this reading cannot be turned into a situation, or None if it can.
+
+    Perception can read a sentence's item without its number ("Bob has zzitem ."). That is not
+    an exception, it is a reading the mind cannot answer from, and it must not reach the
+    workspace as a quantity: a `None` amount used to travel into `Fraction(None)` and raise
+    TypeError from inside a cycle of `Mind.solve()`. Reporting it as UNKNOWN instead lets the
+    controller treat it as "not defined for me", so the mind abstains or asks rather than
+    crashing on a perception error it should have expected.
+    """
+    try:
+        frames_iter = reading.frames
+    except Exception:
+        frames_iter = []
+    items = list(frames_iter) + [reading.question]
+    for k, f in enumerate(items):
+        if f.item is None:
+            return f"s{k}: no item in {f.show()}"
+        if f.schema == "TRANSFER":
+            if f.amount is None:
+                return f"s{k}: transfer without an amount ({f.show()})"
+            if f.src is None or f.dst is None:
+                return f"s{k}: transfer without both parties ({f.show()})"
+        elif f.schema in ("STATE", "ACQUIRE", "CONSUME"):
+            if f.amount is None:
+                return f"s{k}: no amount in {f.show()})"
+            if not f.owner:
+                return f"s{k}: event without an owner ({f.show()})"
+        elif f.schema in ("Q_ONE", "Q_SUM") and not f.owner:
+            # A question read with no owner. The tagger produces one for any sentence it cannot place,
+            # e.g. the held-out word order "Alice has how many apples ?" reads as an ask whose owner
+            # is nobody. `derive` indexes `owner[0]` and `simulate` sums over `owner`, so without this
+            # the first crashes and the second answers 0 -- a wrong answer to a question that names
+            # nobody. This is the second time this guard has been found incomplete, after a missing
+            # amount reached `Fraction(None)`: an incomplete reading is a *shape*, and every schema has
+            # to be checked for its own required slots rather than one field at a time.
+            return f"s{k}: question without an owner ({f.show()})"
+    return None
+
+
 def simulate(reading: Reading) -> Tuple[Optional[Fraction], List[str]]:
     """Independent check: plain-dictionary replay plus invariants. Returns (answer, violations)."""
+    defect = reading_defect(reading)
+    if defect is not None:
+        return None, [defect]
     state: Dict[Tuple[str, str], Fraction] = {}
     problems: List[str] = []
     external = Fraction(0)
@@ -329,6 +372,12 @@ class Story:
 
     def derive(self, task: StoryTask, hyp: Hyp, mind: Mind) -> int:
         reading: Reading = hyp.payload
+        defect = reading_defect(reading)
+        if defect is not None:
+            hyp.derived = True
+            hyp.answer = UNKNOWN
+            hyp.note = "unknown: " + defect
+            return 0
         ws = make_workspace()
         pairs = sorted({(o, f.item) for f in reading.frames + (reading.question,)
                         for o in (f.owner + tuple(x for x in (f.src, f.dst) if x))})

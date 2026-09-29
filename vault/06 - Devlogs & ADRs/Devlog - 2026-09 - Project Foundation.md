@@ -10,6 +10,30 @@ created: 2026-09-26
 
 # 🚀 Devlog - September 2026: Project Foundation & Inception
 
+> [!WARNING] Sections 1–2 describe a codebase that was superseded, never shipped
+> This is a **dated record of 2026-09-26 and is kept unchanged as history**, but the
+> claims in *Completed Deliverables* §1 (High-Performance C++ Compute Engine) and
+> §2 (Python Declarative Blueprint Layer) were **superseded on 2026-09-27 by
+> [[ADR-003 Unified Cognitive Model]]**: the engine was evaluated, judged not fit
+> (fp32-only tensors, no phasor kernels, a global `-ffast-math` that broke the
+> deterministic FP contract, and a build that did not compile) and moved to
+> `legacy/`. It was never live in a measured run.
+>
+> Concretely, the `ArenaAllocator`, `flash_attention_f32`, `hrm_cli.exe`,
+> `scripts/run_demo.py` and `tests/test_blueprint.py` named below now live **only**
+> under `legacy/` (`legacy/cpp_engine/`, `legacy/python/`, `legacy/scripts/`,
+> `legacy/tests/`). None of the kernels or the blueprint layer was ever integrated
+> into a model.
+>
+> The **live project** is **HRM-X v0.4 — Operator Inference over Structured
+> Situations** ([[ADR-008 Operator Inference over Structured Situations]]), built and
+> measured in `hrm_x/`, with [[HRM-X Specification v0.4 - Operator Inference over
+> Structured Situations]] as the normative design (gates G1–G6 done; 336 tests pass,
+> 1 skipped; 8 result files in `experiments/results/`). Its only C++ is the e-graph
+> backend in `hrm_x/native/`, which does descend from the C-ABI idea in §1.
+>
+> §3 (the Obsidian vault) remains accurate.
+
 ## Milestone Summary
 Successfully established the complete foundational codebase for the HRM+LLM Hybrid AI research system, strictly bifurcating declarative Python architecture layouts from bare-metal C++ computational execution.
 
