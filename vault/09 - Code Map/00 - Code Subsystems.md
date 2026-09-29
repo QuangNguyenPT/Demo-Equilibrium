@@ -129,6 +129,11 @@ flowchart LR
   S11 --> S8
   S11 --> S12
   S11 --> S7
+  S13 --> S1
+  S13 --> S2
+  S13 --> S5
+  S13 --> S3
+  S13 --> S6
   S13 --> S10
   S13 --> S9
   S13 --> S11
@@ -154,4 +159,5 @@ flowchart LR
 | [[Session - 2026-09-27 - Unified Model Build]] | HRM Knowledge Store, HRM Language, HRM Learning Loops, HRM Metacognition, HRM Model Facade & CLI, HRM Perception, HRM Reasoning, HRM Substrate (FHRR), HRM Verification |
 | [[Session - 2026-09-28 - DSL Growth, Free Text, and the Graph Pipeline]] | HRM-X DSL Library, HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, Tooling & Benchmarks |
 | [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] | HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, HRM-X Native Backend, HRM-X Workspace & Rules, Tooling & Benchmarks |
+| [[Session - 2026-09-29 - EQB and HRM-X Audit]] | EQB Task Field & Generators, EQB Training, Study & Bench, HRM-X Concept Induction (v0.5), HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction |
 | [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] | HRM-X Concept Induction (v0.5), HRM-X DSL Library, HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, Tooling & Benchmarks |

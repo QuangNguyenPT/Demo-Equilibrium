@@ -15,7 +15,7 @@ tags:
 |---|---|---|
 | `hrm_x/domains/__init__.py` | Domains: each supplies perception, an operator language, L-level derivation and an independent verifier. | 2 |
 | `hrm_x/domains/arith.py` | Arithmetic: numbers are exact rationals; an unknown operator symbol is a concept to identify. | 938 |
-| `hrm_x/domains/concept.py` | The v0.5 concept route: structural operator inference behind the v0.4 mind. | 365 |
+| `hrm_x/domains/concept.py` | The v0.5 concept route: structural operator inference behind the v0.4 mind. | 379 |
 | `hrm_x/domains/grid.py` | Grids: pixels -> objects -> an object-level program induced from the demos -> exact rendering. | 317 |
 | `hrm_x/domains/story.py` | Stories: sentences -> a situation that changes over time -> answers derived, not guessed. | 443 |
 
@@ -36,6 +36,7 @@ tags:
 
 - [[ADR-009 Free Text Is Not Yet Supported]]
 - [[ADR-010 Structural Operator Inference]]
+- [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]]
 - [[HRM+LLM Fusion Architecture]]
 - [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
 - [[HRM-X Specification v0.5 - Structural Operator Inference]]
@@ -46,6 +47,7 @@ tags:
 
 - [[Session - 2026-09-28 - DSL Growth, Free Text, and the Graph Pipeline]] — named in the log
 - [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] — commits `d5bacb1`
+- [[Session - 2026-09-29 - EQB and HRM-X Audit]] — named in the log
 - [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — commits `f0dc2ae`
 
 ## Tests

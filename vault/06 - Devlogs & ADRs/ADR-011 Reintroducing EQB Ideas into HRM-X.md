@@ -7,7 +7,7 @@ tags:
   - hrm-eqb
   - certification
   - proposal
-status: proposed
+status: measured — A falsified, B and C not built (ADR-012)
 date: 2026-09-29
 agent: "opencode/stealth/space-bunny-alpha"
 model: "space-bunny-alpha"
@@ -24,6 +24,15 @@ related:
 # ADR-011: Why HRM-EQB Left, and What It Would Take to Bring It Back into HRM-X
 
 ## Status
+
+**Update 2026-09-29 ([[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]]).**
+A was measured first, as §7 requires, and its falsifier fired: wrong answers reach an
+*infinite* rival margin (no fitting reading disagrees), so the margin cannot be the gate. The
+wrong-answer channel was instead narrowed by making Def. 3's BOTTOM hypothesis count inside
+`Mind` — it had been cancelling out (0 of 52 E13 outcomes moved with `bits_bottom`). B was not
+built because the concept route's memory is write-only (nothing reads a stored reading back);
+C was not built because `consolidate` has no runtime caller. The text below is the proposal as
+written.
 
 **Proposed. Nothing here is implemented.** This ADR exists to answer two
 questions that keep recurring — *why did we abandon the certified model?* and

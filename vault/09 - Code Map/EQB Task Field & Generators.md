@@ -14,7 +14,7 @@ tags:
 | module | what it does | lines |
 |---|---|---|
 | `hrm_eqb/field.py` | The task field: every task becomes one set of tokens with (content, row, col, slot). | 251 |
-| `hrm_eqb/tasks.py` | Tasks the model learns from and is judged on. | 343 |
+| `hrm_eqb/tasks.py` | Tasks the model learns from and is judged on. | 362 |
 
 ## Depends on
 
@@ -26,14 +26,17 @@ tags:
 - [[EQB Model & Language Coda]]
 - [[EQB Runtime Mind]]
 - [[EQB Training, Study & Bench]]
+- [[HRM-X Experiments]]
 
 ## Governed by (specs, ADRs, concepts, guides)
 
+- [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]]
 - [[HRM-X Specification v0.3 - Understanding by Construction]]
 
 ## Changed or discussed in sessions
 
 - [[Session - 2026-09-27 - HRM-EQB Full Build]] — commits `1553230`, `483c0c1`
+- [[Session - 2026-09-29 - EQB and HRM-X Audit]] — named in the log
 
 ## Tests
 

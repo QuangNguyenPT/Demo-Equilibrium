@@ -14,13 +14,17 @@ is measured against.
 - **Normative design:** `vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md`
 - **Decision record:** `vault/06 - Devlogs & ADRs/ADR-010 Structural Operator Inference.md`
 - **Previous:** spec v0.4 and ADR-008, program search over a hand-written DSL.
-- `python -m pytest` → **436 passed, 1 skipped**. 128 of those are HRM-X (`tests/test_x_*.py`,
-  including differential parity for the C++ backend), 55 are the `hrm_eqb` theorem and runtime
+- `python -m pytest` → **442 passed, 1 skipped** (native DLL built). 132 of those are HRM-X (`tests/test_x_*.py`,
+  including differential parity for the C++ backend), 57 are the `hrm_eqb` theorem and runtime
   tests, and the rest cover `hrm/` and the vault tooling.
-- **Gates G1–G3 (mathematics, representation, capability) are closed. G4 — refusing operators
-  outside the hypothesis language — is not.** On out-of-language operators the v0.5 route gives
-  5 confident wrong answers out of 6, where v0.4 gave 0 wrong and 4 abstentions. That regression
-  is measured, explained and pinned by a test. Read ADR-010 before quoting any headline here.
+- **Gates G1–G2 are closed; G3 and G4 are open.** ADR-010 measured the v0.5 route at 5 confident
+  wrong answers out of 6 on out-of-language operators. ADR-012 found the cause — the spec's
+  BOTTOM ("outside my language") hypothesis was cancelling out inside `Mind` — and fixed it:
+  0 wrong of 9 on E13 and 2 of 21 on held-out operators, at the price of in-language recall
+  (E13a 13/15 → 9/15, now abstentions). Read ADR-010 and ADR-012 before quoting any headline here.
+- **HRM-EQB audit (ADR-012):** its equilibrium core is linear in its input at the shipped
+  shrink, extra recurrence does not change accuracy, and its 0.983 language score is recall of a
+  90-word table (0.956 on those words, 0.006 on unseen strings).
 
 The motivating example is the one in the spec: from `2×2=4` and `2×3=6` the model must reach
 `10×3.1=31` through a *reusable* operation, not by interpolating. It does, exactly, and the
@@ -134,6 +138,11 @@ drops to 0.993 only on long chains.
 
 ### E13 — the v0.5 concept route against the v0.4 program route (2026-09-29)
 
+> **Superseded numbers.** The tables in this section are the port as first measured (ADR-010).
+> Since ADR-012 the shipped route honours BOTTOM: E13a in-language 9 / 2 / 4, out-of-language
+> 0 / 0 / 6, pinned-argument out-of-language 0 / 0 / 3; the closed-world ablation reproduces the
+> tables below exactly. `experiments/results/x_v05.json` holds the current run.
+
 Both routes, one `Mind`, one value-of-computation controller, 26 solves per condition
 (`experiments/x_v05.py` → `experiments/results/x_v05.json`). Correct / wrong / abstain:
 
@@ -238,7 +247,7 @@ actual hot paths, and it is now false: see the native backend section above.
 
 ```powershell
 python -m pip install numpy pytest                      # HRM-X itself needs numpy only
-python -m pytest                                        # 436 passed, 1 skipped
+python -m pytest                                        # 442 passed, 1 skipped
 .\scripts\build_native.ps1                              # optional, enables the C++ backend
 
 python -m experiments.x_arith                           # E1, E2, E12 + kNN / MLP baselines

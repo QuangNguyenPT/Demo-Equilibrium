@@ -17,7 +17,7 @@ tags:
 | `hrm_eqb/bench.py` | Benchmarks: generated families, language (text answers + coda descriptions), Sudoku, ARC-AGI-1. | 168 |
 | `hrm_eqb/device.py` | Device selection with a hard VRAM cap. | 20 |
 | `hrm_eqb/study.py` | Self-study, influenced by karpathy/autoresearch: fixed budget, one frozen metric, keep or discard. | 134 |
-| `hrm_eqb/train.py` | Training and evaluation. | 232 |
+| `hrm_eqb/train.py` | Training and evaluation. | 234 |
 
 ## Depends on
 
@@ -29,15 +29,18 @@ tags:
 ## Used by
 
 - [[EQB Runtime Mind]]
+- [[HRM-X Experiments]]
 
 ## Governed by (specs, ADRs, concepts, guides)
 
+- [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]]
 - [[GPU Safety - VRAM Oversubscription and DPC Watchdog]]
 - [[HRM-X Specification v0.3 - Understanding by Construction]]
 
 ## Changed or discussed in sessions
 
 - [[Session - 2026-09-27 - HRM-EQB Full Build]] — commits `0afeafc`, `1553230`, `2c82d7e`, `483c0c1`
+- [[Session - 2026-09-29 - EQB and HRM-X Audit]] — named in the log
 
 ## Tests
 

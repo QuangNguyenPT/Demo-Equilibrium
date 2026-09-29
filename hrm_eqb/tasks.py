@@ -177,12 +177,30 @@ def _as_word(row: Grid) -> str:
     return bytes(int(v) for v in row.ravel()).decode("ascii")
 
 
-def _text_rule(family: str, rng: np.random.Generator) -> Tuple[Rule, str, Sampler]:
+TEXT_SOURCES = ("words", "letters")
+
+
+def random_letters(r: np.random.Generator, lengths: Tuple[int, int] = (3, 5)) -> str:
+    """A lowercase string outside WORDS: the input no finite table of training words can cover."""
+    vocab = set(WORDS)
+    while True:
+        w = "".join(chr(97 + int(c)) for c in r.integers(0, 26, int(r.integers(lengths[0], lengths[1] + 1))))
+        if w not in vocab:
+            return w
+
+
+def _text_rule(family: str, rng: np.random.Generator, source: str = "words") -> Tuple[Rule, str, Sampler]:
+    """`source="words"` draws inputs from the 90-word list (as trained in ADR-006); "letters" draws
+    random strings, so a text family can only be solved by its rule, never by recalling a word."""
+    if source not in TEXT_SOURCES:
+        raise ValueError(f"unknown text source '{source}'")
     k = int(rng.integers(1, 4))
     short = family == "double"
     pool = [w for w in WORDS if len(w) <= 4] if short else list(WORDS)
 
     def sample(r: np.random.Generator) -> Grid:
+        if source == "letters":
+            return _as_bytes(random_letters(r, (3, 4) if short else (3, 5)))
         return _as_bytes(pool[int(r.integers(0, len(pool)))])
 
     words: Dict[str, Tuple[Callable[[str], str], str]] = {
@@ -275,7 +293,8 @@ def sudoku_task(rng: np.random.Generator, clues: Tuple[int, int] = (34, 45)) -> 
 
 # ---------- generation ----------
 
-def generate(domain: str, family: str, rng: np.random.Generator, max_side: int = 10, n_demos: int = 3) -> Task:
+def generate(domain: str, family: str, rng: np.random.Generator, max_side: int = 10, n_demos: int = 3,
+             text_source: str = "words") -> Task:
     """One task of a family with a freshly drawn concrete rule."""
     if domain == "sudoku":
         return sudoku_task(rng)
@@ -284,7 +303,7 @@ def generate(domain: str, family: str, rng: np.random.Generator, max_side: int =
     elif domain == "sequence":
         rule, text, sample = _sequence_rule(family, rng)
     elif domain == "text":
-        rule, text, sample = _text_rule(family, rng)
+        rule, text, sample = _text_rule(family, rng, text_source)
     else:
         raise ValueError(f"unknown domain '{domain}'")
     inputs = [sample(rng) for _ in range(n_demos + 1)]

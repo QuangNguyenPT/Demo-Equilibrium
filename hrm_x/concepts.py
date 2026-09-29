@@ -98,6 +98,11 @@ class Fitted:
     seen_x: frozenset = frozenset()
     seen_y: frozenset = frozenset()
     enforce_coverage: bool = True
+    min_surplus: int = 0
+
+    def tested(self) -> bool:
+        """The reading has predicted at least `min_surplus` evidence rows it was not fitted to."""
+        return self.surplus >= self.min_surplus
 
     def covered(self, x: Q, y: Q) -> bool:
         """Open-world coverage: moving an argument to an unseen value is supported only if that
@@ -114,7 +119,7 @@ class Fitted:
         """Value at (x, y) if the evidence determines it under this family (Theorem 3) and the query is
         covered by the evidence's variation (open-world rule), else None. coverage=False is the
         'imagined' prediction used only to value questions (what would this reading predict there?)."""
-        if coverage and not self.covered(x, y):
+        if coverage and not (self.covered(x, y) and self.tested()):
             return None
         r = self.family.row(x, y)
         if r is None or not in_row_space(self.A, r):
@@ -129,6 +134,7 @@ class ConceptConfig:
     symmetry_bits: float = 3.0       # prior preference for hypotheses symmetric in x, y that use both
     wrong_penalty: float = 4.0       # L: answer only if (1+L) q - L > 0, i.e. q > L/(1+L)
     coverage: bool = True            # open-world coverage rule (ablation: False = closed world)
+    min_surplus: int = 0             # answer only from readings with >= this many predicted rows (E14)
 
 
 @dataclass
@@ -157,6 +163,31 @@ class Belief:
             else:
                 q[v] = q.get(v, 0.0) + p
         return q, undetermined, p_bot
+
+
+def rival_margin(bel: Belief, x: Q, y: Q, answer: Q) -> float:
+    """log2(mass behind `answer` / mass of the best reading predicting a different value at (x, y)).
+
+    ADR-011 proposal A. Readings are compared on what they would say at the query
+    (coverage off), so a rival refused only by the coverage rule still counts: it fits the
+    evidence exactly and disagrees. inf when no reading disagrees; -inf when none agrees.
+    Computed from the log2 weights directly, so a rival 2000 bits behind does not underflow.
+    """
+    by_value: Dict[Q, List[float]] = {}
+    for f in bel.fitted:
+        v = f.value(x, y, coverage=False)
+        if v is not None:
+            by_value.setdefault(v, []).append(f.log2w)
+
+    def log2_sum(ws: List[float]) -> float:
+        m = max(ws)
+        return m + math.log2(sum(2.0 ** (w - m) for w in ws))
+
+    support = by_value.pop(answer, None)
+    if not by_value:
+        return math.inf
+    rival = max(log2_sum(ws) for ws in by_value.values())
+    return log2_sum(support) - rival if support else -math.inf
 
 
 def _symmetric(f: Family, params: List[Q], A: List[List[Q]]) -> bool:
@@ -199,7 +230,7 @@ def fit(evidence: Evidence, cfg: ConceptConfig, families: Sequence[Family] = FAM
         # MDL: L(h) = L(family choice) + L(fitted rational parameters); L(D | h) is paid only for
         # the r points used to fit, the n - r surplus points are predicted (Prop. 4).
         log2w = -fam.bits - param_bits(p) + (n - r) * cfg.log2_answer_space + (cfg.symmetry_bits if sym else 0.0)
-        fitted.append(Fitted(fam, p, A, r, n - r, log2w, sym, frozenset(x for (x, _), _ in evidence), frozenset(y for (_, y), _ in evidence), cfg.coverage))
+        fitted.append(Fitted(fam, p, A, r, n - r, log2w, sym, frozenset(x for (x, _), _ in evidence), frozenset(y for (_, y), _ in evidence), cfg.coverage, cfg.min_surplus))
     return Belief(fitted, -cfg.bits_bottom, ops)
 
 

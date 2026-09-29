@@ -140,21 +140,24 @@ def test_one_question_destroys_the_coverage_guard():
     firing -- for every reading, not only the wrong ones. So the controller's own
     act of asking re-opens the coincidental-fit channel the rule exists to close.
 
-    `experiments/x_v05.py` measures the consequence: 5 confidently wrong answers
-    on 6 out-of-language queries, every one of them after an `ask`.
+    Under the v0.5 port this produced 5 confidently wrong answers on 6
+    out-of-language queries (`experiments/x_v05.py`, ADR-010). The mechanism is
+    still true at the level of a reading; what changed (ADR-012) is that the
+    BOTTOM hypothesis now keeps its mass inside `Mind`, so a reading with no
+    surplus row no longer outweighs it -- see the test below.
     """
     square_add = lambda a, b: a * a + b
     task = ConceptTask.from_op(square_add, [(F(2), F(3)), (F(4), F(3))], (F(5), F(7)),
                                symbol="*", oracle=square_add)
     domain, mind = Concept(), Mind(Controller())
     before, _ = domain.propose(task, 0, mind)
-    asymmetric_before = [h for h in before if not h.payload.symmetric]
+    asymmetric_before = [h for h in before if h.payload is not None and not h.payload.symmetric]
     assert asymmetric_before, "expected at least one asymmetric reading"
     assert all(not h.payload.covered(F(5), F(7)) for h in asymmetric_before)
 
     domain.ask(task, (F(1), F(1)), before, mind)
     after, _ = domain.propose(task, 1, mind)
-    asymmetric_after = [h for h in after if not h.payload.symmetric]
+    asymmetric_after = [h for h in after if h.payload is not None and not h.payload.symmetric]
     assert asymmetric_after, "the ask left no asymmetric reading to re-open the channel"
     assert any(h.payload.covered(F(5), F(7)) for h in asymmetric_after)
 
@@ -188,7 +191,7 @@ def test_verification_reproduces_the_answer_by_the_dual_solve():
     domain, mind = Concept(), Mind(Controller())
     got, spent = domain.propose(task, 0, mind)
     assert got and spent > 0
-    hyp = [h for h in got if h.payload.family.name == "biaffine{xy,1}"][0]
+    hyp = [h for h in got if h.payload is not None and h.payload.family.name == "biaffine{xy,1}"][0]
     domain.derive(task, hyp, mind)
     assert hyp.answer == F(11)
 
@@ -210,7 +213,7 @@ def test_verification_catches_a_reading_whose_parameters_were_corrupted():
                                symbol="+", oracle=add)
     domain, mind = Concept(), Mind(Controller())
     hyp = [h for h in domain.propose(task, 0, mind)[0]
-           if h.payload.family.name == "biaffine{x,y}"][0]
+           if h.payload is not None and h.payload.family.name == "biaffine{x,y}"][0]
     domain.derive(task, hyp, mind)
     assert hyp.answer == F(7)
     assert domain.verify(task, hyp, mind) > 0 and hyp.verified is True
@@ -223,26 +226,40 @@ def test_verification_catches_a_reading_whose_parameters_were_corrupted():
     assert "dual says" in hyp.note
 
 
-def test_a_coincidental_symmetric_fit_is_still_confidently_wrong():
-    """The measured limit, pinned on purpose.
+def test_a_coincidental_fit_no_longer_outweighs_the_bottom_hypothesis():
+    """The measured limit of ADR-010, and the fix of ADR-012.
 
     `a^2 + b` is outside the hypothesis language. On this evidence the full
-    bi-affine family fits both rows, the mind buys one question, the coverage
-    guard stops applying, the dual confirms the result, and the answer is 47
-    where the truth is 32. Doc 13 calls this the coincidental-fit channel (Q1):
-    the open-world posterior removes errors caused by a *missing* hypothesis, not
-    errors caused by a *simpler wrong* one that happens to fit.
+    bi-affine family fits both rows, the mind buys one question and the coverage
+    guard stops applying. Under the v0.5 port the mind then answered 47 where the
+    truth is 32: `Concept.propose` dropped BOTTOM's posterior and `Mind` normalized
+    over the readings alone, so Def. 3 cancelled out (bits_bottom 4, inf or -100
+    changed 0 of 52 E13 outcomes).
 
-    `experiments/x_v05.py` measures it at 5 wrong answers out of 6 out-of-language
-    queries, against 0 wrong and 4 abstentions for the v0.4 route. If a later
-    change claims to close the channel, this test is what has to fail.
+    With BOTTOM a hypothesis inside `Mind`, a reading that fits with no surplus
+    row has weight 2^-(its description bits) against BOTTOM's 2^-4 and loses, so
+    the mind abstains. The closed-world ablation (bits_bottom = inf) must still
+    reproduce the old wrong answer, or the fix is not what closed the channel.
     """
     square_add = lambda a, b: a * a + b
     result = _solve(square_add, [(F(2), F(3)), (F(4), F(3))], (F(5), F(7)))
-    assert result.status == "answer"
-    assert result.answer == F(47)
-    assert result.answer != square_add(F(5), F(7))
-    assert any(s.action == "ask" for s in result.trace)
+    assert result.status == "abstain"
+    assert any(h.answer == "outside my language" and h.weight > 0 for h in result.hypotheses)
+
+    task = ConceptTask.from_op(square_add, [(F(2), F(3)), (F(4), F(3))], (F(5), F(7)),
+                               symbol="*", oracle=square_add)
+    closed = Mind(Controller()).solve(Concept(ConceptConfig(bits_bottom=float("inf"))), task)
+    assert closed.status == "answer" and closed.answer == F(47) != square_add(F(5), F(7))
+
+
+def test_bottom_prior_changes_the_outcome():
+    """Def. 3 is load-bearing: making 'outside my language' implausible (2^100 times
+    below every reading) must let the same coincidental fit answer again."""
+    square_add = lambda a, b: a * a + b
+    task = ConceptTask.from_op(square_add, [(F(2), F(3)), (F(4), F(3))], (F(5), F(7)),
+                               symbol="*", oracle=square_add)
+    implausible = Mind(Controller()).solve(Concept(ConceptConfig(bits_bottom=100.0)), task)
+    assert implausible.status == "answer"
 
 
 def test_the_language_is_exhausted_rather_than_reshuffled():
@@ -252,7 +269,7 @@ def test_the_language_is_exhausted_rather_than_reshuffled():
     task = ConceptTask.from_op(mul, [(F(2), F(3))], (F(4), F(6)), symbol="*", oracle=mul)
     domain, mind = Concept(), Mind(Controller())
     assert domain.propose(task, 0, mind)[0]
-    assert domain.propose(task, 1, mind)[0] is None
+    assert domain.propose(task, 1, mind) is None     # `Mind.solve` tests `got is None`
 
 
 def test_propose_charges_a_fit_and_derive_charges_only_a_lookup():
@@ -448,3 +465,37 @@ def test_a_story_with_no_stated_initial_quantity_is_not_answered():
     got = answer(mem, ["Ann gives 2 pears to Ben ."], "How many pears does Ann have ?")
     assert got.status == "abstain"
     assert "initial quantity" in got.reason
+
+
+def test_evidence_no_family_fits_is_an_abstention_not_a_crash():
+    """Five generic points: no family in the language fits them. `propose` used to
+    call max() on an empty posterior (ValueError) inside `Mind.solve`."""
+    table = {(F(1), F(1)): F(7), (F(1), F(2)): F(-3), (F(2), F(1)): F(11),
+             (F(2), F(2)): F(0), (F(3), F(3)): F(5)}
+    task = ConceptTask("?", [(a, b, c) for (a, b), c in table.items()], (F(4), F(4)))
+    assert not fit(task.evidence(), ConceptConfig()).fitted
+    result = Mind(Controller()).solve(Concept(), task)
+    assert result.status == "abstain"
+
+
+def test_rival_margin_reads_log_weights_without_underflow():
+    """ADR-011 A's quantity: bits between the mass behind the answer and the best disagreeing
+    reading. It is measured (E14), not used as a gate: wrong answers reach an infinite margin."""
+    from hrm_x.concepts import rival_margin
+    bel = fit([((F(2), F(3)), F(6)), ((F(3), F(4)), F(12)), ((F(1), F(5)), F(5))], ConceptConfig())
+    assert rival_margin(bel, F(4), F(6), F(24)) > 10.0
+    assert rival_margin(bel, F(4), F(6), F(25)) == float("-inf")
+
+
+def test_outside_hypothesis_spreads_its_likelihood_over_every_outcome():
+    """In `_value_of_question` an OUTSIDE hypothesis joins each predicted outcome with weight
+    `spread` (its likelihood of any one answer), so hearing a reading confirmed moves mass from
+    OUTSIDE to the reading by 1 / spread instead of being valued as if OUTSIDE were refuted."""
+    from hrm_x.mind import OUTSIDE, Hyp
+    mind = Mind(Controller(wrong_penalty=1.0))
+    reading = Hyp("r", 0.2, None, answer=F(5), derived=True, verified=True)
+    bottom = Hyp("b", 0.8, None, answer=OUTSIDE, derived=True, spread=0.01)
+    voi = mind._value_of_question([reading, bottom], [F(1), OUTSIDE], [F(5), OUTSIDE], rho=1.0)
+    q_confirmed = 0.2 / (0.2 + 0.8 * 0.01)
+    expected = (0.2 + 0.8 * 0.01) * max(0.0, 2 * q_confirmed - 1)   # U(now) = max(0, 2*0.2 - 1) = 0
+    assert abs(voi - expected) < 1e-12

@@ -15,10 +15,13 @@ tags:
 |---|---|---|
 | `experiments/__init__.py` |  | 1 |
 | `experiments/common.py` | Shared experiment plumbing: seeded runs, result records, and a results directory under version control. | 30 |
+| `experiments/eqb_probe.py` | EQB-P — what the trained HRM-EQB actually learned from its task field, measured. | 238 |
+| `experiments/eqb_text.py` | EQB-T — can HRM-EQB learn a text *rule* when the training words cannot be memorised? | 99 |
 | `experiments/x_arith.py` | E1 numeric extrapolation, E2 compositional arithmetic, E12 efficiency from discovered laws. | 171 |
 | `experiments/x_control.py` | E9 adaptive computation, E10 verification effectiveness, and the hierarchy (H vs L) test. | 228 |
 | `experiments/x_dsl.py` | Does a learned DSL actually make concept search cheaper, or only make it sound tidier? | 195 |
 | `experiments/x_grid.py` | E6 rule composition, E7 structural transformation on new arrangements, E11 symbol permutation, | 334 |
+| `experiments/x_margin.py` | E14 — ADR-011 step A: does the rival margin separate right answers from wrong ones? | 150 |
 | `experiments/x_metacog.py` | Curiosity and volatility: does self-directed study pay, and does the NE-like signal adapt the mind? | 125 |
 | `experiments/x_native.py` | Native backend speedup on the profiled workloads (the justification for C++, spec v0.4 §23). | 85 |
 | `experiments/x_patience.py` | E9b: is a *learned* price of computation better than a fixed one? | 210 |
@@ -28,6 +31,11 @@ tags:
 
 ## Depends on
 
+- [[EQB Equilibrium Core]]
+- [[EQB Model & Language Coda]]
+- [[EQB Runtime Mind]]
+- [[EQB Task Field & Generators]]
+- [[EQB Training, Study & Bench]]
 - [[HRM-X Concept Induction (v0.5)]]
 - [[HRM-X DSL Library]]
 - [[HRM-X Domains]]
@@ -43,6 +51,7 @@ tags:
 - [[ADR-009 Free Text Is Not Yet Supported]]
 - [[ADR-010 Structural Operator Inference]]
 - [[ADR-011 Reintroducing EQB Ideas into HRM-X]]
+- [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]]
 - [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
 - [[HRM-X Specification v0.5 - Structural Operator Inference]]
 
@@ -50,6 +59,7 @@ tags:
 
 - [[Session - 2026-09-28 - DSL Growth, Free Text, and the Graph Pipeline]] — named in the log
 - [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] — commits `d5bacb1`
+- [[Session - 2026-09-29 - EQB and HRM-X Audit]] — named in the log
 - [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — commits `f0dc2ae`
 
 ## Tests

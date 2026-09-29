@@ -57,7 +57,7 @@ Authoritative: [[HRM-X Specification v0.5 - Structural Operator Inference]] ·
 
 | module | role | evidence |
 |---|---|---|
-| `hrm_x/mind.py` | the loop: operator hypotheses, VOC controller, learned `Patience` λ, persistence. **One mind for both routes.** | spec §14, §19; `tests/test_x_patience.py` |
+| `hrm_x/mind.py` | the loop: operator hypotheses, VOC controller, learned `Patience` λ, persistence. **One mind for both routes.** `OUTSIDE` hypotheses (ADR-012) carry BOTTOM's mass | spec §14, §19; `tests/test_x_patience.py`; `tests/test_x_concept.py` |
 | `hrm_x/workspace.py` | e-graph with provenance, congruence closure, blame | [[ADR-008 Operator Inference over Structured Situations]] |
 | `hrm_x/rules.py` | law rules and saturation | spec v0.4 §8 |
 | `hrm_x/induction.py` | Bayesian program induction, observational equivalence (v0.4 route) | spec v0.4 §8 |
@@ -72,7 +72,10 @@ Authoritative: [[HRM-X Specification v0.5 - Structural Operator Inference]] ·
 
 | driver | measures | evidence |
 |---|---|---|
-| `experiments/x_v05.py` | **E13** — the v0.5 concept route vs the v0.4 arith route, same `Mind`, six conditions, two task lists | `experiments/results/x_v05.json` — in-language 13/15 at 593 ops vs 7/15 at 4,265; out-of-language 5 confidently wrong of 6 vs 0 wrong and 4 abstentions |
+| `experiments/x_v05.py` | **E13** — the v0.5 concept route vs the v0.4 arith route, same `Mind`, six conditions, two task lists | `experiments/results/x_v05.json` — since ADR-012 (BOTTOM live): in-language 9 / 2 / 4, out-of-language 0 / 0 / 6; as ported (ADR-010): 13/15 and 5 confidently wrong of 6 |
+| `experiments/x_margin.py` | **E14** — ADR-011 A: rival margin and surplus per answer on E13 plus 61 seeded held-out operators; `bits_bottom` sweep | `experiments/results/x_margin.json` — margin does not separate (wrong answers at ∞ bits); [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]] |
+| `experiments/eqb_probe.py` | **EQB-P** — what the trained HRM-EQB learned: core linearity, compute ablation, demo swap, novel inputs, views | `experiments/results/eqb_probe.json` — ADR-012 E1–E4 |
+| `experiments/eqb_text.py` | **EQB-T** — text-only training on the word list vs random strings vs a nonlinear core | `experiments/results/eqb_text.json` — ADR-012 |
 | `experiments/x_perception.py` | held-out free text, scored by an independent reader | `experiments/results/x_perception.json` |
 | `experiments/x_patience.py` | learned λ against a fixed sweep over its own reachable range | `experiments/results/x_patience.json` — the learned price lost; the constant stays |
 

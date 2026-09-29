@@ -21,6 +21,16 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, FrozenSet, List, Optional, Protocol, Tuple
 
 UNKNOWN = "undefined"
+# The reserved reading "the truth is outside my language" (spec v0.5 Def. 3). A hypothesis with this
+# answer keeps its share of the normalizing mass -- it is a real alternative, unlike UNKNOWN, which
+# means "this reading has no value here" and leaves the mass -- but predicts no value, is never
+# verified and never becomes the answer. Without it the BOTTOM prior cancelled in normalization.
+OUTSIDE = "outside my language"
+
+
+def _is_value(a: Any) -> bool:
+    """An answer the mind could give: not missing, not undefined, not the outside-my-language mass."""
+    return a is not None and a != UNKNOWN and a != OUTSIDE
 
 
 DEFAULT_LAM = 2e-5
@@ -36,6 +46,7 @@ class Hyp:
     verified: Optional[bool] = None
     note: str = ""
     culprits: FrozenSet[str] = frozenset()
+    spread: float = 0.0              # OUTSIDE hypotheses only: probability of any one specific answer
 
 
 @dataclass
@@ -302,7 +313,7 @@ class Mind:
         if mass <= 0:
             return q, 0.0
         for h in alive:
-            if h.derived and h.answer is not None and h.answer != UNKNOWN:   # "undefined for me" is not an answer
+            if h.derived and _is_value(h.answer):   # "undefined for me" and "outside my language" are not answers
                 r = 1.0 if h.verified else rho
                 q[h.answer] = q.get(h.answer, 0.0) + h.weight / mass * r
         return q, mass
@@ -319,26 +330,39 @@ class Mind:
         return max(0.0, (1.0 + penalty) * best - penalty)
 
     def _value_of_question(self, alive: List[Hyp], at_q: List[Any], goals: List[Any], rho: float) -> float:
-        """E[U after hearing the true answer at q] - U, using each hypothesis's goal prediction."""
-        def value(group: List[Tuple[Hyp, Any]]) -> float:
-            mass = sum(h.weight for h, g in group if g is not None and g != UNKNOWN)
+        """E[U after hearing the true answer at q] - U, using each hypothesis's goal prediction.
+
+        A reading predicts one outcome at q. An OUTSIDE hypothesis predicts none in particular: it
+        joins every predicted outcome with likelihood `spread` and keeps the rest for "something
+        else", so hearing a reading's prediction confirmed re-weights it against OUTSIDE by
+        1 / spread -- the same Bayes factor the domain's own posterior applies to a surplus row.
+        """
+        def value(group: List[Tuple[Hyp, Any, float]]) -> float:
+            mass = sum(w for h, g, w in group if g is not None and g != UNKNOWN)
             if mass <= 0:
                 return 0.0
             q: Dict[Any, float] = {}
-            for h, g in group:
-                if g is not None and g != UNKNOWN:
-                    q[g] = q.get(g, 0.0) + h.weight / mass * (1.0 if h.verified else rho)
+            for h, g, w in group:
+                if _is_value(g):
+                    q[g] = q.get(g, 0.0) + w / mass * (1.0 if h.verified else rho)
             return self._utility(q)
 
-        pairs = list(zip(alive, goals))
         total = sum(h.weight for h in alive)
-        after = 0.0
-        outcomes: Dict[Any, List[Tuple[Hyp, Any]]] = {}
-        for (h, g), a in zip(pairs, at_q):
-            outcomes.setdefault(UNKNOWN if a is None else a, []).append((h, g))
-        for group in outcomes.values():
-            after += sum(h.weight for h, _ in group) / total * value(group)
-        return after - value(pairs)
+        outcomes: Dict[Any, List[Tuple[Hyp, Any, float]]] = {}
+        outside = []
+        for h, g, a in zip(alive, goals, at_q):
+            if a == OUTSIDE:
+                outside.append((h, g))
+            else:
+                outcomes.setdefault(UNKNOWN if a is None else a, []).append((h, g, h.weight))
+        predicted = [k for k in outcomes if k != UNKNOWN]
+        for k in predicted:
+            outcomes[k] += [(h, g, h.weight * h.spread) for h, g in outside]
+        if outside:
+            outcomes[OUTSIDE] = [(h, g, h.weight * max(0.0, 1.0 - len(predicted) * h.spread))
+                                 for h, g in outside]
+        after = sum(sum(w for _, _, w in group) / total * value(group) for group in outcomes.values())
+        return after - value([(h, g, h.weight) for h, g in zip(alive, goals)])
 
     # ---------- the loop ----------
 
@@ -355,7 +379,9 @@ class Mind:
             u_now = self._utility(q)
             options: List[Tuple[float, str, Any, str]] = []
 
-            if mass <= 0 and not exhausted:
+            readings = sum(h.weight for h in hyps if h.weight > 0 and h.answer != OUTSIDE
+                           and h.verified is not False and not (h.derived and h.answer == UNKNOWN))
+            if readings <= 0 and not exhausted:
                 p_found = self.rate(f"{domain.name}:propose@{level}", prior=(1.0, 1.0))
                 options.append((p_found - lam * domain.propose_cost(task, level), "propose", level, ""))
 
@@ -388,15 +414,14 @@ class Mind:
                 options.append((gain - lam * cost, "derive", members, ""))
             for h in alive:
                 p_h = h.weight / mass if mass > 0 else 0.0
-                if h.derived and c.use_verifier and h.verified is None and h.answer is not None \
-                        and h.answer != UNKNOWN:
+                if h.derived and c.use_verifier and h.verified is None and _is_value(h.answer):
                     passed = dict(q)
                     passed[h.answer] += p_h * (1.0 - rho)
                     rest = [x for x in alive if x is not h]
                     rest_mass = sum(x.weight for x in rest)
                     failed = {}
                     for x in rest:
-                        if x.derived and x.answer is not None:
+                        if x.derived and x.answer is not None and x.answer != OUTSIDE:
                             failed[x.answer] = failed.get(x.answer, 0.0) + x.weight / max(rest_mass, 1e-12) * (1.0 if x.verified else rho)
                     gain = rho * self._utility(passed) + (1 - rho) * self._utility(failed) - u_now
                     options.append((gain - lam * c.verify_ops, "verify", h, ""))

@@ -43,7 +43,7 @@ This vault employs a structured tagging taxonomy to enable quick filtering and g
 
 ## Baseline Tags
 - `#hrm` — Hierarchical Reasoning Model (Wang et al. 2025) **and** the `hrm/` package, which is now the measured program-search baseline (ADR-003), not the model.
-- `#hrm-eqb` — The `hrm_eqb/` equilibrium baseline (ADR-005/006): built, measured and theorem-tested (55 tests), superseded as the design target by HRM-X v0.4 and retained. Why it left, and which of its ideas [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes to re-take.
+- `#hrm-eqb` — The `hrm_eqb/` equilibrium baseline (ADR-005/006): built, measured and theorem-tested (57 tests); audited in [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]], superseded as the design target by HRM-X v0.4 and retained. Why it left, and which of its ideas [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes to re-take.
 - `#recurrence` — Multi-timescale iterative processing ($z_H$ and $z_L$).
 
 ## Process & Management Tags

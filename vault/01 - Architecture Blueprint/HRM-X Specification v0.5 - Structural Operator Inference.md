@@ -177,13 +177,22 @@ one `Mind`, 26 solves per condition.
 Full reading, including the three negative results, is in
 [[ADR-010 Structural Operator Inference]].
 
+**Update (ADR-012, 2026-09-29).** The tables above are the port as first measured. Def. 3 was
+not in effect inside `Mind` — BOTTOM's posterior was dropped and cancelled in normalisation — and
+is now a hypothesis the controller sees. Same run, shipped configuration: E13a in-language
+**9 / 2 / 4**, out-of-language **0 / 0 / 6**; E13b out-of-language 0 / 0 / 3. On 61 seeded
+held-out operators, out-of-language wrong answers 16 → 2 and in-language correct 36 → 22. See
+[[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]].
+
 ## 9. What is refused
 
 - **Coincidental fits.** "The open-world posterior removed the confident errors
   that come from a *missing* hypothesis. It does not remove errors where a
   *simpler wrong* hypothesis fits the evidence" (doc 13, Q1). Measured: 5 wrong
   out of 6 out-of-language queries. Pinned by
-  `::test_a_coincidental_symmetric_fit_is_still_confidently_wrong`. **[R]**
+  `::test_a_coincidental_symmetric_fit_is_still_confidently_wrong`. **[R]** — *Narrowed by
+  ADR-012*: with BOTTOM live the same coincidental fit abstains; the closed-world ablation still
+  answers 47 (`::test_a_coincidental_fit_no_longer_outweighs_the_bottom_hypothesis`).
 - **Asking defeats the coverage guard.** One question brings a second value of
   the argument into the evidence, so "did this argument ever vary?" becomes true
   and the rule stops firing. Pinned by
@@ -202,8 +211,8 @@ Full reading, including the three negative results, is in
 |---|---|---|
 | G1 mathematics | every quantity is exact over ℚ, and Theorem 3 / Prop. 4 / Prop. 8 are tested against the implementation | done |
 | G2 representation | a reading is a law-closed family, fitted exactly, never enumerated | done |
-| G3 capability | in-language operators are answered exactly and cheaply | done — 13/15 at 7.2× fewer ops than v0.4 |
-| G4 generalization | operators outside the language are *refused*, not guessed | **not met** — 5 confident wrong of 6 |
+| G3 capability | in-language operators are answered exactly and cheaply | was 13/15 at 7.2× fewer ops than v0.4; **9/15 since ADR-012** (BOTTOM live) — reopened |
+| G4 generalization | operators outside the language are *refused*, not guessed | **not met** — was 5 confident wrong of 6; since ADR-012 0 of 9 on E13 and 2 of 21 held-out |
 | G5 anti-shortcut | no lookup dressed as reasoning; no result explained by the task distribution | **not met** — §9, Q1 |
 | G6 efficiency | metareasoning cost is bounded and small | **not met** — the delivery measured 35k meta ops against 3.3k object ops and nothing bounds the estimator (doc 13, Q3) |
 

@@ -61,12 +61,13 @@ from hrm_x.concepts import (
     Fitted,
     fit,
 )
-from hrm_x.mind import UNKNOWN, Hyp, Mind, Result
+from hrm_x.mind import OUTSIDE, UNKNOWN, Hyp, Mind, Result
 from hrm_x.qlinalg import solve
 
 Q = Fraction
 Pair = Tuple[Q, Q]
 Datum = Tuple[Pair, Q]
+BOTTOM_KEY = "BOTTOM (outside my language)"
 
 
 def reading_key(fitted: Fitted) -> str:
@@ -152,8 +153,9 @@ class Concept:
         written down.
         """
         bel = self.belief(task)
-        post, _ = bel.posterior()
-        scale = max(post) or 1.0
+        post, p_bot = bel.posterior()
+        if not post:
+            return None              # no family fits the evidence: the language is exhausted
         seen = self._seen.setdefault(id(task), set())
         out: List[Hyp] = []
         for fitted, p in zip(bel.fitted, post):
@@ -163,10 +165,17 @@ class Concept:
             if key in seen:
                 continue
             seen.add(key)
-            out.append(Hyp(key=key, weight=p / scale, payload=fitted,
+            out.append(Hyp(key=key, weight=p, payload=fitted,
                            note=f"{fitted.surplus} surplus rows, rank {fitted.rank}"))
+        if BOTTOM_KEY not in seen and p_bot > 0.0:
+            # Def. 3 as a hypothesis the controller can see. Weights are the raw posterior, the
+            # scale `ask` refits to, so BOTTOM and every reading stay comparable across asks.
+            seen.add(BOTTOM_KEY)
+            out.append(Hyp(key=BOTTOM_KEY, weight=p_bot, payload=None, answer=OUTSIDE, derived=True,
+                           spread=2.0 ** -self.cfg.log2_answer_space,
+                           note="the evidence may come from an operator my language cannot write"))
         if not out:
-            return None, 0
+            return None              # `Mind.solve` tests `is None`; a (None, 0) tuple crashed it
         return out, bel.ops
 
     # ----- deriving is a lookup: the solve already happened -----
@@ -188,6 +197,8 @@ class Concept:
             hyp.answer = UNKNOWN
             hyp.note = ("an argument here never varied in the evidence"
                         if not fitted.covered(x, y)
+                        else f"fitted but not yet tested: {fitted.surplus} of {fitted.min_surplus} "
+                             "predicted rows" if not fitted.tested()
                         else "this reading is not determined at the question")
         else:
             hyp.answer = value
@@ -275,7 +286,9 @@ class Concept:
 
     @staticmethod
     def _imagined(hyp: Hyp, pq: Pair) -> Optional[Q]:
-        """What this reading would say at `pq` if it were entitled to."""
+        """What this reading would say at `pq` if it were entitled to (BOTTOM says nothing)."""
+        if hyp.payload is None:
+            return OUTSIDE
         return hyp.payload.value(pq[0], pq[1], coverage=False)
 
     def ask(self, task: ConceptTask, question: Pair, hyps: List[Hyp], mind: Mind) -> int:
@@ -292,8 +305,9 @@ class Concept:
         answer = task.oracle(*question)
         task.observed.append((question, answer))
         bel = self.belief(task)
-        post, _ = bel.posterior()
+        post, p_bot = bel.posterior()
         by_key = {reading_key(f): p for f, p in zip(bel.fitted, post)}
+        by_key[BOTTOM_KEY] = p_bot
         for h in hyps:
             h.weight = by_key.get(h.key, 0.0)
             if h.weight == 0.0:
@@ -324,7 +338,7 @@ class Concept:
                 seen.append(encoded)
         alive = []
         for h in result.hypotheses:
-            if h.weight <= 0 or h.verified is False:
+            if h.weight <= 0 or h.verified is False or h.payload is None:
                 continue
             fitted: Fitted = h.payload
             alive.append({"key": h.key,

@@ -53,6 +53,7 @@ class TrainConfig:
     checkpoint: Optional[str] = None   # rolling checkpoint path; an existing one is resumed
     checkpoint_every: int = 250
     pause: float = 0.0                 # seconds idle after each step (duty cycle for thermal headroom)
+    text_source: str = "words"         # "letters": random strings, so text rules cannot be memorised
 
 
 def task_batches(rng: np.random.Generator, cfg: TrainConfig, max_side: int,
@@ -65,11 +66,12 @@ def task_batches(rng: np.random.Generator, cfg: TrainConfig, max_side: int,
             draw = (lambda: extra[int(rng.integers(0, len(extra)))])
         elif cfg.only:
             domain, family = cfg.only[int(rng.integers(0, len(cfg.only)))].split("/")
-            draw = (lambda: generate(domain, family, rng, max_side))
+            draw = (lambda: generate(domain, family, rng, max_side, text_source=cfg.text_source))
         else:
             domain = names[int(rng.choice(len(names), p=weights / weights.sum()))]
             fams = FAMILIES[domain]
-            draw = (lambda: generate(domain, fams[int(rng.integers(0, len(fams)))], rng, max_side))
+            draw = (lambda: generate(domain, fams[int(rng.integers(0, len(fams)))], rng, max_side,
+                                     text_source=cfg.text_source))
         picks: List[Task] = []
         n_max = 0
         while len(picks) < cfg.max_batch:

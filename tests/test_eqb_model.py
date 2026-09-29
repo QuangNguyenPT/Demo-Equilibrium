@@ -308,3 +308,42 @@ def test_training_resumes_from_a_rolling_checkpoint(tmp_path):
     train(HRMEQB(TINY), TrainConfig(steps=6, **cfg), torch.device("cpu"), log=logs.append)
     assert "resumed" in logs[0] and "step 5" in logs[0]
     assert torch.load(ck, weights_only=True)["step"] == 6
+
+
+# ---------- audit 2026-09-29 (ADR-012): what the core can and cannot compute ----------
+
+def test_core_fixed_point_is_linear_in_its_injections_at_the_shipped_shrink():
+    """With shrink = 0 the radial ReLU is the identity (spec v0.2 §3 remark), so for fixed routings
+    the equilibrium is z* = (I - K)^-1 c: additive in the injection. Any claim that the core computes
+    a nonlinear function *within* a segment has to make this test fail first. With shrink > 0 it does."""
+    model = HRMEQB(TINY).eval()
+    batch = collate([encode_task(t) for t in all_families()[:6]])
+    with torch.no_grad():
+        x = model.prelude(batch)
+        zero = torch.zeros_like(x)
+        ctx = model.context(x, zero, [], batch, 1.0)
+        c2 = (ctx.inject_low.roll(1, 0), ctx.inject_high.roll(1, 0))
+        errors = {}
+        for shrink in (0.0, 0.5):
+            model.core.shrink = shrink
+            sols = [model.core.solve(zero, zero, Context(ctx.route_low, ctx.route_high, lo, hi), TINY.n_low, 1e-6, 500)
+                    for lo, hi in ((ctx.inject_low, ctx.inject_high), c2,
+                                   (ctx.inject_low + c2[0], ctx.inject_high + c2[1]))]
+            errors[shrink] = float((sols[2].high - sols[0].high - sols[1].high).norm() / sols[2].high.norm())
+    assert errors[0.0] < 1e-4
+    assert errors[0.5] > 1e-2
+
+
+def test_letters_text_source_never_draws_a_training_word():
+    from hrm_eqb.tasks import TEXT_FAMILIES, WORDS
+    rng = np.random.default_rng(3)
+    words = {w for w in WORDS}
+    for f in TEXT_FAMILIES:
+        for _ in range(20):
+            t = generate("text", f, rng, text_source="letters")
+            for grid in [g for pair in t.demos for g in pair[:1]] + [t.query]:
+                assert bytes(int(v) for v in grid.ravel()).decode("ascii") not in words
+    default = generate("text", "reverse", np.random.default_rng(5))
+    assert bytes(int(v) for v in default.query.ravel()).decode("ascii") in words
+    with pytest.raises(ValueError):
+        generate("text", "reverse", rng, text_source="nope")

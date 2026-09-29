@@ -75,11 +75,17 @@ intention.
 - The hypothesis language is still **given**. `Concept.propose` returning `None` on its second
   call is the honest statement of that.
 
+**Update (ADR-012).** The rival margin was measured and does not separate right from wrong
+(wrong answers reach ∞ bits). The channel was narrowed instead by making Def. 3's BOTTOM count
+inside `Mind`: out-of-language wrong answers 24 → 2 over E13 + 61 held-out operators, in-language
+correct 51 → 33. G4 improved, G3 reopened.
+
 ### Next, in priority order
 
-1. **The rival-margin rule** (doc 13, P3) — the identified fix for the coincidental-fit channel.
-   It is a design with its own evidence requirement and deserves its own ADR. Until it lands,
-   G4 stays open.
+1. **Calibrate `bits_bottom`** (now load-bearing: it sets the precision/recall trade — sweep in
+   `x_margin.json`) from experience rather than by hand, and let the controller buy a *test*
+   question for a lone untested reading (its VOI is 0 today because no reading disagrees).
+   ~~The rival-margin rule~~ — measured and falsified, ADR-012 E8.
 2. **The strongest neural baseline** (Abacus, arXiv 2405.17399). Every comparison in E13 is
    symbolic against symbolic, and the v0.4 audit's falsifier (a) has still never been run.
 3. **Library growth of new concept *kinds*** — still the project's most dangerous assumption.

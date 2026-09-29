@@ -31,6 +31,7 @@ tags:
 - [[EQB Knowledge & Model Files]]
 - [[EQB Runtime Mind]]
 - [[EQB Training, Study & Bench]]
+- [[HRM-X Experiments]]
 
 ## Governed by (specs, ADRs, concepts, guides)
 

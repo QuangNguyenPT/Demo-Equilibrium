@@ -23,6 +23,7 @@ tags:
 ## Used by
 
 - [[EQB Model & Language Coda]]
+- [[HRM-X Experiments]]
 
 ## Governed by (specs, ADRs, concepts, guides)
 

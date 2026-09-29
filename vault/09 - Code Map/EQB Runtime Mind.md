@@ -29,6 +29,7 @@ tags:
 
 - [[EQB Model & Language Coda]]
 - [[EQB Training, Study & Bench]]
+- [[HRM-X Experiments]]
 
 ## Governed by (specs, ADRs, concepts, guides)
 
