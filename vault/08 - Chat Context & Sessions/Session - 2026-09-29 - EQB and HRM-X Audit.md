@@ -7,7 +7,7 @@ tags:
   - hrm-eqb
   - hrm-x
 date: 2026-09-29
-commits: []
+commits: [734792f]
 code:
   - hrm_x/mind.py
   - hrm_x/concepts.py
