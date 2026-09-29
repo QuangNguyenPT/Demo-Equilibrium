@@ -20,13 +20,14 @@ v0.5 port changed; sections 1 and 2 are the v0.4 state they were written against
 
 | Generation | Package | Size | Role |
 |---|---|---|---|
-| 1 | `hrm/` | 49 py, 6,055 ln | program-search baseline, ADR-003 |
-| 2 | `hrm_eqb/` | 23 py, 2,966 ln | HRM‑Φ equilibrium, ADR-005/006, learned patterns but no arithmetic |
-| 3 | `hrm_x/` | 12 py, 3,493 ln + C++ | **current**, ADR-008, operator inference |
+| 1 | `hrm/` | 49 py, 4,991 non-blank | program-search baseline, ADR-003 |
+| 2 | `hrm_eqb/` | 23 py, 2,427 non-blank | HRM‑Φ equilibrium, ADR-005/006, learned patterns but no arithmetic. **Baseline since ADR-008**; 55 of its tests still run |
+| 3 | `hrm_x/` | 20 py, 4,339 non-blank + 545 C++ | **current**, ADR-008/010, structural operator inference |
 
-(Lines counted per file, UTF‑8, excluding `__pycache__`; `hrm_x/native/__init__.py`
-is the ctypes binding and is included. Recounted 2026‑09‑28 after the DSL and
-perception work — the previous 11 py / 2,349 ln undercounted.)
+(Non-blank source lines, UTF‑8, excluding `__pycache__` — the same convention as
+the README table, so the numbers are comparable across the two documents.
+Recounted 2026‑09‑29: the 6,055 / 2,966 / 3,493 figures here were stale from
+earlier passes and matched no consistent convention.)
 
 - Tests: **436 passed, 1 skipped** (`python -m pytest`, 2026-09-29).
 - Native backend built: `hrm_x/native/bin/hrmx_native.dll`, sources
