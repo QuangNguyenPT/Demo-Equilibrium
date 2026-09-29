@@ -7,9 +7,10 @@ tags:
   - mathematics
   - hrm-x
   - understanding
-status: proposed
+status: superseded
 date: 2026-09-27
 supersedes: "[[HRM-EQB Specification v0.2 - Theorems and Proofs]] (as the reasoning design; its algebra, token field and runtime rules are kept)"
+superseded_by: "HRM-X Specification v0.4 - Operator Inference over Structured Situations (ADR-008)"
 related:
   - "[[ADR-007 Grounded Algebra and Executable Concepts]]"
   - "[[ADR-006 HRM-EQB Training and Benchmark Results]]"
@@ -18,6 +19,15 @@ related:
 
 # HRM-X — Understanding by Construction
 ## Specification v0.3 — every section a formula, every theorem a capability
+
+> [!WARNING] Superseded — never built
+> v0.3 was a **specification only**; it was superseded by
+> [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
+> ([[ADR-008 Operator Inference over Structured Situations]]), which is the
+> normative design and *was* built and measured in `hrm_x/`. The
+> [[ADR-007 Grounded Algebra and Executable Concepts]] redesign it proposed
+> became v0.4. The diagnosis in Part I below is still a valid record of the
+> `hrm_eqb/` measurements that motivated the change.
 
 > **One-line thesis.** Learn *conventions* by pattern and derive *necessities* by structure.
 > The word "seven" and the phrase "times" are conventions, so a transformer learns them.

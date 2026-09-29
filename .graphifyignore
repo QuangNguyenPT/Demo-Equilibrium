@@ -1,5 +1,10 @@
 # superseded engine kept for reference only (ADR-003); must not appear in impact queries
 legacy/
+# vendored third-party doc tree (Kimi K3 paper, 309 files incl. 115 images).
+# Not ignored, it was LLM-extracted as 53 extra docs + 114 image nodes and
+# inflated graph.json from 1,884 to 3,539 nodes -- a 30-minute extraction run
+# over a PDF's figures, for zero project signal.
+docs/kimi-k3-in-c-main/
 # generated / runtime artifacts
 graphify-out/
 .pytest_cache/
@@ -19,7 +24,8 @@ vault/_COMMUNITY_*.md
 vault/* Module *.md
 vault/obsidian-view/
 # generated node-name vault notes from obsidian export (loop guard)
-vault/(*.md
+# NOTE: this line used to read `vault/(*.md` -- an unbalanced paren that matches
+# nothing. It looked like protection and was none.
 vault/.obsidian/
 # curated code map is generated from code + notes; indexing it would echo the code back
 vault/09 - Code Map/

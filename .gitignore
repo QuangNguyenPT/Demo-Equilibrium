@@ -20,6 +20,11 @@ data/external/
 docs/*.zip
 graphify-out/cache/
 
+# vendored third-party doc tree (Kimi K3 paper + 309 extracted files, 45 MB).
+# Reference material, not project code: already excluded from the knowledge graph
+# in .graphifyignore, and it must not be committed or indexed as ours.
+docs/kimi-k3-in-c-main/
+
 # generated vault notes (graphify obsidian export to vault root — real notes are in subdirs)
 vault/*.md
 vault/*.canvas
@@ -30,6 +35,7 @@ vault/graph.canvas
 .gfy-replace-bak-*.tmp/
 graphify-out/2026-*/
 graphify-out/graph.html
+graphify-out/graph.simple.json
 graphify-out/.graphify_ast.json
 graphify-out/.graphify_cached.json
 graphify-out/.graphify_detect.json
@@ -39,3 +45,6 @@ vault/.obsidian/
 
 # scratch canvas files
 Untitled*.canvas
+
+# native build output (rebuild with scripts/build_native.ps1)
+hrm_x/native/bin/

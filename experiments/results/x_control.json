@@ -1,0 +1,111 @@
+{
+  "experiment": "x_control",
+  "config": {
+    "seed": 0,
+    "lambda": 2e-05,
+    "wrong_penalty": 1.0,
+    "concepts": [
+      "\u00d7",
+      "\u2295",
+      "\u2297"
+    ],
+    "policies": [
+      "voc",
+      "greedy",
+      "fixed",
+      "no-verifier",
+      "no-questions"
+    ]
+  },
+  "metrics": {
+    "voc/easy": {
+      "n": 45,
+      "accuracy": 1.0,
+      "wrong_answers": 0.0,
+      "mean_ops": 248.35555555555555,
+      "mean_cycles": 2.888888888888889
+    },
+    "voc/hard": {
+      "n": 40,
+      "accuracy": 0.975,
+      "wrong_answers": 0.0,
+      "mean_ops": 4345.65,
+      "mean_cycles": 3.825
+    },
+    "greedy/easy": {
+      "n": 45,
+      "accuracy": 1.0,
+      "wrong_answers": 0.0,
+      "mean_ops": 133.6888888888889,
+      "mean_cycles": 1.0
+    },
+    "greedy/hard": {
+      "n": 40,
+      "accuracy": 0.75,
+      "wrong_answers": 0.0,
+      "mean_ops": 1700.175,
+      "mean_cycles": 1.0
+    },
+    "fixed/easy": {
+      "n": 45,
+      "accuracy": 1.0,
+      "wrong_answers": 0.0,
+      "mean_ops": 3835.9333333333334,
+      "mean_cycles": 1.0
+    },
+    "fixed/hard": {
+      "n": 40,
+      "accuracy": 1.0,
+      "wrong_answers": 0.0,
+      "mean_ops": 10182.45,
+      "mean_cycles": 1.0
+    },
+    "no-verifier/easy": {
+      "n": 45,
+      "accuracy": 1.0,
+      "wrong_answers": 0.0,
+      "mean_ops": 139.3111111111111,
+      "mean_cycles": 1.8444444444444446
+    },
+    "no-verifier/hard": {
+      "n": 40,
+      "accuracy": 0.975,
+      "wrong_answers": 0.0,
+      "mean_ops": 4070.925,
+      "mean_cycles": 2.3
+    },
+    "no-questions/easy": {
+      "n": 45,
+      "accuracy": 1.0,
+      "wrong_answers": 0.0,
+      "mean_ops": 248.35555555555555,
+      "mean_cycles": 2.888888888888889
+    },
+    "no-questions/hard": {
+      "n": 40,
+      "accuracy": 0.975,
+      "wrong_answers": 0.0,
+      "mean_ops": 4341.225,
+      "mean_cycles": 2.975
+    },
+    "H vs flat decisions per task": {
+      "easy": {
+        "H": 2.888888888888889,
+        "flat": 251.24444444444444
+      },
+      "hard": {
+        "H": 3.825,
+        "flat": 4349.474999999999
+      }
+    },
+    "E10 wrong answers under injected faults": {
+      "false law, verifier=on": 0,
+      "false law, verifier=off": 9,
+      "swapped transfer roles (perception), verifier=on": 10,
+      "swapped transfer roles (perception), verifier=off": 10
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-28 17:53:13"
+}

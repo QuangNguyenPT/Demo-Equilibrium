@@ -203,6 +203,14 @@ takes about 5 cycles whatever the task. The redesign that follows is
 
 ## Open Questions for Next Phase
 
+> **Closed 2026-09-28.** The "next phase" this list anticipated was
+> [[ADR-007 Grounded Algebra and Executable Concepts]], itself superseded by
+> [[ADR-008 Operator Inference over Structured Situations]]. `hrm_eqb/` became a
+> baseline: the E1–E12 evidence in spec v0.4 §25 answers the substance of #1,
+> #2 and #6 by replacing the approach rather than scaling it. #3, #4 and #5
+> remain unanswered but now describe a non-target package. The live open items
+> are in [[Task Plan]]. Kept for the record.
+
 1. **ARC benchmark numbers**: run `hrm_eqb bench` to get real scores
 2. **ADR-005 N8 completion**: the model must be benched before the branch merges to main
 3. **Scaling**: does doubling dim (256) / memory_side (128) give proportional ARC improvement?

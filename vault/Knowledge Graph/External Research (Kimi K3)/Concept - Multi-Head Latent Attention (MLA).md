@@ -88,4 +88,4 @@ Kimi K3 alternates between 3 layers of KDA and 1 layer of MLA (with both layers 
 - [[Concept - Kimi Delta Attention (KDA)]] — Recurrent partner to MLA.
 - [[Concept - The Four Memory Reductions]] — Impact on overall RAM constraints.
 - [[Concept - Block Sparse Mixture of Experts (MoE)]] — Surrounding feed-forward architecture.
-- [[Semantic Relationship Matrix]] — Ontological links.
+- [[00 - External Research Index]] — the rest of the Kimi K3 study, and why it is external.

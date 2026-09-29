@@ -6,13 +6,77 @@ tags:
   - c-abi
   - ctypes
   - bridge
-status: active
+status: superseded-not-implemented
 created: 2026-09-26
+updated: 2026-09-28
+superseded_by: "[[HRM-X Native Backend]]"
+relates_to:
+  - "[[ADR-001 Hybrid C++ Engine with Python Blueprint]]"
+  - "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"
 ---
 
 # 🔌 C-ABI & Interop Specification
 
-The interoperability layer bridges high-level Python code with native C++ execution without introducing runtime compilation requirements or C++ ABI mismatches across compilers.
+> [!WARNING] Not implemented as described
+> This note describes the ADR-001 C++/Python hybrid engine, which was **never built**; ADR-003 moved it to `legacy/`. The live C++ is only `hrm_x/native/` (`egraph.cpp`, `grid.cpp`) behind the `hrmx.h` C ABI. The current model is [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (ADR-008), in `hrm_x/`. Kept as design history.
+
+---
+
+## 🟢 The only real C ABI: `hrm_x/native/include/hrmx.h`
+
+The reasoning below (pure C-ABI over C++ name mangling) **is** the right convention, and ADR-008
+kept it: "C++ backend behind a C ABI (ADR-001 conventions)." What changed is the surface.
+
+- **Header**: `hrm_x/native/include/hrmx.h`, 78 lines, `extern "C"`, `HX_API` (`__declspec(dllexport)`
+  on Windows, default visibility elsewhere).
+- **Loader**: `hrm_x/native/__init__.py` — `ctypes.CDLL` on `hrm_x/native/bin/hrmx_native.dll`,
+  with the signature table in `_load()`. It falls back to the Python reference if the DLL is
+  absent, and `HRMX_BACKEND=python` forces the reference. See [[HRM-X Native Backend]].
+- **Zero copy**: arrays are passed as raw `const int32_t*` / `int32_t*` pointers into
+  caller-owned NumPy buffers. Nothing is copied, and the library owns no data.
+- **Opaque handle**: `hx_egraph*` is the one opaque type, freed with `hx_eg_free`.
+
+**E-graph family** — `hx_eg_*` (union-find, hash-cons, rebuild, e-matching, explanations):
+
+| Export | Purpose |
+| :--- | :--- |
+| `hx_eg_new` / `hx_eg_free` | lifecycle; the constant operator is fixed at construction |
+| `hx_eg_add` / `hx_eg_lookup` | hash-consing: add an e-node, or find the existing one for `(op, args, payload)` |
+| `hx_eg_find` / `hx_eg_union` | union-find; `union` takes a reason id and its premises, and **refuses** (returns −1) a merge of two classes holding different constants |
+| `hx_eg_rebuild` / `hx_eg_take_conflicts` | congruence closure, with refused congruences queued as conflicts to be blamed |
+| `hx_eg_classes` / `hx_eg_members` / `hx_eg_node` / `hx_eg_num_nodes` / `hx_eg_const_node` | read-back for verification and the writer |
+| `hx_eg_ematch` / `hx_eg_snapshot_index` | e-matching over a pattern preorder code, with a per-saturation-round index snapshot |
+| `hx_eg_explain` | reasons on the proof path `a ~ b` (invariant I3) |
+
+**Grid family** — the grid entry points share the `hx_` prefix (`hx_version`, then):
+
+| Export | Purpose |
+| :--- | :--- |
+| `hx_components` | 4-connected same-colour components (0 = background); returns the object count |
+| `hx_object_step` | one object-level step (select: all / by colour / largest / smallest; act: keep, delete, recolour, move, flip). Returns 1 and leaves `out` untouched when the step is invalid: an object would leave the grid, or `strict` is set and the selector is ambiguous / two objects collide / nothing is selected. |
+
+**What stayed in Python on purpose**: exact `Fraction` arithmetic. Arbitrary precision is the
+guarantee the whole model rests on, so it was not ported (ADR-008, Rejected).
+
+**How it is tested**: `tests/test_x_native.py` checks the native path against the Python
+reference on random inputs. Measured: identical results, grid **3.79×**, arithmetic **1.47×**
+(`experiments/results/x_native.json`).
+
+---
+
+## 🔴 What was never implemented
+
+Everything below this line describes `hrm_c_api.h`, `hrm_engine_create`, `hrm_op_gemm`,
+`hrm_op_rms_norm`, `hrm_op_flash_attention`, `hrm_op_reasoning_loop`, `hrm_tensor_create`,
+`hrm_tensor_wrap`, `hrm_tensor_data_ptr`, `hrm_engine_reset_arena` and `bridge.wrap_numpy`.
+**None of these ever existed in the live tree.** `include/hrm/c_api/hrm_c_api.h` is not in the
+repo; the header and these entry points exist only under `legacy/cpp_engine/`, dead, and no
+Python module in `hrm/`, `hrm_eqb/` or `hrm_x/` calls them. There is no `EngineBridge`, no
+opaque tensor-handle scheme, and no zero-copy NumPy `wrap_numpy` — the real interop is the
+`int32_t*` pointer passing documented above.
+
+The design record is kept verbatim below because the *rationale* (never export C++ types across
+a DLL boundary) is still correct and is still in force in `hrmx.h`.
 
 ---
 
@@ -88,6 +152,8 @@ print(data[0, :5])
 ---
 
 ## 🔗 Related Notes
-- [[Engine Architecture & Memory Model]] — Memory allocator behind the C-ABI.
-- [[Hybrid System Philosophy]] — Architectural motivation.
-- [[HRM Recurrent Stepper & ACT]] — C++ implementation of the reasoning op.
+- [[HRM-X Native Backend]] — **the C ABI that exists** (`hrmx.h`, `egraph.cpp`, `grid.cpp`).
+- [[Engine Architecture & Memory Model]] — Memory allocator behind the C-ABI. *(never implemented)*
+- [[Hybrid System Philosophy]] — Architectural motivation. *(historical)*
+- [[HRM Recurrent Stepper & ACT]] — C++ implementation of the reasoning op. *(never implemented)*
+- [[Build & Toolchain Guide]] — how the real DLL is compiled.

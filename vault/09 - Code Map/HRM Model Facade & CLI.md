@@ -44,6 +44,10 @@ tags:
 ## Governed by (specs, ADRs, concepts, guides)
 
 - [[ADR-003 Unified Cognitive Model]]
+- [[Configuration & Hyperparameters]]
+- [[Development Workflow & Conventions]]
+- [[Hybrid System Philosophy]]
+- [[Model Blueprint & Graph Layout]]
 
 ## Changed or discussed in sessions
 

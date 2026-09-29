@@ -8,13 +8,42 @@ tags:
   - attention
   - norm
   - rope
-status: active
+status: superseded-not-implemented
 created: 2026-09-26
+updated: 2026-09-28
+superseded_by: "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"
+relates_to:
+  - "[[ADR-001 Hybrid C++ Engine with Python Blueprint]]"
+  - "[[HRM-X Native Backend]]"
 ---
 
 # ⚙️ Kernel Specifications
 
-This document outlines the numerical algorithms, cache blocking, and SIMD vectorization implementations for the C++ compute kernels in `src/kernels/`.
+> [!WARNING] Not implemented as described
+> This note describes the ADR-001 C++/Python hybrid engine, which was **never built**; ADR-003 moved it to `legacy/`. The live C++ is only `hrm_x/native/` (`egraph.cpp`, `grid.cpp`) behind the `hrmx.h` C ABI. The current model is [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (ADR-008), in `hrm_x/`. Kept as design history.
+
+The math below is textbook-correct and the blocking arguments are sound, but **no kernel in this
+note was ever written**. There is no `src/kernels/`, no blocked GEMM, no FlashAttention, no
+RMSNorm, no RoPE, no SwiGLU in the current tree. Each source path named below is fictional
+relative to the live repo; the implementations survive only under `legacy/cpp_engine/src/kernels/`,
+which nothing imports.
+
+The reason is structural, not a failure of effort. When the model changed, the hot paths stopped
+being dense matrix math and became **pointer-chasing symbolic code**: union-find over an e-graph,
+hash-consing, congruence rebuild, e-matching, and flood fill over a grid. Accelerating those is
+worth doing; accelerating a GEMM for a model that has no GEMM is not (spec v0.4 §23).
+
+## 🧾 The kernels that do exist
+
+| File | What it does | Speedup vs Python |
+| :--- | :--- | :--- |
+| `hrm_x/native/src/egraph.cpp` | union-find, hash-consing, congruence rebuild, e-matching, explanations, conflicts | part of the 1.47× arithmetic path |
+| `hrm_x/native/src/grid.cpp` | 4-connected components; one object-level program step | 3.79× |
+| `hrm_x/native/include/hrmx.h` | the `extern "C"` surface for both | — |
+
+See [[HRM-X Native Backend]] and [[C-ABI & Interop Specification]]. Exact `Fraction` arithmetic
+stays in Python deliberately: arbitrary precision *is* the correctness guarantee, and Amdahl's law
+caps any arithmetic speedup at about 1.5× anyway (ADR-008, Rejected).
 
 ---
 
@@ -99,6 +128,7 @@ This document outlines the numerical algorithms, cache blocking, and SIMD vector
 ---
 
 ## 🔗 Related Notes
-- [[Engine Architecture & Memory Model]] — Memory allocator hosting kernel inputs/outputs.
-- [[HRM Recurrent Stepper & ACT]] — Recurrent loop combining these kernels.
+- [[Engine Architecture & Memory Model]] — Memory allocator hosting kernel inputs/outputs. *(never implemented)*
+- [[HRM Recurrent Stepper & ACT]] — Recurrent loop combining these kernels. *(never implemented)*
+- [[HRM-X Native Backend]] — **the C++ kernels that exist** (e-graph, grid).
 - [[Template - Kernel Spec]] — Template for authoring new kernel documentation.

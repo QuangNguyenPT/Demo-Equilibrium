@@ -6,11 +6,28 @@ tags:
   - memory
   - cpp
   - performance
-status: accepted
+status: superseded-not-implemented
 created: 2026-09-26
+superseded_by: "[[ADR-003 Unified Cognitive Model]]"
 ---
 
 # ADR-002: Zero-Allocation Bump Memory Arena for Forward Passes
+
+> [!WARNING] Never implemented — superseded, kept for the record
+> This ADR was **accepted on paper but never built**. There is **no arena, bump
+> allocator, or custom allocator in any live package** — not in `hrm/`, not in
+> `hrm_eqb/`, not in `hrm_x/`. The `ArenaAllocator` paths named below
+> (`include/hrm/core/allocator.hpp`, `src/core/allocator.cpp`) exist only under
+> `legacy/`, where [[ADR-003 Unified Cognitive Model]] parked the never-working
+> engine on 2026-09-27. No measurement in this project was ever made against a
+> zero-allocation forward pass.
+>
+> The current model is **HRM-X v0.4 — Operator Inference over Structured
+> Situations** ([[ADR-008 Operator Inference over Structured Situations]]) in
+> `hrm_x/`, and [[HRM-X Specification v0.4 - Operator Inference over Structured
+> Situations]] is the normative design.
+>
+> Do not implement against this ADR.
 
 ## Context & Problem Statement
 During inference and iterative recurrent reasoning passes (e.g. up to 10–50 HRM cycles), allocating and freeing temporary activation tensors on the OS heap via `malloc`/`free` or `new`/`delete` causes:

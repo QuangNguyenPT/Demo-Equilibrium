@@ -9,9 +9,10 @@ tags:
   - quaternion
   - neuromodulation
   - curiosity
-status: proposed
+status: implemented-baseline
 date: 2026-09-27
 supersedes: "[[HRM-Phi Design Document v0.1]]"
+superseded_by: "HRM-X Specification v0.4 - Operator Inference over Structured Situations (ADR-008)"
 related:
   - "[[ADR-005 Neural HRM-Phi Replaces Program Search]]"
   - "[[Concept - Attention Residuals (RealFormer & AttnRes)]]"
@@ -19,6 +20,21 @@ related:
 
 # HRM-EQB — Hierarchical Reasoning by Equilibrium
 ## Specification v0.2 — every claim a theorem, every theorem a test
+
+> [!NOTE] Fully implemented and theorem-tested — but superseded as the design target
+> This specification is **not** a paper design: it was built in `hrm_eqb/` and its
+> theorems were numerically checked (`tests/test_eqb_theorems.py`), as recorded in
+> [[ADR-006 HRM-EQB Training and Benchmark Results]] (N0–N8 build; 42/42 tests at
+> that time).
+>
+> It is nonetheless **superseded as the design target** by
+> [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
+> ([[ADR-008 Operator Inference over Structured Situations]]), which is the
+> normative specification. ADR-006's benchmark results are the reason: the trained
+> model learned patterns but **no arithmetic**, which motivated the HRM-X redesign.
+>
+> This document therefore remains the **normative design of the `hrm_eqb/`
+> baseline** — authoritative for that package, not for the project.
 
 v0.1 (HRM-Φ) conceded that convergence on the phasor torus could not be proved. v0.2
 closes that gap by design: the reasoning dynamics are contractive **by construction**, so

@@ -32,12 +32,21 @@ $EnvFile     = Join-Path $ProjectRoot ".env"
 # the script mid-way, so a failed semantic pass (e.g. a CLI session limit) also
 # silently skipped the Obsidian export below. Exit codes are checked explicitly.
 
-# The Obsidian view is a curated code map (scripts/knowledge_map.py): one note
-# per subsystem, linked to the specs, ADRs and sessions that govern or changed
-# it. graphify's own `export obsidian` wrote one note per function/docstring --
-# 2,084 notes at the vault root plus 3,211 in vault/_graph-view -- which Obsidian
-# drew as two giant blobs burying the ~45 real notes. graph.json is still built
-# for symbol-level `graphify query` / impact analysis; it is just not exported.
+# The vault view has two parts, and they are different kinds of thing.
+#
+#   scripts/knowledge_map.py  A CURATED code map: one note per subsystem, linked to
+#                             the specs, ADRs and sessions that govern it. This is
+#                             the human-facing code<->doc map.
+#   vault/_graph-view/        A DERIVED view: graphify's `export obsidian` over the
+#                             PRUNED graph, quarantined in one subfolder and listed
+#                             in .graphifyignore. Aimed at the vault ROOT it wrote
+#                             1,922 notes there, buried the ~45 real notes, and the
+#                             next run re-indexed those notes and produced more.
+#
+# graph.json is still built with every symbol, because that is what `query`,
+# `path` and `affected` need. scripts/simplify_graph.py prunes it to the
+# module/class skeleton for display and for the Obsidian export; the full graph is
+# never overwritten.
 
 # Hosted-backend credentials, if the project ever needs one. Project-scoped, and
 # optional: `claude-cli` and `code-only` need nothing.
@@ -110,17 +119,57 @@ try {
     if ($LASTEXITCODE -eq 0) {
         Write-Host "[GRAPHIFY] Graph updated successfully." -ForegroundColor Green
     } else {
-        Write-Host "[GRAPHIFY] graphify exited with code $LASTEXITCODE (graph kept as-is; export continues)." -ForegroundColor Yellow
+        Write-Host "[GRAPHIFY] graphify exited with code $LASTEXITCODE (graph kept as-is; prune continues)." -ForegroundColor Yellow
+    }
+
+    $havePython = [bool](Get-Command python -ErrorAction SilentlyContinue)
+    $pruned = Join-Path $ProjectRoot "graphify-out\graph.simple.json"
+
+    if ($havePython) {
+        # 2. Prune to a readable view. Always run: graph.html and the Obsidian
+        #    export are both built from the pruned graph, and the full graph.json
+        #    is left untouched for `query` / `path` / `affected`.
+        & python (Join-Path $PSScriptRoot "simplify_graph.py") --graph graphify-out/graph.json --out $pruned --root $ProjectRoot --html
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "[GRAPHIFY] simplify_graph.py failed; the Obsidian export will be skipped." -ForegroundColor Yellow
+            $pruned = $null
+        }
+    } else {
+        Write-Host "[GRAPHIFY] python not on PATH; skipped the pruned graph." -ForegroundColor Yellow
+        $pruned = $null
     }
 
     if (-not $NoObsidian) {
-        if (Get-Command python -ErrorAction SilentlyContinue) {
+        # 3. The curated code map: one note per subsystem.
+        if ($havePython) {
             & python (Join-Path $PSScriptRoot "knowledge_map.py") --root $ProjectRoot
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "[GRAPHIFY] code map reported unassigned modules; add them to SUBSYSTEMS in scripts/knowledge_map.py" -ForegroundColor Yellow
             }
+        }
+
+        # 4. The derived Obsidian view, from the PRUNED graph, into the quarantined
+        #    subfolder. Never the vault root -- see .graphifyignore and the header.
+        #
+        #    graphify prints "graphify-out\.graphify_analysis.json is stale (N node(s)
+        #    recorded vs M in graph.json)" here. That is expected, not a fault: the
+        #    sidecar describes the FULL graph and we deliberately hand the exporter a
+        #    pruned one, so the counts cannot match. Refreshing it with `cluster-only`
+        #    would be the fix for a genuinely stale sidecar, but that step needs the LLM
+        #    backend to name communities, which `-Mode code-only` does not have. Do not
+        #    "fix" this by pointing the export back at graph.json: that is the 1,922-note
+        #    vault-root explosion.
+        if ($pruned -and (Test-Path -LiteralPath $pruned)) {
+            $view = Join-Path $ProjectRoot "vault\_graph-view"
+            & graphify export obsidian --graph $pruned --dir $view
+            if ($LASTEXITCODE -eq 0) {
+                $notes = @(Get-ChildItem -LiteralPath $view -Recurse -Filter *.md -ErrorAction SilentlyContinue).Count
+                Write-Host "[GRAPHIFY] Obsidian view: $notes notes in vault/_graph-view (derived; excluded from the graph)." -ForegroundColor Green
+            } else {
+                Write-Host "[GRAPHIFY] obsidian export exited with code $LASTEXITCODE; the code map is unaffected." -ForegroundColor Yellow
+            }
         } else {
-            Write-Host "[GRAPHIFY] python not on PATH; skipped the code map." -ForegroundColor Yellow
+            Write-Host "[GRAPHIFY] No pruned graph; skipped the Obsidian view." -ForegroundColor Yellow
         }
     }
 } finally {

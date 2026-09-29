@@ -34,7 +34,10 @@ tags:
 
 ## Governed by (specs, ADRs, concepts, guides)
 
-- none
+- [[Configuration & Hyperparameters]]
+- [[Development Workflow & Conventions]]
+- [[Hybrid System Philosophy]]
+- [[Model Blueprint & Graph Layout]]
 
 ## Changed or discussed in sessions
 

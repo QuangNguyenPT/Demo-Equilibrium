@@ -102,4 +102,4 @@ $$
 - [[Concept - Multi-Head Latent Attention (MLA)]] — Global attention mechanism alternating with KDA.
 - [[Concept - The Four Memory Reductions]] — How KDA contributes to the 675× memory cascade.
 - [[Concept - Block Sparse Mixture of Experts (MoE)]] — Feed-forward layers paired with KDA.
-- [[Semantic Relationship Matrix]] — Ontological graph links.
+- [[00 - External Research Index]] — the rest of the Kimi K3 study, and why it is external.

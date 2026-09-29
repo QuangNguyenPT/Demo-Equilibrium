@@ -5,17 +5,50 @@ tags:
   - architecture
   - tensors
   - data-flow
-status: active
+status: historical
 created: 2026-09-26
+updated: 2026-09-28
+superseded_by: "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"
+relates_to:
+  - "[[HRM+LLM Fusion Architecture]]"
+  - "[[ADR-001 Hybrid C++ Engine with Python Blueprint]]"
 ---
 
 # 🌊 Tensor Flow & Data Pipelines
 
-This document maps the complete life cycle of data and tensor transformations through the HRM+LLM system, from raw token inputs to final logits.
+> [!NOTE] Historical
+> This is a **research brief from 2026-09-26 for a model that was never built.** There is no
+> embedding table, no $L$ transformer blocks, no RoPE, no FlashAttention, no SwiGLU, no decoder
+> head and no $(B, T) \to (B, D) \to (B, V)$ pipeline anywhere in `hrm/`, `hrm_eqb/` or `hrm_x/`.
+> The corresponding C++ kernels were never written either. Kept as a record of the shape algebra
+> that was planned; the diagrams are worth reading only as a statement of intent.
+
+> [!IMPORTANT] The data path that actually exists
+> There are no token sequences and no logits. The real path is **situation + operator + question**:
+>
+> | Stage | Module | What it produces |
+> | :--- | :--- | :--- |
+> | Represent the situation | `hrm_x/workspace.py` | an e-graph whose classes are what "follows from" means, with provenance |
+> | Know the domain | `hrm_x/domains/{arith,story,grid}.py` | objects, operators, and the data behind them |
+> | Know the laws | `hrm_x/rules.py` | rewrite laws proposed by theory exploration, pruned by congruence closure |
+> | Infer the operator | `hrm_x/induction.py` | a **posterior over programs**, stored as version spaces, not one winner |
+> | Spend compute | `hrm_x/mind.py` | L = saturation, extraction, exact execution; H = value of computation over {propose, derive-group, verify, ask, stop} |
+> | Check independently | domain verifiers | residue-phasor replay (arithmetic), dictionary replay + conservation (stories), applicability conditions (grid) |
+> | Say it | `hrm_x/writer.py` | the answer, or "I don't know" with the reason |
+>
+> Exact `Fraction` arithmetic stays in Python; the C++ accelerates only the e-graph and the grid
+> (`hrm_x/native/`), and the result is bit-identical to the Python reference by construction of
+> the differential test. The only neural component anywhere is the 40,908-parameter
+> convention-layer tagger that copies names and numbers by role (ADR-008).
+
+The equations below are kept verbatim as the shape algebra of the abandoned design.
 
 ---
 
 ## 📐 End-to-End Shape Transformation Pipeline
+> [!CAUTION] Never implemented
+> No stage of this diagram exists in the codebase. The HRM Recurrent Stepper box refers to a C++
+> file that was never written; see [[HRM Recurrent Stepper & ACT]].
 
 ```mermaid
 flowchart TD
@@ -45,6 +78,10 @@ flowchart TD
 ---
 
 ## 🔢 Step-by-Step Mathematical Formulations
+> [!CAUTION] Never implemented
+> Sections 1–3 and 5 (embedding, transformer blocks, context pooling, decoder head) have no
+> implementation. Section 4's recurrence was built only in the `hrm_eqb/` baseline, in a
+> contraction-based form rather than the GRU form written here.
 
 ### 1. Tokenization & Embedding
 - **Input**: Integer tensor $X \in \mathbb{Z}^{B \times T}$
@@ -92,6 +129,7 @@ flowchart TD
 ---
 
 ## 🔗 Related Notes
-- [[HRM+LLM Fusion Architecture]] — System design and model topologies.
-- [[Kernel Specifications]] — How each kernel is implemented in C++.
-- [[Model Blueprint & Graph Layout]] — Python layer representations of these shapes.
+- [[HRM+LLM Fusion Architecture]] — System design and model topologies. *(never implemented)*
+- [[Kernel Specifications]] — How each kernel was to be implemented in C++. *(never implemented)*
+- [[Model Blueprint & Graph Layout]] — Python layer representations of these shapes. *(never implemented)*
+- [[HRM-X Workspace & Rules]] — **the data path that exists** (e-graph, laws, inferred programs).

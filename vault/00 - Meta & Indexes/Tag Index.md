@@ -12,21 +12,38 @@ created: 2026-09-26
 
 This vault employs a structured tagging taxonomy to enable quick filtering and graph traversal in Obsidian.
 
+> [!NOTE] Live scope
+> The tags below reflect a project that has since moved on. `hrm/` (program-search
+> baseline, ADR-003), `hrm_eqb/` (equilibrium baseline, ADR-005/006) and `hrm_x/`
+> (current model, ADR-008) are the packages that exist. The C++ engine, arena
+> allocator and C-ABI blueprint layer were **never built** and live only in
+> `legacy/`; the tags scoped as *legacy* below still describe those historical
+> notes and are kept, but nothing in the live project uses them.
+
 ---
 
 ## System Architecture Tags
 - `#architecture` — High-level system design and architectural principles.
-- `#blueprint` — Python declarative model graph layout and topology.
-- `#fusion` — Fusion paradigms between HRM and LLM backbones.
+- `#blueprint` — **legacy (ADR-001 only)**: Python declarative model graph layout and topology. Never built; exists only in `legacy/python/`.
+- `#fusion` — **legacy/ADR-001–002**: Fusion paradigms between HRM and LLM backbones. Documents the unrealised hybrid engine, not the live model.
 
 ## Engineering & Compute Tags
-- `#cpp` — Native C++ engine, memory allocators, thread pools.
-- `#kernel` — Individual compute kernels (GEMM, Attention, RoPE, RMSNorm, SwiGLU).
-- `#memory` — Arena allocation, cache lines, zero-allocation paradigms.
-- `#interop` — C-ABI bindings, ctypes, pybind11, pointer exchange.
+- `#cpp` — **legacy (ADR-001/ADR-002 only)**: the native C++ engine, memory allocators and thread pools. Never built; now `legacy/cpp_engine/`. One live exception: the HRM-X e-graph backend in `hrm_x/native/` uses `#cpp-native` below.
+- `#kernel` — **legacy (ADR-001/ADR-002 only)**: GEMM, FlashAttention, RoPE, RMSNorm, SwiGLU kernel specifications. Never built; see `vault/02 - C++ Engine & Kernels/`.
+- `#memory` — **legacy (ADR-002 only)**: arena allocation, cache lines, zero-allocation paradigms. No arena or custom allocator exists in any live package.
+- `#interop` — **legacy (ADR-001/ADR-002 only)**: C-ABI bindings, ctypes, pybind11, pointer exchange. The C-ABI idea survives only as `hrm_x/native/include/hrmx.h` (ADR-008) — tag that `#cpp-native` instead.
 
-## Reasoning Tags
-- `#hrm` — Hierarchical Reasoning Model (Wang et al. 2025).
+## Current Model Tags
+- `#hrm-x` — The current model family (HRM-X), package `hrm_x/`. Supersedes `#hrm`.
+- `#operator-inference` — The ADR-008 core method: operators are *inferred programs* over structured situations, tracked as version spaces.
+- `#e-graph` — E-graph workspace with provenance (`hrm_x/workspace.py`); equality saturation, rule-based laws.
+- `#spec-v04` — Notes describing the normative [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (ADR-008). v0.3 is superseded.
+- `#adr-008` — Decisions, results and code notes belonging to the current ADR-008 era (gates G1–G6).
+- `#cpp-native` — Live C++/C-ABI work: the HRM-X e-graph backend in `hrm_x/native/`, behind a differential parity gate. The only native code that exists.
+
+## Baseline Tags
+- `#hrm` — Hierarchical Reasoning Model (Wang et al. 2025) **and** the `hrm/` package, which is now the measured program-search baseline (ADR-003), not the model.
+- `#hrm-eqb` — The `hrm_eqb/` equilibrium baseline (ADR-005/006): built and theorem-tested, superseded as the design target by HRM-X v0.4.
 - `#act` — Adaptive Computation Time, Q-learning halting, dynamic compute.
 - `#recurrence` — Multi-timescale iterative processing ($z_H$ and $z_L$).
 

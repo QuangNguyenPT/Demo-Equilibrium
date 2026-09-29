@@ -72,4 +72,6 @@ Every machine produces the **exact same token sequence**, byte-for-byte!
 - [[Concept - Block Sparse Mixture of Experts (MoE)]] — Sparsity reduction mechanics.
 - [[Concept - Microscaling MXFP4 & E8M0 Quantization]] — Sub-byte weight details.
 - [[Concept - Direct IO & NVMe Streaming]] — Kernel disk I/O implementation.
-- [[Concept - Bit-Identical Floating Point Contracts]] — Guarantees identical output across machines.
+- **Bit-Identical Floating Point Contracts** — guarantees identical output across machines.
+  No concept note exists; the idea is discussed in [[ADR-003 Unified Cognitive Model]] as one
+  of the reasons the old C++ engine was rejected, and in [[Engine Architecture & Memory Model]].

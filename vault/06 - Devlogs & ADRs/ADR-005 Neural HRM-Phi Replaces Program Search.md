@@ -7,23 +7,42 @@ tags:
   - hrm
   - plan
   - pytorch
-status: proposed
+status: superseded-baseline
 date: 2026-09-27
 supersedes: "[[ADR-003 Unified Cognitive Model]] (as the definition of *the model*; its loops, gate and harness are kept)"
+superseded_by: "ADR-008 Operator Inference over Structured Situations"
 related:
   - "[[HRM-EQB Specification v0.2 - Theorems and Proofs]]"
   - "[[HRM-Phi Design Document v0.1]]"
   - "[[ADR-004 Discriminating Benchmark and Reasoning Ceiling]]"
 ---
 
-> **Update 2026-09-27: the model is HRM-EQB.** The user answered the open decisions and
-> asked for provable mathematics. The design is now
+> **Update 2026-09-27 (historical): the design was called HRM-EQB.** The user answered
+> the open decisions and asked for provable mathematics. The design is
 > [[HRM-EQB Specification v0.2 - Theorems and Proofs]]; v0.1 is superseded. See
 > "Resolved decisions" and "Plan (revised)" at the end. The N0 scaffold (certified
-> operators, equilibrium core, certificate) is built as `hrm_eqb/`, with 23 theorem tests
-> passing.
+> operators, equilibrium core, certificate) shipped as `hrm_eqb/` (not the
+> provisional `hrmphi/` named below), with 23 theorem tests passing.
+> **Since 2026-09-28 `hrm_eqb/` is a measured *baseline*, not the model** — see the
+> banner under the title.
 
 # ADR-005: Neural HRM-Φ Replaces Program Search as the Model
+
+> [!WARNING] Superseded as the model — kept for the record
+> This entire ADR, **including both plan tables**, describes a design that is no
+> longer the target. What actually shipped: **N0/N1 only**, as the package
+> `hrm_eqb/` — which is now an equilibrium **baseline** (built and theorem-tested
+> per [[ADR-006 HRM-EQB Training and Benchmark Results]], which showed it learned
+> patterns but no arithmetic), **not the model**. Phases **N3–N8 and N9 were never
+> run**. The live design is **HRM-X v0.4 — Operator Inference over Structured
+> Situations** in `hrm_x/`:
+> [[ADR-008 Operator Inference over Structured Situations]] and
+> [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (normative,
+> gates G1–G6 done). G1–G6 replace the N-phases; they are tracked in
+> [[Task Plan]].
+>
+> Nothing below was deleted. Treat every N-row as an unexecuted proposal unless it
+> says **done**.
 
 ## Context
 
@@ -69,9 +88,17 @@ Caveat: the zip CRC-32 goes stale, so the design includes `seal()`.
 
 ## Plan (each phase: tests green → graphify update → vault note; no phase starts before the previous gate passes)
 
+> [!NOTE] This first plan table was never executed
+> The provisional package name `hrmphi/` below shipped as **`hrm_eqb/`**, and
+> only the scaffold (N0) was built. **N1–N9 were never run.** The revised,
+> partially-executed version of this table is "Plan (revised for HRM-EQB)" at the
+> end of the file; the phases that replaced the unrun N3–N8 are the G1–G6 gates
+> of [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
+> (§24), under [[ADR-008 Operator Inference over Structured Situations]].
+
 | Phase | Deliverable | Acceptance (machine-decidable) | Compute |
 |---|---|---|---|
-| **N0** scaffold | package `hrmphi/` (name to confirm), strict config dataclasses, test layout | config round-trip; unknown/missing keys refused | — |
+| **N0** scaffold | package `hrm_eqb/` (was `hrmphi/`, name resolved below), strict config dataclasses, test layout | config round-trip; unknown/missing keys refused | — |
 | **N1** substrate in torch | planes, binding, fractional power, multi-axis RoPE-as-binding, $\Pi_\varepsilon$, torus attention $\mathcal{A}$ | Prop 1 and Prop 2 hold to 1e-5; `gradcheck` passes on $\Pi_\varepsilon$ and $\mathcal{A}$; exact bind/unbind round-trip | seconds |
 | **N2** task field | tokenizer from existing generators (grid, sequence, vector3d) into (content, coords, role) tensors; group augmentation + exact de-augmentation; leave-one-out masking | augment→de-augment is identity on 10k random tasks; every token field reconstructs its source task | seconds |
 | **N3** core Φ + training loop | prelude, shared block with role binding, two streams, structured head, halting head, deep supervision with last-cycle gradient, EMA, residual/ρ̂ logging | (a) a tiny model overfits 64 tasks to 100%; (b) on sequence/offset it reaches ≥ 99% on 1,000 unseen generated tasks within a fixed step budget; (c) median residual falls across segments | minutes–1 h |
@@ -80,7 +107,7 @@ Caveat: the zip CRC-32 goes stale, so the design includes `seal()`.
 | **N6** test-time memory + sleep | surprise-gated overlay updates, verified commit (E_loo = 0), consolidation behind the existing frozen harness gate + ledger | on a cross-episode recall family, accuracy rises after writes; an unverified overlay never reaches disk (kill test); a regressing consolidation is discarded | ~1 h |
 | **N7** language | byte tokenizer, semi-embedder Σ, coda C, program→description data from the symbolic teacher | on held-out tasks the stated answer agrees with the structured head ≥ 95%; with $\lambda_\ell=0$ the head's accuracy is unchanged | hours |
 | **N8** experiments | ablation ladder A1–A8, Sudoku-Extreme/Maze comparison, benchmark-v2 depth bands vs program search | every rung reported with numbers in ADR-006, including negative results | hours–days |
-| **N9** product | CLI (`python -m hrmphi train / ask / export / load`), README, CLAUDE.md, vault, graphify | CLI round-trip test; docs match code | — |
+| **N9** product | CLI (`python -m hrm_eqb train / ask / export / load`), README, CLAUDE.md, vault, graphify | CLI round-trip test; docs match code | — |
 
 ## Loop design (training and self-learning)
 
@@ -100,7 +127,8 @@ Caveat: the zip CRC-32 goes stale, so the design includes `seal()`.
 
 ## Open decisions for the user (as first asked)
 
-1. Package name for the new model (default `hrmphi/`).
+1. Package name for the new model (default `hrmphi/` — **resolved to `hrm_eqb`**, see
+   "Resolved decisions").
 2. ARC protocol: inductive (demonstration context, generalizes; recommended as primary)
    vs transductive puzzle-ID (HRM/TRM's numbers), reported side by side.
 3. First real benchmark after generated tasks: Sudoku-Extreme (direct HRM/TRM
@@ -123,6 +151,14 @@ fixed residual sums with softmax attention over depth. It is not a rotation-vect
 Rotation-vector text comes from T1 (RoPE is phasor binding).
 
 ## Plan (revised for HRM-EQB)
+
+> **Superseded 2026-09-28 by [[ADR-008 Operator Inference over Structured Situations]].**
+> N0/N1 shipped in `hrm_eqb/`, but that package is now a *baseline*, not the
+> target: ADR-006 showed it learned patterns but no arithmetic, and ADR-007's
+> redesign became ADR-008's `hrm_x/`. N3–N8 below were never run and describe a
+> design that is no longer the target. The live gates are
+> [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] §24,
+> tracked in [[Task Plan]]. Kept for the record.
 
 Same gates as above, with the package renamed `hrm_eqb/` and these changes:
 

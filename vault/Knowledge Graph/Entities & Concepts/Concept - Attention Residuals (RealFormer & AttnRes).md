@@ -37,9 +37,14 @@ $$
 **Where used**:
 - RealFormer original paper (BERT-scale pretraining)
 - Kimi K3 in C: "layers that look back" (section 8 of README)
-- **This project**: `src/kernels/attention.cpp` — implemented via optional `prev_scores`/`scores_out` params
+- **This project: `legacy/` only, and never in a measured run.** An optional
+  `prev_scores`/`scores_out` passthrough was written into
+  `legacy/cpp_engine/src/kernels/attention.cpp`. It was moved there by
+  [[ADR-003 Unified Cognitive Model]] on 2026-09-27 and is **not** part of any live
+  package. No `src/kernels/attention.cpp` exists at the repository root, and
+  RealFormer is **not** adopted by the current model (HRM-X v0.4, `hrm_x/`).
 
-**Code (attention.cpp)**:
+**Code (legacy/cpp_engine/src/kernels/attention.cpp) — LEGACY, never live**:
 ```cpp
 // RealFormer: add prev layer's pre-softmax scores
 if (prev_h != nullptr) score += prev_h[i * T_k + j];
@@ -100,6 +105,14 @@ sequence of segment equilibria $h^*_1,\dots,h^*_s$:
 - as context for the next segment (injection $c_H$). It cannot be the initializer: the
   equilibrium is independent of its start (E2), so an initializer would receive no gradient.
 
+**Implementation.** `hrm_eqb/attnres.py` — the only AttnRes in the project. Note the
+scope carefully: it is applied over **segment equilibria** (the recurrent depth of the
+eqb core), **not over transformer layer outputs**. There is no stacked-LSTM or
+multi-layer transformer stack anywhere in `hrm_eqb/`, so "softmax attention over
+depth" here means attention over equilibrium iterations, not over a layer stack.
+`hrm_eqb/` is a **baseline** (ADR-005/006), superseded as the design target by
+[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]].
+
 See [[HRM-EQB Specification v0.2 - Theorems and Proofs]].
 
 ---
@@ -136,17 +149,23 @@ $$
 
 ## Implementation in This Project
 
-**Chosen**: RealFormer (minimal complexity, zero overhead when disabled)
+**Live**: AttnRes only, in `hrm_eqb/attnres.py`, applied over segment equilibria
+(see §2). Verified numerically as HRM-EQB Lemma A1.
 
-**Config** (`configs.py`):
+**RealFormer is NOT adopted.** The earlier claim that RealFormer was the chosen
+mechanism (with a `use_attn_residuals` config flag and a `flash_attention_f32`
+`prev_scores`/`scores_out` C++ kernel) described the **never-built** engine. All of
+it is in `legacy/`; there is no live `configs.py` flag, blueprint, or kernel. The
+current model ([[ADR-008 Operator Inference over Structured Situations]], `hrm_x/`)
+uses neither mechanism.
+
+**Legacy config** (`legacy/python/.../configs.py`) — superseded, never live:
 ```python
 use_attn_residuals: bool = False      # enable/disable
 attn_residual_block_size: int = 4     # Block AttnRes: layers per block
 ```
 
-**Blueprint** (`transformer.py`): passes flags to attention hyperparams including `layer_idx`.
-
-**C++ kernel** (`attention.hpp`):
+**Legacy C++ kernel** (`legacy/cpp_engine/.../attention.hpp`) — superseded, never live:
 ```cpp
 void flash_attention_f32(
     // ... core args ...
@@ -159,12 +178,12 @@ void flash_attention_f32(
 
 ## Comparison Table
 
-| Technique | Complexity | Memory | Compute | Adopted Here |
+| Technique | Complexity | Memory | Compute | Status in this project |
 |-----------|-----------|--------|---------|-------------|
-| RealFormer | O(1) extra | +T² per layer pair | ~0% | ✅ (optional) |
-| AttnRes | O(L) or O(B) | +L×hidden | +25% → -20% net | Config ready |
-| ResiDual | 2× residuals | +hidden | ~+10% | Not yet |
-| RMT | Outer product | +D² | -58% | Future |
+| RealFormer | O(1) extra | +T² per layer pair | ~0% | ❌ legacy only — `legacy/cpp_engine`, never live, not adopted |
+| AttnRes | O(L) or O(B) | +L×hidden | +25% → -20% net | ✅ implemented in `hrm_eqb/attnres.py` over segment equilibria (eqb baseline) |
+| ResiDual | 2× residuals | +hidden | ~+10% | Not used |
+| RMT | Outer product | +D² | -58% | Not used |
 
 ---
 
@@ -173,4 +192,4 @@ void flash_attention_f32(
 - [[Concept - Hierarchical Multi-Timescale Reasoning (HRM)]] — attention residuals aid HRM loop convergence
 - [[Concept - Kimi Delta Attention (KDA)]] — separate mechanism: constant-memory recurrent attention
 - [[Concept - Multi-Head Latent Attention (MLA)]] — separate mechanism: KV latent compression
-- [[Session - 2026-09-26 - Foundation & Research]] — session where this was researched and implemented
+- [[Session - 2026-09-26 - Foundation & Research]] — session where this was researched, and where the RealFormer prototype was written (later moved to `legacy/`)

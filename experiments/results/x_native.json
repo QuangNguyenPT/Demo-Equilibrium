@@ -1,0 +1,25 @@
+{
+  "experiment": "x_native",
+  "config": {
+    "repeats": 3,
+    "timing": "best of repeats, perf_counter",
+    "build": "clang++ -O2 -std=c++17 (scripts/build_native.ps1)"
+  },
+  "metrics": {
+    "grid: 2-step induction": {
+      "python_s": 0.38720849999936036,
+      "native_s": 0.10215429999971093,
+      "speedup": 3.7904278136158345,
+      "identical_results": true
+    },
+    "arith: laws + 60 questions": {
+      "python_s": 2.1199248000002626,
+      "native_s": 1.442135899999812,
+      "speedup": 1.469989617483719,
+      "identical_results": true
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-28 17:53:28"
+}
