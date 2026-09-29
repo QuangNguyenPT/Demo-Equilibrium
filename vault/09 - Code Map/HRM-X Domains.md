@@ -46,7 +46,7 @@ tags:
 
 - [[Session - 2026-09-28 - DSL Growth, Free Text, and the Graph Pipeline]] — named in the log
 - [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] — commits `d5bacb1`
-- [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — named in the log
+- [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — commits `f0dc2ae`
 
 ## Tests
 
@@ -54,4 +54,5 @@ tags:
 
 ## Recent history
 
+- 2026-09-29 f0dc2ae HRM-X v0.5: structural operator inference (ADR-010) + vault cleanup
 - 2026-09-28 d5bacb1 HRM-X v0.4: operator inference over structured situations + C++ backend (ADR-008)

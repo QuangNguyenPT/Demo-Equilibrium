@@ -37,7 +37,7 @@ tags:
 
 ## Changed or discussed in sessions
 
-- [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — named in the log
+- [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — commits `f0dc2ae`
 
 ## Tests
 
@@ -45,4 +45,4 @@ tags:
 
 ## Recent history
 
-- none
+- 2026-09-29 f0dc2ae HRM-X v0.5: structural operator inference (ADR-010) + vault cleanup

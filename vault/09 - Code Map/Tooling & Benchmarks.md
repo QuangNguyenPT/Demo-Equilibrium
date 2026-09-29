@@ -42,7 +42,7 @@ tags:
 - [[Session - 2026-09-27 - Understanding by Construction]] — commits `6b28b26`
 - [[Session - 2026-09-28 - DSL Growth, Free Text, and the Graph Pipeline]] — named in the log
 - [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] — commits `d5bacb1`
-- [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — named in the log
+- [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] — commits `f0dc2ae`
 
 ## Tests
 
@@ -50,6 +50,7 @@ none
 
 ## Recent history
 
+- 2026-09-29 f0dc2ae HRM-X v0.5: structural operator inference (ADR-010) + vault cleanup
 - 2026-09-28 d5bacb1 HRM-X v0.4: operator inference over structured situations + C++ backend (ADR-008)
 - 2026-09-27 6b28b26 HRM-X design (ADR-007, proposed) + curated code map replaces graph blobs
 - 2026-09-27 6e892b3 Graph rebuild: deep semantic extraction, benchmarks complete (ADR-006)
