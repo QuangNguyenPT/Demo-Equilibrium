@@ -10,7 +10,7 @@ tags:
 status: superseded
 date: 2026-09-27
 supersedes: "[[HRM-EQB Specification v0.2 - Theorems and Proofs]] (as the reasoning design; its algebra, token field and runtime rules are kept)"
-superseded_by: "HRM-X Specification v0.4 - Operator Inference over Structured Situations (ADR-008)"
+superseded_by: "HRM-X Specification v0.5 - Structural Operator Inference (ADR-010)"
 related:
   - "[[ADR-007 Grounded Algebra and Executable Concepts]]"
   - "[[ADR-006 HRM-EQB Training and Benchmark Results]]"

@@ -10,6 +10,7 @@ tags:
 status: implemented-poc
 date: 2026-09-28
 supersedes: "[[HRM-X Specification v0.3 - Understanding by Construction]]"
+superseded_by: "[[HRM-X Specification v0.5 - Structural Operator Inference]]"
 related:
   - "[[ADR-008 Operator Inference over Structured Situations]]"
   - "[[ADR-007 Grounded Algebra and Executable Concepts]]"

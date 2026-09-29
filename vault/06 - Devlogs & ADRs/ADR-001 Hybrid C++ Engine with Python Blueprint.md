@@ -22,11 +22,12 @@ superseded_by: "[[ADR-003 Unified Cognitive Model]]"
 > did not compile).
 >
 > The **C-ABI idea** is the one survivor: it was re-landed, scoped to the
-> e-graph kernels, as `hrm_x/native/include/hrmx.h`. The current model is
-> **HRM-X v0.4 — Operator Inference over Structured Situations**
-> ([[ADR-008 Operator Inference over Structured Situations]]) in `hrm_x/`, and
-> [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] is
-> the normative design.
+> e-graph kernels, as `hrm_x/native/include/hrmx.h`.
+>
+> **Superseded as the design target 2026-09-29.** At the time of writing this record the
+> current model was HRM-X v0.4 (spec v0.4, ADR-008). The current target is **HRM-X v0.5**
+> (`hrm_x/`), spec v0.5 + ADR-010. This document is kept verbatim as the decision record.
+> Attribution: opencode/stealth/space-bunny-alpha (space-bunny-alpha), 2026-09-29.
 >
 > Do not implement against this ADR.
 

@@ -231,6 +231,15 @@
       "height": 80
     },
     {
+      "id": "adr11",
+      "type": "file",
+      "file": "vault/06 - Devlogs & ADRs/ADR-011 Reintroducing EQB Ideas into HRM-X.md",
+      "x": 750,
+      "y": -400,
+      "width": 330,
+      "height": 80
+    },
+    {
       "id": "g_conc",
       "type": "group",
       "label": "Concepts that are ours",

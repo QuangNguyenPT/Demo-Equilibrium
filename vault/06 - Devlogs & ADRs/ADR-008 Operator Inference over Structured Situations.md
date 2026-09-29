@@ -8,6 +8,7 @@ tags:
   - native
 status: accepted-poc
 date: 2026-09-28
+superseded_by: "[[ADR-010 Structural Operator Inference]]"
 related:
   - "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"
   - "[[ADR-007 Grounded Algebra and Executable Concepts]]"
@@ -21,8 +22,12 @@ related:
 
 ## Status
 
-**Accepted as a proof of concept.** It is built in `hrm_x/`, tested (34 tests) and measured in
-`experiments/results/`.
+**Accepted as a proof of concept.** It is built in `hrm_x/`, tested (34 HRM-X tests at the
+time; `tests/test_x_*.py` now collects 128) and measured in `experiments/results/`.
+**Superseded as the design target 2026-09-29** by
+[[ADR-010 Structural Operator Inference]], which changed what a hypothesis is rather than how
+it is found. The program-search route below remains in `hrm_x/` as the measured baseline; this
+record is kept verbatim as the decision record.
 - It supersedes the ADR-007 design (v0.3): grounded algebra survives as the *verifier's*
   representation, and executable concepts become programs inferred from evidence.
 - `hrm_eqb/` and `hrm/` stay as baselines and references.

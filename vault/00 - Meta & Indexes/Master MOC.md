@@ -7,9 +7,9 @@ tags:
   - index
 status: active
 created: 2026-09-26
-updated: 2026-09-27
-agent: "opencode/big-pickle"
-model: "big-pickle"
+updated: 2026-09-29
+agent: "opencode/stealth/space-bunny-alpha"
+model: "space-bunny-alpha"
 ---
 
 # 🗺️ Master Map of Content
@@ -18,14 +18,16 @@ This Master MOC categorizes and links every major engineering document, architec
 
 > **Start here:** [[Task Plan]] — the canonical plan: verified state, next gates, and open debt. [[Code Map]] — every code module mapped to the document that governs it. [[00 - Code Subsystems|Code Subsystems]] is the generated companion: one note per subsystem, linked to the specs, ADRs and sessions that govern or changed it (`scripts/knowledge_map.py`).
 
-**Current state (2026-09-28):** three generations coexist, only the third is live. [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] ([[ADR-008 Operator Inference over Structured Situations]]) is built in `hrm_x/` as a **measured** proof of concept — e-graph workspace, operators inferred as programs, laws by theory exploration, value-of-compute controller, verifiers, neuromodulators, curiosity, C++ backend. It supersedes [[HRM-X Specification v0.3 - Understanding by Construction]] ([[ADR-007 Grounded Algebra and Executable Concepts]]). `hrm_eqb/` (HRM-Φ, [[ADR-005 Neural HRM-Phi Replaces Program Search]], normative design in [[HRM-EQB Specification v0.2 - Theorems and Proofs]]) is a baseline: it learned patterns but no arithmetic ([[ADR-006 HRM-EQB Training and Benchmark Results]]). `hrm/`'s program-search reasoner is the older baseline (ADR-003).
+**Current state (2026-09-29):** three generations coexist, only the third is live. [[HRM-X Specification v0.5 - Structural Operator Inference]] ([[ADR-010 Structural Operator Inference]]) is built in `hrm_x/` as a **measured** model: a hypothesis is a law-closed family fitted exactly over ℚ rather than a program found by enumeration, verification is the dual solve `Aᵀλ = r`, and deriving is a lookup. It is 7.2× cheaper than v0.4 on operators its language covers, and **worse** on operators it does not — 5 confidently wrong out of 6 against 0 wrong and 4 abstentions. **Gates G4 and G5 are not met.** The v0.4 program-search route is kept inside `hrm_x/` as the measured baseline, and [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes which of HRM-EQB's ideas would be worth re-taking. `hrm_eqb/` (HRM-Φ, [[ADR-005 Neural HRM-Phi Replaces Program Search]], normative design in [[HRM-EQB Specification v0.2 - Theorems and Proofs]]) is a baseline: it learned patterns but no arithmetic (ADR-006).
 
 ---
 
 ## 🏛️ 01 - Architecture & Philosophy
 Concepts, theoretical foundations, and mathematical motivations for the HRM+LLM system.
 
-- [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] — **Current PoC (ADR-008).** A task is situation + operator + question: e-graph workspace, operators inferred as programs, laws by theory exploration, a value-of-computation controller, independent verifiers, computational neuromodulators and curiosity, C++ backend.
+- [[HRM-X Specification v0.5 - Structural Operator Inference]] — **Current model (ADR-010).** A task is situation + operator + question; the operator is a law-closed family fitted exactly, determinacy and open-world coverage decide when it may answer, verification is the dual solve, and the value-of-computation controller and modulators are unchanged from v0.4.
+- [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] — **Superseded (ADR-008), retained.** Program search over a hand-written DSL with an e-graph workspace; now the measured baseline inside `hrm_x/`.
+- [[ADR-011 Reintroducing EQB Ideas into HRM-X]] — **Proposed.** Why HRM-EQB left, and the three certifiable ideas (rival margin, leave-one-out provenance, statistical keep gate) that would apply its method to HRM-X's objects.
 - [[HRM-X Specification v0.3 - Understanding by Construction]] — **Superseded design (ADR-007).** Define understanding formally (extrapolation, definitions, faithful explanation, honest ignorance), then derive the model: grounded residue-phasor algebra, executable concepts, transformer only for conventions; every theorem a capability.
 - [[HRM-EQB Specification v0.2 - Theorems and Proofs]] — **Normative design.** Every claim a theorem, every theorem a test; theorem IDs (T1–T5, M1, K1–K2, G1, F1–F2, H1) are cited directly in `hrm_eqb/` docstrings.
 - [[HRM-Phi Design Document v0.1]] — Phasor HRM-Φ: plane algebra shared by PEM and the transformer, and the reasoning that replaces program search.

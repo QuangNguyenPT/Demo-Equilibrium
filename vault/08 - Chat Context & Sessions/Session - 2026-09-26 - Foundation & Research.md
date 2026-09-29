@@ -90,8 +90,8 @@ status: complete
   Pure C99, AVX2/FMA, `O_DIRECT`, no BLAS, no GPU
   Four reductions: MXFP4 → MoE sparsity → KDA constant memory → trunk streaming
   675× total memory reduction, byte identical output at all memory budgets
-  See: [[Concept   The Four Memory Reductions]], [[Concept   Kimi Delta Attention (KDA)]]
-  See: [[Concept   Microscaling MXFP4 & E8M0 Quantization]], [[Concept   Direct IO & NVMe Streaming]]
+  See: [[Concept - The Four Memory Reductions]], [[Concept - Kimi Delta Attention (KDA)]]
+  See: [[Concept - Microscaling MXFP4 & E8M0 Quantization]], [[Concept - Direct IO & NVMe Streaming]]
 
    
 
@@ -144,10 +144,10 @@ Contains: HRM deep analysis, PEM↔HRM mapping table, Kimi/DeepSeek research syn
 
 ## Related Nodes
 
-  [[Concept   Hierarchical Multi Timescale Reasoning (HRM)]]
-  [[Concept   Adaptive Computation Time (ACT)]]
-  [[Concept   Attention Residuals (RealFormer & AttnRes)]]
-  [[Concept   The Four Memory Reductions]]
+  [[Concept - Hierarchical Multi-Timescale Reasoning (HRM)]]
+  [[Concept - Adaptive Computation Time (ACT)]]
+  [[Concept - Attention Residuals (RealFormer & AttnRes)]]
+  [[Concept - The Four Memory Reductions]]
   [[HRM Recurrent Stepper & ACT]]
   [[HRM+LLM Fusion Architecture]]
-  [[ADR 001 Hybrid C++ Engine with Python Blueprint]]
+  [[ADR-001 Hybrid C++ Engine with Python Blueprint]]

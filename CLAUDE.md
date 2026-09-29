@@ -6,7 +6,7 @@ Every session MUST complete these steps before touching code:
 
 1. **Read vault session index & CLAUDE.md** → `vault/08 - Chat Context & Sessions/00 - Session Index.md` + `CLAUDE.md at main folder`
    - Understand the decision chain: what was decided, why, what changed last session
-2. **Check ADR status** → `vault/06 - Devlogs & ADRs/` — know current phase (ADR-003..008; ADR-008 = HRM-X v0.4, current)
+2. **Check ADR status** → `vault/06 - Devlogs & ADRs/` — know current phase (ADR-001..011; **ADR-010 = HRM-X v0.5, current**; ADR-011 proposed, not implemented)
 3. **Run test suite** → `python -m pytest --tb=short -q` — baseline before any change
 4. **Verify training state** → if `models/eqb-small/` absent, training may need resuming (check `runs/train-eqb-small.log`)
 5. **Update graph after every session** → `.\scripts\update_knowledge_graph.ps1 -Mode code-only`
@@ -15,9 +15,8 @@ Every session MUST complete these steps before touching code:
 
 ### Per-Prompt Checklist (before implementing any change)
 
-- [ ] Does this change a certified map, routing normalization, or σ? → `test_eqb_theorems.py` must stay green
-- [ ] Is this a CUDA command? → only through `select_device()` (70% VRAM cap)
-- [ ] Is this a write to knowledge? → only through `mind.learn()` with a `VerificationReport`
+- [ ] Does this change a certified map, routing normalization, or σ **inside `hrm_eqb/`**? → `test_eqb_theorems.py` must stay green. (Those invariants are a constraint on that package only; `hrm_x/` neither imports it nor inherits any of them.)
+- [ ] Is this a CUDA command? → only through `hrm_eqb.device.select_device()` (70% VRAM cap). `hrm_x/` is CPU-only and needs no CUDA.
 - [ ] Is this editing a frozen benchmark or `hrm/learning/harness.py`? → STOP, make a new version instead
 - [ ] Does this affect training? → check checkpoint exists, use `--pause 0.15` on GPU
 - [ ] Does this touch `hrm_x/native/` or a Python function it mirrors? → rebuild (`.\scripts\build_native.ps1`) and keep `tests/test_x_native.py` (differential parity) green
@@ -73,14 +72,24 @@ hrm_eqb/                   HRM-EQB (torch): baseline (ADR-005, spec v0.2 incl. �
   __main__.py              CLI: python -m hrm_eqb create|info|ask|learn|study|bench|seal
 tests/                     pytest; test_eqb_theorems.py (§2-8), test_eqb_model.py + test_eqb_runtime.py (§14); test_x_*.py (HRM-X)
 data/benchmark/            frozen benchmark v1 (never overwrite; make v2)
-hrm_x/                     HRM-X v0.4 (ADR-008): operator inference over structured situations, CPU only
+hrm_x/                     HRM-X v0.5 (ADR-010): structural operator inference, CPU only
+  qlinalg.py               exact RREF / rank / solve / row-space membership over Q (stdlib only)
+  concepts.py              68 law-closed families, Prop. 4 weighting, Def. 3 BOTTOM, Thm 3 determinacy
+  consolidation.py         corpus-MDL macro admission (PoC's library.py, renamed: hrm_x/library.py is the program level)
+  situation.py             Q^(E x I) state, one-shot verb frames, conservation check
+  algebra.py               FHRR binding + characters, Prop. 8 cleanup bound (numpy; torch optional)
+  operators.py             D4 x Sym(colours) global and object operators, solved not searched (numpy)
+  reader.py                Place-Value Reader (Thm 5). REQUIRES TORCH — not imported by __init__
   workspace.py / rules.py  e-graph with provenance (I1-I3), e-matching, saturation; make_workspace() picks backend
-  induction.py             programs -> behaviour classes (posterior), QuickSpec law discovery
+  induction.py             programs -> behaviour classes (posterior), QuickSpec law discovery (v0.4 route)
+  library.py               program-level DSL mining (v0.4 route; the baseline, not the model)
   mind.py                  belief + VOC controller (H), Modulators (rho, volatility), sleep, save/load
   writer.py                trace -> answer + explanation
-  domains/                 arith (concepts, laws, residue verifier), story (parser .pt + situation), grid (objects)
+  domains/                 concept (v0.5 structural), arith (v0.4 search + laws + residue verifier),
+                           story (parser .pt + situation), grid (objects)
   native/                  C++ backend: include/hrmx.h (C ABI), src/egraph.cpp, src/grid.cpp; ctypes wrapper
-experiments/               x_arith|x_story|x_grid|x_control|x_metacog|x_native -> results/*.json
+experiments/               x_arith|x_story|x_grid|x_control|x_metacog|x_native|x_dsl|x_patience|
+                           x_perception|x_v05 -> results/*.json
 scripts/                   make_benchmark.py, update_knowledge_graph.ps1, build_native.ps1 (clang++ -> hrm_x/native/bin, gitignored)
 vault/                     Obsidian vault; session logs in "08 - Chat Context & Sessions"
 legacy/                    superseded C++ GRU engine + blueprint (reference only, graph-ignored)
@@ -379,13 +388,12 @@ Use normal mode for:
 
 ---
 
-**Last updated:** 2026-09-28  
-**Status:** Unified model built (ADR-003 P0–P6): reasoning, SSD knowledge, metacognition, learning loops, language section. The earlier "native backend deferred by measurement (P7)" note is **FALSE as of 2026-09-28** — that measurement was about BLAS matmuls, not this repo's real hot paths. The native backend now exists as `hrm_x/native/` (`include/hrmx.h`, `src/egraph.cpp`, `src/grid.cpp` → `hrm_x/native/bin/hrmx_native.dll`), built by `.\scripts\build_native.ps1` (clang++ -O2 -std=c++17) and selected by `HRMX_BACKEND=python|native|auto`. Measured: **identical results, grid 3.79× faster, arithmetic 1.47×** (`experiments/results/x_native.json`), with differential parity tests in `tests/test_x_native.py`.
-**Current (ADR-008, 2026-09-28):** HRM-X v0.4 in `hrm_x/` is the measured PoC; spec `vault/01 - Architecture Blueprint/HRM-X Specification v0.4 - Operator Inference over Structured Situations.md`. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only, exact Fraction arithmetic stays in Python. Hormones = only signals with a computational role (rho, feedback, volatility; lambda fixed); do not add others without an ablation. The `hrm_eqb/` rules below (certified maps, the VRAM cap) do **not** apply to `hrm_x/`, which is CPU-only.
-**Earlier direction (ADR-005):** HRM-EQB replaces program search as the model. The spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md` (§14 = construction lemmas). N0–N7 are built and tested; N8 (training + benchmarks) is recorded in ADR-006. `hrm/` is teacher, judge and baseline.
-**Rule:** anything that changes a certified map, the routing normalization or σ must keep `tests/test_eqb_theorems.py` green. The proofs depend on those invariants.
-**GPU rule (two crashes, 2026-09-27):** all CUDA work goes through `hrm_eqb.device.select_device()` (70 % VRAM cap) with pair/token-budgeted batches; probe peak memory on a worst-case batch before any long run; stop background jobs only by task ID. See `vault/05 - Engineering & Guides/GPU Safety - VRAM Oversubscription and DPC Watchdog.md`.
-**Git:** the repo is under version control (branch `feat/hrm-eqb-full`); commit per phase with the full suite green.
+**Last updated:** 2026-09-29  
+**Current (ADR-010, 2026-09-29):** HRM-X v0.5 in `hrm_x/` is the model; spec `vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md`. A hypothesis is a law-closed family fitted exactly over ℚ rather than a program found by enumeration, and verification is the dual solve `A^T λ = r`. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only, and exact `Fraction` arithmetic stays in Python. Modulators are only the signals with a computational role; do not add others without an ablation. **Gates G4 and G5 are not met** — read ADR-010 before quoting any headline. Native backend: **identical results, grid 3.79×, arithmetic 1.47×** (`experiments/results/x_native.json`), built by `.\scripts\build_native.ps1`, selected by `HRMX_BACKEND=python|native|auto`.
+**Baselines, superseded as the target on 2026-09-28.** `hrm_eqb/` (ADR-005/006) is the neural equilibrium package and `hrm/` (ADR-003) the program-search one. Both are fully built, measured and kept. `hrm_eqb/`'s spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md` (§14 = construction lemmas); its measured scores are generated 0.298, language 0.983, schedule_invariance 1.000, **sudoku_extreme 0.000, ARC 0.000**, and a probe found **no arithmetic** (additive-consistency error re-measured at 1.34 against a 1.40 ± 0.015 shuffled-label null; ADR-006 recorded 1.39 vs 1.41 on the original run). Why it left, and which of its ideas [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes to re-take.
+**Rule, and its scope (the previous version of this file contradicted itself here).** The `hrm_eqb/` invariants — certified maps, sub-stochastic routing, σ — are a constraint **on `hrm_eqb/` only**. ADR-008: they "do not apply to `hrm_x/`, which is CPU-only and needs no CUDA." If you change a certified map, the routing normalization or σ, then `tests/test_eqb_theorems.py` must stay green, because those proofs depend on them. That is not a project-wide obligation and it is not a reason to carry any of it into `hrm_x/`.
+**GPU rule (two crashes, 2026-09-27), scoped to `hrm_eqb/`:** all CUDA work goes through `hrm_eqb.device.select_device()` (70 % VRAM cap) with pair/token-budgeted batches; probe peak memory on a worst-case batch before any long run; stop background jobs only by task ID. See `vault/05 - Engineering & Guides/GPU Safety - VRAM Oversubscription and DPC Watchdog.md`. `hrm_x/` is CPU-only and does not need this.
+**Git:** branch `feat/hrm-x-v04`, tracking `origin/feat/hrm-x-v04`; commit per phase with the full suite green. (The previous text named `feat/hrm-eqb-full`, a pre-baseline state.)
 
 ## Knowledge Graph — Auto-Update Rule
 
@@ -404,6 +412,11 @@ Options:
 There is no `GEMINI_API_KEY` anywhere in this repo and `.env` stays empty; a hosted backend
 (`kimi`, `claude`, `openai`, `deepseek`) is the only case that would need the project's key,
 in `.env` (see `.env.example`).
+
+The default backend is `claude-cli`, which drives the `claude` CLI on PATH and needs
+**no API key at all**. `.env` stays empty and no agent should export a personal key
+(AGENTS.md §1). The only backends that would ever need the project's key are the
+hosted ones — `kimi`, `claude`, `openai`, `deepseek` — and `ollama` needs none either.
 
 Graph written to `graphify-out/` and synced to `vault/` automatically.
 

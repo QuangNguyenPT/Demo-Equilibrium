@@ -12,7 +12,7 @@ tags:
 status: implemented-baseline
 date: 2026-09-27
 supersedes: "[[HRM-Phi Design Document v0.1]]"
-superseded_by: "HRM-X Specification v0.4 - Operator Inference over Structured Situations (ADR-008)"
+superseded_by: "HRM-X Specification v0.5 - Structural Operator Inference (ADR-010)"
 related:
   - "[[ADR-005 Neural HRM-Phi Replaces Program Search]]"
   - "[[Concept - Attention Residuals (RealFormer & AttnRes)]]"
@@ -25,7 +25,7 @@ related:
 > This specification is **not** a paper design: it was built in `hrm_eqb/` and its
 > theorems were numerically checked (`tests/test_eqb_theorems.py`), as recorded in
 > [[ADR-006 HRM-EQB Training and Benchmark Results]] (N0–N8 build; 42/42 tests at
-> that time).
+> that time — the count has since grown to 55, see §10).
 >
 > It is nonetheless **superseded as the design target** by
 > [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
@@ -755,10 +755,17 @@ in context: an empty brain.
 
 ## 10. Verification map (theorem → executable check)
 
-Every row is a test in `tests/test_eqb_theorems.py` (23 tests, float64, seeded), run
+Every row is a test in `tests/test_eqb_theorems.py` (23 collected, float64, seeded), run
 against the code in the `hrm_eqb` package. The construction lemmas of §14 have their own
-table there. **Status 2026-09-27: all pass**, and the full
-suite passes (243 passed, 1 skipped).
+table there. **Status: all 55 `hrm_eqb` tests pass** (`test_eqb_theorems.py` 23,
+`test_eqb_model.py` 19, `test_eqb_runtime.py` 13); the whole repository suite is
+**436 passed, 1 skipped** as of 2026-09-29.
+
+> **Corrected 2026-09-29.** This line read "Status 2026-09-27: all pass, and the full
+> suite passes (243 passed, 1 skipped)". The 243 was a snapshot taken on 2026-09-27 and
+> was still presented as current five months of work later; it matches no present
+> quantity. The 42/42 in the header note above is likewise a 2026-09-27 figure, kept
+> there because it is correct *for its date* and labelled as such.
 
 | Theorem | Numerical check | Code |
 |---|---|---|
@@ -810,12 +817,29 @@ test shows the constants are nonetheless attained.
 6. **Floating point.** The theorems hold in real arithmetic. The code keeps them sound in
    float64 by certifying from SVD norms of the materialized matrices (F1). The numerical
    checks use tolerances of $10^{-12}$ to $10^{-10}$.
-7. **What is built.** Built and verified: the certified operators, the equilibrium core
-   with its certificate and halting rule, AttnRes, product-key search, hormones,
-   curiosity and the gate. **Not yet built:** the prelude, the memory module and its
-   `knowledge.pt` file, the structured head, the coda, training, the `.hrmc` writer and
-   loader, and the ARC, Sudoku and language benchmarks. These are phases N1–N9 of
-   [[ADR-005 Neural HRM-Phi Replaces Program Search]].
+7. **What is built.** **Everything in this specification is built and tested.** The
+   prelude, the quaternion memory module and its `knowledge.pt` file, the structured
+   head, the coda, training, the `.hrmc` writer and loader, and the ARC, Sudoku and
+   language benchmarks are all present in `hrm_eqb/` — phases N0–N8 of
+   [[ADR-005 Neural HRM-Phi Replaces Program Search]], every one ticked in
+   [[ADR-006 HRM-EQB Training and Benchmark Results]], which also records the measured
+   scores: generated 0.298, language 0.983, schedule_invariance 1.000,
+   **sudoku_extreme 0.000, ARC 0.000**.
+
+   > **Corrected 2026-09-29.** This item read "**Not yet built:** the prelude, the memory
+   > module and its `knowledge.pt` file, the structured head, the coda, training, the
+   > `.hrmc` writer and loader, and the ARC, Sudoku and language benchmarks" — which
+   > contradicted this specification's own header banner three pages earlier and would
+   > have led a reader to believe the package was a stub. Nothing was missing; the
+   > paragraph was a planning note that was never updated after the build.
+
+   What is genuinely absent is not a component but a **capability**. Every theorem in
+   this specification is a *safety* theorem — they hold for any weights, including
+   useless ones — and ADR-007 draws the consequence: "`hrm_eqb/` learns from data but
+   only patterns … The v0.2 theorems are all *safety* theorems. None states what the
+   model can compute." A reader looking for why this package was retired should go to
+   [[ADR-010 Structural Operator Inference]] for the diagnosis and
+   [[ADR-011 Reintroducing EQB Ideas into HRM-X]] for what is proposed to bring back.
 
 ---
 

@@ -10,7 +10,7 @@ tags:
 status: superseded-baseline
 date: 2026-09-27
 supersedes: "[[ADR-003 Unified Cognitive Model]] (as the definition of *the model*; its loops, gate and harness are kept)"
-superseded_by: "ADR-008 Operator Inference over Structured Situations"
+superseded_by: "ADR-010 Structural Operator Inference"
 related:
   - "[[HRM-EQB Specification v0.2 - Theorems and Proofs]]"
   - "[[HRM-Phi Design Document v0.1]]"
@@ -34,12 +34,13 @@ related:
 > `hrm_eqb/` — which is now an equilibrium **baseline** (built and theorem-tested
 > per [[ADR-006 HRM-EQB Training and Benchmark Results]], which showed it learned
 > patterns but no arithmetic), **not the model**. Phases **N3–N8 and N9 were never
-> run**. The live design is **HRM-X v0.4 — Operator Inference over Structured
-> Situations** in `hrm_x/`:
-> [[ADR-008 Operator Inference over Structured Situations]] and
-> [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (normative,
-> gates G1–G6 done). G1–G6 replace the N-phases; they are tracked in
-> [[Task Plan]].
+> run**.
+>
+> **Superseded as the design target 2026-09-29.** At the time of writing this record the
+> current model was HRM-X v0.4 (spec v0.4, ADR-008, gates G1–G6 done). The current target is
+> **HRM-X v0.5** (`hrm_x/`), spec v0.5 + ADR-010, tracked in [[Task Plan]]. This document is
+> kept verbatim as the decision record.
+> Attribution: opencode/stealth/space-bunny-alpha (space-bunny-alpha), 2026-09-29.
 >
 > Nothing below was deleted. Treat every N-row as an unexecuted proposal unless it
 > says **done**.
@@ -92,9 +93,9 @@ Caveat: the zip CRC-32 goes stale, so the design includes `seal()`.
 > The provisional package name `hrmphi/` below shipped as **`hrm_eqb/`**, and
 > only the scaffold (N0) was built. **N1–N9 were never run.** The revised,
 > partially-executed version of this table is "Plan (revised for HRM-EQB)" at the
-> end of the file; the phases that replaced the unrun N3–N8 are the G1–G6 gates
-> of [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
-> (§24), under [[ADR-008 Operator Inference over Structured Situations]].
+> end of the file; the phases that replaced the unrun N3–N8 are the gates
+> of [[HRM-X Specification v0.5 - Structural Operator Inference]] (§24), under
+> [[ADR-010 Structural Operator Inference]].
 
 | Phase | Deliverable | Acceptance (machine-decidable) | Compute |
 |---|---|---|---|
@@ -152,13 +153,16 @@ Rotation-vector text comes from T1 (RoPE is phasor binding).
 
 ## Plan (revised for HRM-EQB)
 
-> **Superseded 2026-09-28 by [[ADR-008 Operator Inference over Structured Situations]].**
+> **Superseded 2026-09-28 by [[ADR-008 Operator Inference over Structured Situations]];
+> superseded again as the design target 2026-09-29 by
+> [[ADR-010 Structural Operator Inference]].**
 > N0/N1 shipped in `hrm_eqb/`, but that package is now a *baseline*, not the
 > target: ADR-006 showed it learned patterns but no arithmetic, and ADR-007's
 > redesign became ADR-008's `hrm_x/`. N3–N8 below were never run and describe a
 > design that is no longer the target. The live gates are
-> [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] §24,
-> tracked in [[Task Plan]]. Kept for the record.
+> [[HRM-X Specification v0.5 - Structural Operator Inference]] §24, tracked in
+> [[Task Plan]]. Kept for the record.
+> Attribution: opencode/stealth/space-bunny-alpha (space-bunny-alpha), 2026-09-29.
 
 Same gates as above, with the package renamed `hrm_eqb/` and these changes:
 

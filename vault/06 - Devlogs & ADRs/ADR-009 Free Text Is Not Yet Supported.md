@@ -13,7 +13,7 @@ model: "big-pickle"
 related:
   - "[[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]"
   - "[[ADR-008 Operator Inference over Structured Situations]]"
-  - "[[Task Plan: verified state and next gates]]"
+  - "[[Task Plan]]"
 ---
 
 # ADR-009: Free Text Is Not Yet Supported, and Verification Cannot See a Misreading

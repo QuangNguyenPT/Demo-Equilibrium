@@ -8,7 +8,7 @@ tags:
 status: superseded-not-implemented
 created: 2026-09-26
 updated: 2026-09-28
-superseded_by: "[[HRM-Phi Design Document v0.1]]"
+superseded_by: "[[HRM-X Specification v0.5 - Structural Operator Inference]]"
 relates_to:
   - "[[ADR-001 Hybrid C++ Engine with Python Blueprint]]"
   - "[[Model Blueprint & Graph Layout]]"
@@ -17,7 +17,10 @@ relates_to:
 # ⚙️ Configuration & Hyperparameters
 
 > [!WARNING] Not implemented as described
-> This note describes the ADR-001 C++/Python hybrid engine, which was **never built**; ADR-003 moved it to `legacy/`. The live C++ is only `hrm_x/native/` (`egraph.cpp`, `grid.cpp`) behind the `hrmx.h` C ABI. The current model is [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] (ADR-008), in `hrm_x/`. Kept as design history.
+> This note describes the ADR-001 C++/Python hybrid engine, which was **never built**; ADR-003 moved it to `legacy/`. The live C++ is only `hrm_x/native/` (`egraph.cpp`, `grid.cpp`) behind the `hrmx.h` C ABI.
+>
+> **Superseded as the design target 2026-09-29.** At the time of writing this note the current model was HRM-X v0.4 (spec v0.4, ADR-008); the current target is **HRM-X v0.5** (`hrm_x/`), spec v0.5 + ADR-010. Kept as design history.
+> Attribution: opencode/stealth/space-bunny-alpha (space-bunny-alpha), 2026-09-29.
 
 > [!IMPORTANT] Specifically
 > `python/hrm_blueprint/configs.py` does not exist (it is `legacy/python/hrm_blueprint/configs.py`,
@@ -59,10 +62,10 @@ A frozen `ModelConfig` with a strict JSON round-trip: `dim`, `heads`, `prelude_l
 `thought_tokens`, `max_text`. `__post_init__` rejects invalid combinations (e.g. `dim` must be a
 multiple of 4 and of `heads`). No unknown or missing key is accepted on load.
 
-### 3. `hrm_x/` — the current model (ADR-008)
+### 3. `hrm_x/` — the current model (ADR-008, ADR-010; spec v0.5)
 
 No dataclass config file. The control-law constants live next to the controller that reads
-them, and the measured behaviour is in `experiments/results/*.json` (8 files) rather than in a
+them, and the measured behaviour is in `experiments/results/*.json` (12 files) rather than in a
 config: e.g. E1 exact extrapolation 1.000 across splits, E2 composition 1.000 at depths 1–3,
 native parity with grid 3.79× / arithmetic 1.47×.
 
@@ -116,4 +119,4 @@ Nothing loads them. The historical schema follows.
 - [[Model Blueprint & Graph Layout]] — Using configs to instantiate blueprints. *(never implemented)*
 - [[HRM+LLM Fusion Architecture]] — Architectural context for hyperparameters. *(historical)*
 - [[Build & Toolchain Guide]] — the one real build option, `-Debug`.
-- [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]] — the current model's parameters and where they live.
+- [[HRM-X Specification v0.5 - Structural Operator Inference]] — the current model's parameters and where they live.
