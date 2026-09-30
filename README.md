@@ -287,7 +287,7 @@ are not the same claim:
   Only the C-ABI boundary survived, re-landed scoped to the e-graph as
   `hrm_x/native/include/hrmx.h`.
 - **`legacy/hrm_eqb/`** — HRM-Φ / HRM-EQB. **Built, measured, then superseded.** It scored
-  ARC 0.000 and sudoku_extreme 0.000, and its 55 tests all passed. It moved here on
+  ARC 0.000 and sudoku_extreme 0.000, and its 57 tests all passed. It moved here on
   2026-09-29 because an audit found **zero** files outside its own test suite imported it.
   [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes which three of its ideas are worth
   re-taking; the rest stay as the record of why the current design exists.

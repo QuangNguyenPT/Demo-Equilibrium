@@ -16,7 +16,7 @@ Every session MUST complete these steps before touching code:
 ### Per-Prompt Checklist (before implementing any change)
 
 - [ ] Are you editing `legacy/hrm_eqb/`? → it is out of the live tree; nothing in `hrm_x/`,
-      `experiments/` or `scripts/` may import it, and its 55 tests need `PYTHONPATH=legacy` to run.
+      `experiments/` or `scripts/` may import it, and its 57 tests need `PYTHONPATH=legacy` to run.
       If you are touching live code, the answer is always no.
 - [ ] Is this a CUDA command? → `hrm_x/` is CPU-only and needs none. Legacy EQB training used
       `hrm_eqb.device.select_device()` (70% VRAM cap).
@@ -63,9 +63,9 @@ hrm/                       the ADR-003 program-search baseline, numpy-first (tor
 legacy/hrm_eqb/             HRM-EQB (torch). MOVED OUT 2026-09-29: an audit found zero files
                            outside its own test suite importing it. Legacy = superseded, NOT
                            never-built; legacy/cpp_engine/ (ADR-001) is the never-built one.
-                           Its 55 tests live in legacy/tests/ and need PYTHONPATH=legacy.
+                           Its 57 tests live in legacy/tests/ and need PYTHONPATH=legacy.
 legacy/cpp_engine/         ADR-001/002 C++ engine + Python blueprint. NEVER BUILT.
-tests/                     pytest; the ADR-003 sections and test_x_*.py (HRM-X). 381 tests.
+tests/                     pytest; the ADR-003 sections and test_x_*.py (HRM-X). 412 passed, 1 skipped (native DLL built).
 legacy/tests/              out of testpaths: test_eqb_theorems.py (§2-8), test_eqb_model.py +
                            test_eqb_runtime.py (§14), test_blueprint.py (ADR-001)
 data/benchmark/            frozen benchmark v1 (never overwrite; make v2)
@@ -396,8 +396,8 @@ Use normal mode for:
 
 ---
 
-**Last updated:** 2026-09-29  
-**Current (ADR-013, 2026-09-30):** HRM-X v0.6 in `hrm_x/` is the model; spec `vault/10 - Research Program/architecture_spec.md`. v0.5's exact law-closed families are depth 0; when OUTSIDE holds the mass the mind *constructs* features from primitives and stored concepts (`construct.py`), fits their linear closure exactly, and stores verified constructions (`concept_memory.py`, admitted after a second task). Defaults that measurement forced: calibrated answer space (`answer_space="empirical"`), regime coverage (asymmetric readings do not extrapolate across an unseen sign(x−y)), distinct surplus rows (`distinct_surplus`). Do not reintroduce weight normalisation that drops OUTSIDE, and do not wire the MBI router into the pipeline without beating E16. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only (e-graph, grid, construction enumeration `hx_enumerate`), and exact `Fraction` arithmetic stays in Python. E19 held-out: 60/0/21 (correct/wrong/abstain) vs 18/0/63 for v0.5 + ADR-012 — read ADR-013 and `vault/10 - Research Program/evaluation.md` before quoting any headline. Native backend: **identical results, grid 3.79×, arithmetic 1.47×, enumeration 4–6×**, built by `.\scriptsuild_native.ps1`, selected by `HRMX_BACKEND=python|native|auto`.
+**Last updated:** 2026-09-30  
+**Current (ADR-013, 2026-09-30):** HRM-X v0.6 in `hrm_x/` is the model; spec `vault/10 - Research Program/architecture_spec.md`. v0.5's exact law-closed families are depth 0; when OUTSIDE holds the mass the mind *constructs* features from primitives and stored concepts (`construct.py`), fits their linear closure exactly, and stores verified constructions (`concept_memory.py`, admitted after a second task). Defaults that measurement forced: calibrated answer space (`answer_space="empirical"`), regime coverage (asymmetric readings do not extrapolate across an unseen sign(x−y)), distinct surplus rows (`distinct_surplus`). Do not reintroduce weight normalisation that drops OUTSIDE, and do not wire the MBI router into the pipeline without beating E16. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only (e-graph, grid, construction enumeration `hx_enumerate`), and exact `Fraction` arithmetic stays in Python. E19 held-out: 60/0/21 (correct/wrong/abstain) vs 18/0/63 for v0.5 + ADR-012 — read ADR-013 and `vault/10 - Research Program/evaluation.md` before quoting any headline. Native backend: **identical results, grid 3.79×, arithmetic 1.47×, enumeration 4–6×**, built by `.\scriptsuild_native.ps1`, selected by `HRMX_BACKEND=python|native|auto`.
 **Baselines.** `legacy/hrm_eqb/` (ADR-005/006) is the neural equilibrium package — **moved out
 of the live tree on 2026-09-29**, because an audit found zero non-test code imports it — and
 `hrm/` (ADR-003) is the program-search one, which **stayed** because
@@ -409,7 +409,7 @@ of the live tree on 2026-09-29**, because an audit found zero non-test code impo
 `hrm_eqb.device.select_device()` (70 % VRAM cap) with pair/token-budgeted batches. See
 `vault/05 - Engineering & Guides/GPU Safety - VRAM Oversubscription and DPC Watchdog.md`.
 `hrm_x/` is CPU-only and has never needed this.
-**Git:** branch `feat/hrm-x-v04`, tracking `origin/feat/hrm-x-v04`; commit per phase with the full suite green. (The previous text named `feat/hrm-eqb-full`, a pre-baseline state.)
+**Git:** v0.6 work lives on `origin/audit/eqb-hrm-x` (includes `feat/hrm-x-v04`'s local-only commits); `feat/hrm-x-v04` on origin is behind; commit per phase with the full suite green. (The previous text named `feat/hrm-eqb-full`, a pre-baseline state.)
 
 ## Knowledge Graph — Auto-Update Rule
 
