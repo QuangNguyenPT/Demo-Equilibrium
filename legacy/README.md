@@ -39,23 +39,21 @@ package is still the source of the frozen benchmark.
 
 ## Running the legacy tests
 
-They are out of `testpaths`, so `python -m pytest` does not collect them. Put this
-directory on the path first.
-
-The **EQB** tests — the 55 that moved with the package — all pass:
+They are out of `testpaths`, so `python -m pytest` does not collect them. Run them
+by path — `legacy/conftest.py` puts this directory on `sys.path`, so there is no
+`PYTHONPATH` to set:
 
 ```powershell
-$env:PYTHONPATH = "legacy"
-python -m pytest legacy/tests/test_eqb_theorems.py legacy/tests/test_eqb_model.py `
-                        legacy/tests/test_eqb_runtime.py -q     # 55 passed
+python -m pytest legacy/tests -q      # 1 failed, 57 passed
 ```
 
-Running the whole folder instead gives **1 failed, 57 passed**, and that failure is
-pre-existing and unrelated to EQB: `legacy/tests/test_blueprint.py::test_native_c_engine_bridge`
-needs `legacy/bin/hrm_engine.dll`, the compiled ADR-001 C++ engine — the very thing
-ADR-001 never built. It was already outside `testpaths` before `hrm_eqb/` moved here,
-so the move neither caused it nor hid it. `test_blueprint.py` covers `cpp_engine/`,
-which is not importable as a Python package and is a record rather than a test suite.
+All **55 EQB tests pass**. The single failure is
+`test_blueprint.py::test_native_c_engine_bridge`, which needs
+`legacy/bin/hrm_engine.dll` — the compiled ADR-001 C++ engine, the very thing
+ADR-001 never built. It is pre-existing, unrelated to EQB, and was already outside
+`testpaths` before `hrm_eqb/` moved here. `test_blueprint.py` covers
+`cpp_engine/`, which is not importable as a Python package and is a record rather
+than a test suite.
 
 ## Rules
 

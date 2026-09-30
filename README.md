@@ -252,16 +252,15 @@ are not the same claim:
   [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes which three of its ideas are worth
   re-taking; the rest stay as the record of why the current design exists.
 
-Its 55 tests are out of `testpaths`, so `python -m pytest` does not collect them:
+Its tests are out of `testpaths`, so `python -m pytest` does not collect them. Run
+them by path — `legacy/conftest.py` puts that directory on `sys.path`:
 
 ```powershell
-$env:PYTHONPATH = "legacy"
-python -m pytest legacy/tests/test_eqb_theorems.py legacy/tests/test_eqb_model.py `
-                        legacy/tests/test_eqb_runtime.py -q     # 55 passed
+python -m pytest legacy/tests -q                          # 1 failed, 57 passed
 ```
 
-Running the whole `legacy/tests` folder instead gives 1 failure — `test_blueprint.py`
-wants the compiled ADR-001 engine, which was never built. That failure predates the move.
+All 55 EQB tests pass. The one failure is `test_blueprint.py`, which wants the
+compiled ADR-001 engine that was never built — pre-existing and unrelated.
 
 The knowledge graph excludes `legacy/` on purpose (`.graphifyignore`): these symbols must
 never surface in an `affected` query against `hrm_x/`.

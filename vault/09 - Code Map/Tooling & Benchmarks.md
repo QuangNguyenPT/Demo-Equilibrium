@@ -51,6 +51,7 @@ none
 
 ## Recent history
 
+- 2026-09-30 5d76216 Move hrm_eqb/ to legacy/ — an audit found nothing imports it
 - 2026-09-29 f0dc2ae HRM-X v0.5: structural operator inference (ADR-010) + vault cleanup
 - 2026-09-28 d5bacb1 HRM-X v0.4: operator inference over structured situations + C++ backend (ADR-008)
 - 2026-09-27 6b28b26 HRM-X design (ADR-007, proposed) + curated code map replaces graph blobs

@@ -120,6 +120,7 @@ reference is tested differentially (`tests/test_x_native.py`).
 | Knowledge Hub | Focus Area | Direct Link |
 | :--- | :--- | :--- |
 | **Master Index** | Complete vault graph and topic index | [[Master MOC]] |
+| **How It Works** | Architecture, the algorithms, and the current situation | [[How It Works]] |
 | **Code Map** | Which document is implemented by which file | [[Code Map]] |
 | **Current spec** | HRM-X v0.5, structural operator inference (normative) | [[HRM-X Specification v0.5 - Structural Operator Inference]] |
 | **Decision Records** | ADR-010 is current; the ADRs it replaced are kept verbatim | [[ADR-010 Structural Operator Inference]] · [[ADR-011 Reintroducing EQB Ideas into HRM-X]] |
