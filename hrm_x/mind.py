@@ -189,6 +189,7 @@ class Controller:
     use_verifier: bool = True
     use_questions: bool = True
     learn_patience: bool = False       # opt in; measured worse than the constant (see Patience)
+    ask_horizon: int = 3               # questions a plan may commit to when OUTSIDE holds the mass (v0.6)
 
 
 @dataclass
@@ -329,7 +330,8 @@ class Mind:
         penalty = self.control.wrong_penalty
         return max(0.0, (1.0 + penalty) * best - penalty)
 
-    def _value_of_question(self, alive: List[Hyp], at_q: List[Any], goals: List[Any], rho: float) -> float:
+    def _value_of_question(self, alive: List[Hyp], at_q: List[Any], goals: List[Any], rho: float,
+                           horizon: int = 1) -> float:
         """E[U after hearing the true answer at q] - U, using each hypothesis's goal prediction.
 
         A reading predicts one outcome at q. An OUTSIDE hypothesis predicts none in particular: it
@@ -357,9 +359,9 @@ class Mind:
                 outcomes.setdefault(UNKNOWN if a is None else a, []).append((h, g, h.weight))
         predicted = [k for k in outcomes if k != UNKNOWN]
         for k in predicted:
-            outcomes[k] += [(h, g, h.weight * h.spread) for h, g in outside]
+            outcomes[k] += [(h, g, h.weight * h.spread ** horizon) for h, g in outside]
         if outside:
-            outcomes[OUTSIDE] = [(h, g, h.weight * max(0.0, 1.0 - len(predicted) * h.spread))
+            outcomes[OUTSIDE] = [(h, g, h.weight * max(0.0, 1.0 - len(predicted) * h.spread ** horizon))
                                  for h, g in outside]
         after = sum(sum(w for _, _, w in group) / total * value(group) for group in outcomes.values())
         return after - value([(h, g, h.weight) for h, g in zip(alive, goals)])
@@ -381,9 +383,15 @@ class Mind:
 
             readings = sum(h.weight for h in hyps if h.weight > 0 and h.answer != OUTSIDE
                            and h.verified is not False and not (h.derived and h.answer == UNKNOWN))
-            if readings <= 0 and not exhausted:
+            outside = sum(h.weight for h in hyps if h.weight > 0 and h.answer == OUTSIDE)
+            outside_share = outside / mass if mass > 0 else 0.0
+            if not exhausted and (readings <= 0 or outside_share > 0.5):
+                # A deeper level is worth proposing when nothing explains the evidence, or when the
+                # best explanation is "outside my language" (v0.6: the next level may *build* one).
+                # Only a domain that reports OUTSIDE can reach the second case.
                 p_found = self.rate(f"{domain.name}:propose@{level}", prior=(1.0, 1.0))
-                options.append((p_found - lam * domain.propose_cost(task, level), "propose", level, ""))
+                gain = p_found if readings <= 0 else p_found * outside_share
+                options.append((gain - lam * domain.propose_cost(task, level), "propose", level, ""))
 
             alive = [h for h in hyps if h.weight > 0 and h.verified is not False]
             # Derive-group macro-action: hypotheses the domain cheaply predicts to give the same answer
@@ -427,9 +435,15 @@ class Mind:
                     options.append((gain - lam * c.verify_ops, "verify", h, ""))
 
             if c.use_questions and len(alive) > 1:
+                has_outside = any(h.answer == OUTSIDE for h in alive)
+                horizon = c.ask_horizon if has_outside else 1
                 for question, at_q, goals, cost in domain.questions(task, alive, self):
-                    voi = self._value_of_question(alive, at_q, goals, rho)
-                    options.append((voi - lam * (c.ask_ops + cost), "ask", question, f"voi={voi:.3f}"))
+                    # Myopic VOI undervalues a question when one confirmation cannot lift a reading
+                    # past OUTSIDE but h agreeing answers can (each multiplies the ratio by 1/spread).
+                    # Value the best h-question plan, priced at h questions, and take its first step.
+                    best = max(((self._value_of_question(alive, at_q, goals, rho, h) - lam * h * (c.ask_ops + cost)), h)
+                               for h in range(1, horizon + 1))
+                    options.append((best[0], "ask", question, f"voi(h={best[1]})"))
 
             if not options:
                 break

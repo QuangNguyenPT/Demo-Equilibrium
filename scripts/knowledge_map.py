@@ -65,6 +65,13 @@ SUBSYSTEMS: Tuple[Subsystem, ...] = (
               "and the group-theoretic grid and place-value layers.",
               ("hrm_x/qlinalg.py", "hrm_x/concepts.py", "hrm_x/consolidation.py",
                "hrm_x/situation.py", "hrm_x/algebra.py", "hrm_x/operators.py", "hrm_x/reader.py")),
+    Subsystem("HRM-X Concept Construction (v0.6)",
+              "New basis features built from primitives when the written language runs out, exact "
+              "fitting of their linear closure, concept memory (candidate -> admitted -> retired), "
+              "the language interface with a learned numeral reader, and the measured-but-unused "
+              "FHRR signature / mushroom-body router.",
+              ("hrm_x/construct.py", "hrm_x/concept_memory.py", "hrm_x/language.py",
+               "hrm_x/signature.py", "hrm_x/mbi.py")),
     Subsystem("HRM-X Domains", "Arithmetic concepts, word-problem stories, grid object programs; their verifiers.",
               ("hrm_x/domains/",)),
     Subsystem("HRM-X Native Backend",

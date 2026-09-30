@@ -48,6 +48,7 @@ Attribution: opencode/stealth/space-bunny-alpha (space-bunny-alpha), 2026-09-29.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
@@ -61,6 +62,8 @@ from hrm_x.concepts import (
     Fitted,
     fit,
 )
+from hrm_x.concept_memory import ConceptMemory
+from hrm_x.construct import ConstructConfig, construct, evaluate, families_of, features, render
 from hrm_x.mind import OUTSIDE, UNKNOWN, Hyp, Mind, Result
 from hrm_x.qlinalg import solve
 
@@ -114,9 +117,19 @@ class Concept:
     name = "concept"
 
     def __init__(self, cfg: Optional[ConceptConfig] = None,
-                 families: Sequence[Family] = FAMILIES) -> None:
+                 families: Sequence[Family] = FAMILIES,
+                 construct: Optional[ConstructConfig] = ConstructConfig(),
+                 use_memory: bool = True) -> None:
         self.cfg = cfg if cfg is not None else ConceptConfig()
         self.families = list(families)
+        # v0.6: propose levels >= 1 construct new features when the language runs out
+        # (hrm_x/construct.py); None restores v0.5, where level 1 means "exhausted".
+        self.construct_cfg = construct
+        self.use_memory = use_memory          # stored concepts as level-0 features and primitives
+        self._constructed: Dict[int, List[Family]] = {}
+        self._depth: Dict[int, int] = {}                      # construction depths done per task
+        self._origin: Dict[str, Tuple[Tuple[int, ...], Any]] = {}   # family name -> (expr, exact fn)
+        self.last_construction = None
         # Reading keys already proposed for a task, so a later propose returns
         # only what new evidence made available rather than duplicating the
         # version space. Keyed by `id(task)` for the same reason `Arith` keys its
@@ -125,10 +138,40 @@ class Concept:
 
     # ----- the L level: one exact fit, charged once -----
 
-    def belief(self, task: ConceptTask) -> Belief:
-        return fit(task.evidence(), self.cfg, self.families)
+    def belief(self, task: ConceptTask, mind: Optional[Mind] = None) -> Belief:
+        fams = self.families + self._library_families(mind) + self._constructed.get(id(task), [])
+        return fit(task.evidence(), self.cfg, fams)
+
+    def _memory_of(self, mind: Optional[Mind]) -> ConceptMemory:
+        return ConceptMemory.of(mind) if (mind is not None and self.use_memory) else ConceptMemory()
+
+    def _library_families(self, mind: Optional[Mind]) -> List[Family]:
+        """Admitted concepts as level-0 features: one exact fit each, no search."""
+        mem = self._memory_of(mind)
+        out: List[Family] = []
+        for k in mem.usable():
+            fn = mem.fn(k)
+            for fam in families_of(mem.feature(k), fn, f"lib:{mem.names()[k]}"):
+                self._origin[fam.name] = (mem.concepts[k].expr, fn)
+                out.append(fam)
+        return out
+
+    def _weight(self, log2w: float) -> float:
+        """Unnormalised weight relative to BOTTOM, so readings found at different propose levels and
+        after different asks share one scale (Mind normalises; only ratios matter)."""
+        ref = -self.cfg.bits_bottom if math.isfinite(self.cfg.bits_bottom) else 0.0
+        return 2.0 ** max(-1000.0, min(1000.0, log2w - ref))
 
     def propose_cost(self, task: ConceptTask, level: int) -> float:
+        depth = self._depth.get(id(task), 0) + 1
+        cc = self.construct_cfg
+        if level == 0 or cc is None or depth > len(cc.sizes):
+            return self._fit_cost(task)
+        # A re-fit, then one float prefilter row per feature and evidence row at the next depth
+        # (exact fits only for survivors).
+        return self._fit_cost(task) + float(len(features(cc.sizes[depth - 1])) * max(1, len(task.evidence())))
+
+    def _fit_cost(self, task: ConceptTask) -> float:
         """One exact fit: every family, every evidence row, its RREF.
 
         `families` has 68 members whose features number up to 4, and each fit is
@@ -152,33 +195,70 @@ class Concept:
         *given*: no amount of evidence here invents a family that was not
         written down.
         """
-        bel = self.belief(task)
-        post, p_bot = bel.posterior()
-        if not post:
-            return None              # no family fits the evidence: the language is exhausted
+        bel = self.belief(task, mind)
         seen = self._seen.setdefault(id(task), set())
         out: List[Hyp] = []
-        for fitted, p in zip(bel.fitted, post):
-            if p <= 0.0:
-                continue
+        for fitted in bel.fitted:
             key = reading_key(fitted)
             if key in seen:
                 continue
             seen.add(key)
-            out.append(Hyp(key=key, weight=p, payload=fitted,
+            out.append(Hyp(key=key, weight=self._weight(fitted.log2w), payload=fitted,
                            note=f"{fitted.surplus} surplus rows, rank {fitted.rank}"))
-        if BOTTOM_KEY not in seen and p_bot > 0.0:
-            # Def. 3 as a hypothesis the controller can see. Weights are the raw posterior, the
-            # scale `ask` refits to, so BOTTOM and every reading stay comparable across asks.
+        if BOTTOM_KEY not in seen and math.isfinite(self.cfg.bits_bottom):
+            # Def. 3 as a hypothesis the controller can see (ADR-012). Its weight is 1 on the
+            # BOTTOM-relative scale every reading uses, so it stays comparable across asks and levels.
             seen.add(BOTTOM_KEY)
-            out.append(Hyp(key=BOTTOM_KEY, weight=p_bot, payload=None, answer=OUTSIDE, derived=True,
+            out.append(Hyp(key=BOTTOM_KEY, weight=1.0, payload=None, answer=OUTSIDE, derived=True,
                            spread=2.0 ** -self.cfg.log2_answer_space,
                            note="the evidence may come from an operator my language cannot write"))
-        if not out:
+        if out or level == 0:
+            if not out and self.construct_cfg is None:
+                return None          # no family fits and nothing may be built: the language is exhausted
+            return out, bel.ops
+        # Re-fitting the language found nothing new (new evidence can admit readings, so it is tried
+        # first). The next unexplored construction depth is the rest of this propose.
+        depth = self._depth.get(id(task), 0) + 1
+        got = self._construct(task, depth, mind)
+        if got is None:
             return None              # `Mind.solve` tests `is None`; a (None, 0) tuple crashed it
-        return out, bel.ops
+        self._depth[id(task)] = depth
+        return got[0], got[1] + bel.ops
 
-    # ----- deriving is a lookup: the solve already happened -----
+    # ----- construction: levels >= 1 build features the language does not contain -----
+
+    def _construct(self, task: ConceptTask, level: int, mind: Mind) -> Optional[Tuple[List[Hyp], int]]:
+        cc = self.construct_cfg
+        if cc is None or level > len(cc.sizes):
+            return None
+        mem = self._memory_of(mind)
+        usable = set(mem.usable())
+        prims = [(e, f if k in usable else None) for k, (e, f) in enumerate(mem.primitives())] \
+            if cc.use_library else []
+        feats = [f for f in features(cc.sizes[level - 1], prims)
+                 if level == 1 or len(f.expr) > cc.sizes[level - 2]]
+        fns = mem.fns()
+        names = mem.names()
+        fn_of = (lambda f: (lambda x, y, e=f.expr: evaluate(e, x, y, fns)))
+        label_of = (lambda f: render(f.expr, names))
+        rep = construct(task.evidence(), self.cfg, feats, fn_of, label_of, cc.margin_bits, self.cfg.symmetry_bits)
+        fams = self._constructed.setdefault(id(task), [])
+        seen = self._seen.setdefault(id(task), set())
+        out: List[Hyp] = []
+        by_label = {label_of(f): f for f in feats}
+        for fitted in rep.fitted[:cc.max_readings]:
+            key = reading_key(fitted)
+            if key in seen:
+                continue
+            seen.add(key)
+            fams.append(fitted.family)
+            feat = by_label.get(fitted.family.name[len("construct["):].rsplit("]", 1)[0])
+            if feat is not None:
+                self._origin[fitted.family.name] = (feat.expr, fn_of(feat))
+            out.append(Hyp(key=key, weight=self._weight(fitted.log2w), payload=fitted,
+                           note=f"constructed at level {level}: {fitted.surplus} surplus rows"))
+        self.last_construction = rep
+        return out, rep.ops
 
     def derive_cost(self, task: ConceptTask, hyp: Hyp, mind: Mind) -> float:
         """One row-space membership test: an RREF of the evidence matrix against
@@ -304,10 +384,9 @@ class Concept:
             return 0
         answer = task.oracle(*question)
         task.observed.append((question, answer))
-        bel = self.belief(task)
-        post, p_bot = bel.posterior()
-        by_key = {reading_key(f): p for f, p in zip(bel.fitted, post)}
-        by_key[BOTTOM_KEY] = p_bot
+        bel = self.belief(task, mind)
+        by_key = {reading_key(f): self._weight(f.log2w) for f in bel.fitted}
+        by_key[BOTTOM_KEY] = 1.0
         for h in hyps:
             h.weight = by_key.get(h.key, 0.0)
             if h.weight == 0.0:
@@ -349,6 +428,15 @@ class Concept:
         entry["readings"] = sorted(alive, key=lambda r: -r["weight"])
         entry["evidence"] = seen
         memory["uses"][task.symbol] = memory["uses"].get(task.symbol, 0) + 1
+        # v0.6: a verified answer from a constructed or stored feature becomes (or strengthens) a
+        # concept in memory. Answers from the written language create nothing: it already has them.
+        winner = max((h for h in result.hypotheses
+                      if h.verified and h.answer == result.answer and h.payload is not None),
+                     key=lambda h: h.weight, default=None)
+        origin = None if winner is None else self._origin.get(winner.payload.family.name)
+        if origin is not None and self.use_memory:
+            expr, fn = origin
+            ConceptMemory.of(mind).record(fn, expr, task.symbol, task.evidence())
 
     @staticmethod
     def _encode_datum(d: Datum) -> List[str]:

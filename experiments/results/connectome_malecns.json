@@ -1,0 +1,68 @@
+{
+  "source": "Janelia male CNS v1.0, minconf 0.5 (local feather files)",
+  "core_neurons": 166668,
+  "core_edges": 25578988,
+  "core_synapses": 124161329,
+  "M1_reciprocity": {
+    ">=1": {
+      "edges": 25578988,
+      "neurons": 166451,
+      "reciprocity": 0.2989496300635506,
+      "null_configuration": 0.0054816773135381676,
+      "ratio": 54.536159821963786
+    },
+    ">=5": {
+      "edges": 6241222,
+      "neurons": 165806,
+      "reciprocity": 0.15679573647596576,
+      "null_configuration": 0.002624915644629987,
+      "ratio": 59.73362869650158
+    }
+  },
+  "M2_M3_mushroom_body": {
+    "kenyon_cells": 4064,
+    "alpn": 686,
+    "apl": 2,
+    "mbon_bodies": 97,
+    "mbon_types": 37,
+    "dan_bodies": 340,
+    "dan_types": 27,
+    "claws_per_kc": {
+      "median": 5.0,
+      "mean": 5.112450787401575,
+      "kcs_without_pn_input": 283
+    },
+    "glomeruli_per_kc": {
+      "median": 5.0,
+      "mean": 4.948818897637795
+    },
+    "apl_to_kc": {
+      "synapses": 196200,
+      "kcs_reached": 4063
+    },
+    "mbon_types_per_kc": {
+      "median": 9.0,
+      "mean": 8.804133858267717,
+      "frac_kc_read_by_ge2_types": 0.9975393700787402,
+      "frac_kc_read_by_ge5_types": 0.9640748031496063,
+      "frac_kc_unread": 0.0004921259842519685
+    },
+    "kc_sets_per_mbon_type": {
+      "types_with_kc_input": 37,
+      "median_kcs": 689.0,
+      "mean_pairwise_jaccard": 0.13496711838460232
+    },
+    "dan_types_per_mbon_type": {
+      "median": 5.0,
+      "mean": 4.891891891891892,
+      "frac_gated": 1.0
+    },
+    "kc_output_share": {
+      "mbon": 0.20637168803352227,
+      "kc": 0.5135901569731678,
+      "apl": 0.09363018143651858,
+      "dan": 0.12546013444160264
+    }
+  },
+  "seconds": 270
+}

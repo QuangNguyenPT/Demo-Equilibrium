@@ -124,3 +124,24 @@ def test_domain_solvers_agree_across_backends(monkeypatch):
         return ([str(l) for l in laws], first.answer, [(r.answer, r.ops, r.cycles) for r in later])
 
     assert run("python") == run("native")
+
+
+def test_native_construction_bank_is_bit_identical_to_python():
+    """hx_enumerate mirrors construct.enumerate_bank: same expressions, same order, same float values."""
+    import os
+    import numpy as np
+    from hrm_x import construct as C
+    xs = np.array([float(p[0]) for p in C.PROBES])
+    ys = np.array([float(p[1]) for p in C.PROBES])
+    got = native.enumerate_bank(7, xs, ys)
+    old = os.environ.get("HRMX_BACKEND")
+    os.environ["HRMX_BACKEND"] = "python"
+    try:
+        ref = [(e, v) for s, items in sorted(C.enumerate_bank(7).items()) for e, v in items]
+    finally:
+        if old is None:
+            os.environ.pop("HRMX_BACKEND")
+        else:
+            os.environ["HRMX_BACKEND"] = old
+    assert len(got) == len(ref) == 6694
+    assert all(a[0] == b[0] and np.array_equal(a[1], b[1]) for a, b in zip(got, ref))

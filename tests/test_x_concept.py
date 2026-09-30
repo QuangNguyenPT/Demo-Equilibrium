@@ -248,7 +248,7 @@ def test_a_coincidental_fit_no_longer_outweighs_the_bottom_hypothesis():
 
     task = ConceptTask.from_op(square_add, [(F(2), F(3)), (F(4), F(3))], (F(5), F(7)),
                                symbol="*", oracle=square_add)
-    closed = Mind(Controller()).solve(Concept(ConceptConfig(bits_bottom=float("inf"))), task)
+    closed = Mind(Controller()).solve(Concept(ConceptConfig(bits_bottom=float("inf")), construct=None), task)
     assert closed.status == "answer" and closed.answer == F(47) != square_add(F(5), F(7))
 
 
@@ -267,9 +267,14 @@ def test_the_language_is_exhausted_rather_than_reshuffled():
     controller keeps proposing forever."""
     mul = lambda a, b: a * b
     task = ConceptTask.from_op(mul, [(F(2), F(3))], (F(4), F(6)), symbol="*", oracle=mul)
-    domain, mind = Concept(), Mind(Controller())
+    domain, mind = Concept(construct=None), Mind(Controller())   # v0.5: nothing to build
     assert domain.propose(task, 0, mind)[0]
     assert domain.propose(task, 1, mind) is None     # `Mind.solve` tests `got is None`
+    built = Concept()                                  # v0.6: three construction depths, then exhausted
+    assert built.propose(task, 0, mind)[0]
+    for level in (1, 2, 3):
+        assert built.propose(task, level, mind) is not None
+    assert built.propose(task, 4, mind) is None
 
 
 def test_propose_charges_a_fit_and_derive_charges_only_a_lookup():

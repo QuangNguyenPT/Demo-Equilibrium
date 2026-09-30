@@ -71,6 +71,16 @@ HX_API void hx_eg_snapshot_index(hx_egraph* g);
 HX_API int32_t hx_eg_ematch(hx_egraph* g, const int32_t* code, int32_t ncode, int32_t nvars,
                             int32_t use_index, int32_t* out, int32_t cap);
 
+/* ---------- construct (hrm_x/construct.py) ---------- */
+
+/* Bottom-up enumeration of postfix expressions over {x, y, 1, 2, +, -, *, /, ifgt} up to max_size
+ * tokens, observationally distinct on the n probe points (px, py). Writes the flattened tokens,
+ * offsets[count + 1] into them, and count * n probe values, in the Python reference order.
+ * Returns count, or -1 if cap_tokens or cap_exprs is too small. */
+HX_API int32_t hx_enumerate(int32_t max_size, const double* px, const double* py, int32_t n,
+                            int32_t* out_tokens, int32_t cap_tokens, int32_t* out_offsets,
+                            double* out_values, int32_t cap_exprs);
+
 #ifdef __cplusplus
 }
 #endif

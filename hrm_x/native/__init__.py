@@ -18,6 +18,7 @@ LIB_PATH = Path(__file__).resolve().parent / "bin" / "hrmx_native.dll"
 _lib = None
 
 I32P = POINTER(c_int32)
+F64P = POINTER(ctypes.c_double)
 
 
 def _load():
@@ -46,6 +47,7 @@ def _load():
         "hx_eg_explain": (c_int32, [c_void_p, c_int32, c_int32, I32P, c_int32]),
         "hx_eg_snapshot_index": (None, [c_void_p]),
         "hx_eg_ematch": (c_int32, [c_void_p, I32P, c_int32, c_int32, c_int32, I32P, c_int32]),
+        "hx_enumerate": (c_int32, [c_int32, F64P, F64P, c_int32, I32P, c_int32, I32P, F64P, c_int32]),
     }
     for name, (res, args) in sig.items():
         fn = getattr(lib, name)
@@ -259,3 +261,26 @@ class NativeWorkspace(EGraphAPI):
                 break
             cap *= 4
         return [(out[k * stride], {s: out[k * stride + 1 + j] for j, s in enumerate(slots)}) for k in range(n)]
+
+
+# ---------- construct ----------
+
+def enumerate_bank(max_size: int, xs: np.ndarray, ys: np.ndarray) -> Optional[List[Tuple[Tuple[int, ...], np.ndarray]]]:
+    """(expr, probe values) in the order of construct.enumerate_bank, or None if not built."""
+    lib = _load()
+    if lib is None:
+        return None
+    px = np.ascontiguousarray(xs, dtype=np.float64)
+    py = np.ascontiguousarray(ys, dtype=np.float64)
+    n = len(px)
+    cap = 1 << 16
+    while True:
+        toks = np.zeros(cap * max_size, dtype=np.int32)
+        offs = np.zeros(cap + 1, dtype=np.int32)
+        vals = np.zeros(cap * n, dtype=np.float64)
+        count = lib.hx_enumerate(max_size, px.ctypes.data_as(F64P), py.ctypes.data_as(F64P), n,
+                                 _ptr(toks), len(toks), _ptr(offs), vals.ctypes.data_as(F64P), cap)
+        if count >= 0:
+            break
+        cap *= 4
+    return [(tuple(int(t) for t in toks[offs[i]:offs[i + 1]]), vals[i * n:(i + 1) * n].copy()) for i in range(count)]
