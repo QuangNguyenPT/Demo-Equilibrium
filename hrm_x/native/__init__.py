@@ -50,7 +50,16 @@ def _load():
         "hx_enumerate": (c_int32, [c_int32, F64P, F64P, c_int32, I32P, c_int32, I32P, F64P, c_int32]),
     }
     for name, (res, args) in sig.items():
-        fn = getattr(lib, name)
+        try:
+            fn = getattr(lib, name)
+        except AttributeError:
+            # A DLL built from older sources lacks a newer entry point. Executing it would mix
+            # kernel generations, so the whole backend is declared unavailable (Python reference
+            # stays in use) instead of crashing every importer; rebuild with build_native.ps1.
+            import warnings
+            warnings.warn(f"hrmx_native.dll is stale (missing {name}); using the Python backend. "
+                          "Run scripts/build_native.ps1.", RuntimeWarning, stacklevel=2)
+            return None
         fn.restype, fn.argtypes = res, args
     _lib = lib
     return lib

@@ -145,3 +145,23 @@ def test_native_construction_bank_is_bit_identical_to_python():
             os.environ["HRMX_BACKEND"] = old
     assert len(got) == len(ref) == 6694
     assert all(a[0] == b[0] and np.array_equal(a[1], b[1]) for a, b in zip(got, ref))
+
+
+def test_a_stale_dll_degrades_to_python_instead_of_crashing(monkeypatch):
+    """A DLL missing a newer entry point must make the backend unavailable, not raise on import."""
+    import ctypes
+    real = ctypes.CDLL
+
+    class Stale:
+        def __init__(self, path):
+            self._d = real(path)
+
+        def __getattr__(self, name):
+            if name == "hx_enumerate":
+                raise AttributeError(name)
+            return getattr(self._d, name)
+
+    monkeypatch.setattr(native, "_lib", None)
+    monkeypatch.setattr(ctypes, "CDLL", Stale)
+    with pytest.warns(RuntimeWarning, match="stale"):
+        assert native._load() is None
