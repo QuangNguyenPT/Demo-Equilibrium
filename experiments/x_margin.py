@@ -29,7 +29,7 @@ from typing import Callable, Dict, List, Tuple
 
 from experiments.common import record
 from experiments.x_v05 import SYMBOL_OF, TABLES, _mind
-from hrm_x.concepts import ConceptConfig, fit, rival_margin
+from hrm_x.concepts import ConceptConfig, rival_margin
 from hrm_x.domains.concept import Concept, ConceptTask
 
 
@@ -70,11 +70,12 @@ def run(cfg: ConceptConfig, teacher: bool, rows_in=None) -> List[Dict]:
         symbol = SYMBOL_OF.get((table, name), f"g{i}")
         for query in queries:
             task = ConceptTask.from_op(op, evidence, query, symbol=symbol, oracle=op if teacher else None)
-            result = _mind(teacher, 1.0).solve(Concept(cfg), task)
+            mind, dom = _mind(teacher, 1.0), Concept(cfg)
+            result = mind.solve(dom, task)
             if result.status != "answer":
                 rows.append({"table": table, "op": name, "in_language": inside, "status": "abstain"})
                 continue
-            bel = fit(task.evidence(), cfg)
+            bel = dom.belief(task, mind)          # written + constructed (v0.6) + stored families
             winner = max((f for f in bel.fitted if f.value(*query, coverage=False) == result.answer),
                          key=lambda f: f.log2w)
             rows.append({"table": table, "op": name, "in_language": inside, "status": "answer",

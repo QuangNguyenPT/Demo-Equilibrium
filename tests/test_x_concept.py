@@ -83,7 +83,7 @@ def test_a_query_outside_the_evidence_span_has_no_opinion():
 def test_fitted_parameters_buy_no_evidence():
     """Prop. 4: each row the family *predicts* rather than fits is worth exactly
     log2|Y| bits, and nothing else changes."""
-    cfg = ConceptConfig()
+    cfg = ConceptConfig(answer_space="fixed")   # Prop. 4 with the constant |Y| it is stated for
     base = [((F(2), F(3)), F(5))]
     one = base + [((F(4), F(6)), F(10))]
     two = one + [((F(6), F(9)), F(15))]

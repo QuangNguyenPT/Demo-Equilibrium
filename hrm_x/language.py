@@ -127,7 +127,7 @@ def _num(v: Any) -> str:
     return str(v) if not isinstance(v, Q) or v.denominator != 1 else str(v.numerator)
 
 
-def explain(result: Result, task: ConceptTask, domain: Concept, mind: Mind) -> str:
+def explain(result: Result, task: ConceptTask) -> str:
     """Answer (or refusal) plus how it was reached, from the trace -- never from a template of intent."""
     q = task.question
     if result.status != "answer":
@@ -145,8 +145,8 @@ def explain(result: Result, task: ConceptTask, domain: Concept, mind: Mind) -> s
     if fam.startswith("construct["):
         how = (f"; the operation was not in my language, so I constructed {fam[len('construct['):]} and "
                f"fitted it exactly: it predicted {surplus} of the {rows} examples it was not fitted to")
-    elif fam.startswith("lib:"):
-        how = f"; I used the concept '{fam[4:].split(']')[0].split('+')[0]}' I formed earlier ({surplus} examples predicted)"
+    elif fam.startswith("lib["):
+        how = f"; I used the concept '{fam[4:].rsplit(']', 1)[0]}' I formed earlier ({surplus} examples predicted)"
     else:
         how = f"; the reading {fam} predicted {surplus} of {rows} examples"
     if asked:
@@ -179,7 +179,7 @@ class Conversation:
             k = self._concept_used(result)
             if k is not None:
                 self.concept_of[p.op] = k
-            return explain(result, task, self.domain, self.mind)
+            return explain(result, task)
         if p.kind == "naming":
             k = self.concept_of.get(p.op)
             if k is None:

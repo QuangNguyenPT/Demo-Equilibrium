@@ -112,7 +112,8 @@ reference is tested differentially (`tests/test_x_native.py`).
 - **Native backend**: results identical to Python; grid **3.79×**, arithmetic **1.47×**.
 - **v0.5 vs v0.4, one mind (E13)**: as ported, in-language 13/15 at 593 ops against 7/15 at 4,265 ops (7.2x cheaper) and out-of-language 5 confidently wrong of 6 ([[ADR-010 Structural Operator Inference]]). **Since ADR-012** (BOTTOM counts inside `Mind`): in-language **9 / 2 / 4**, out-of-language **0 / 0 / 6**; held-out operators: out-of-language wrong 16 → 2, in-language correct 36 → 22.
 - **HRM-EQB audit (ADR-012)**: core linear in its input (additivity error 6.6e-8), 1 vs 40 cycles same accuracy (0.317 / 0.315), text 0.956 on training words vs 0.006 on unseen strings; retrained on random strings (EQB-T, one seed) it reaches 0.14–0.20 on unseen strings, almost all of it `upper`, and 0.000 at longer lengths. See [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]].
-- **Experiment result files**: **15** in `experiments/results/` (`eqb_probe.json`, `eqb_text.json`, `x_margin.json` added by ADR-012).
+- **HRM-X v0.6 (ADR-013), E19 held-out 81 tasks**: **60 / 0 / 21** (correct / wrong / abstain) vs 18 / 0 / 63 for v0.5 + ADR-012; memory off 44 / 0 / 37; closed world 63 / 12 / 6. See [[evaluation]].
+- **Experiment result files**: **20** in `experiments/results/` (`eqb_probe.json`, `eqb_text.json`, `x_margin.json` added by ADR-012).
 
 ---
 

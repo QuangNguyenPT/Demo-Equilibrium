@@ -79,22 +79,25 @@ def test_the_mind_constructs_max_and_remembers_it_as_a_candidate():
 
 
 def test_a_second_task_admits_the_concept_and_it_then_lowers_the_evidence_needed():
-    """Transfer (U7): |x - y| from 4 rows is refused from scratch, answered once max is a concept."""
+    """Transfer (U7): |x - y| from 5 rows is refused from scratch, answered once max is a concept."""
     absdiff = lambda a, b: abs(a - b)
-    fresh = Mind(Controller()).solve(Concept(), _task(absdiff, [(2, 7), (9, 4), (3, 3), (1, 8)], (6, 10), "⊖"))
+    rows = [(2, 7), (9, 4), (3, 3), (1, 8), (6, 5)]
+    fresh = Mind(Controller()).solve(Concept(), _task(absdiff, rows, (6, 10), "⊖", oracle=False))
     assert fresh.status == "abstain"
 
     mind = Mind(Controller())
     mind.solve(Concept(), _task(max, [(2, 3), (4, 1), (5, 5), (1, 6)], (7, 2), "⊕"))
     mind.solve(Concept(), _task(max, [(6, 1), (2, 9), (4, 4), (8, 3)], (1, 5), "⊗"))
     assert ConceptMemory.of(mind).concepts[0].status == "admitted"
-    r = mind.solve(Concept(), _task(absdiff, [(2, 7), (9, 4), (3, 3), (1, 8)], (6, 10), "⊖"))
+    r = mind.solve(Concept(), _task(absdiff, rows, (6, 10), "⊖", oracle=False))
     assert r.status == "answer" and r.answer == F(4)
+    win = max((h for h in r.hypotheses if h.verified and h.answer == r.answer and h.payload), key=lambda h: h.weight)
+    assert win.payload.family.name.startswith("lib[")          # reused, not rebuilt
     assert not any(s.target.startswith("level 1") for s in r.trace if s.action == "propose")
 
     no_memory = Mind(Controller())
     no_memory.knowledge = mind.knowledge
-    ablated = no_memory.solve(Concept(use_memory=False), _task(absdiff, [(2, 7), (9, 4), (3, 3), (1, 8)], (6, 10), "⊘"))
+    ablated = no_memory.solve(Concept(use_memory=False), _task(absdiff, rows, (6, 10), "⊘", oracle=False))
     assert ablated.status == "abstain"
 
 
@@ -154,9 +157,10 @@ def test_free_text_is_refused_with_a_reason():
 def test_a_new_symbol_for_an_old_operation_finds_the_old_concept_and_a_word_binds_to_it():
     """Representation abstraction (U1) and language-to-structure: identity is behaviour, not symbol."""
     chat = Conversation()
-    chat.say("2 ⊕ 3 = 3; 4 ⊕ 1 = 4; 5 ⊕ 5 = 5; 1 ⊕ 6 = 6")
+    chat.say("2 ⊕ 3 = 3; 4 ⊕ 1 = 4; 5 ⊕ 5 = 5; 1 ⊕ 6 = 6; 8 ⊕ 2 = 8; 3 ⊕ 9 = 9")
     assert "= 7" in chat.say("7 ⊕ 2 = ?")
-    chat.say("combining 6 and 1 with ★ gives 6; if you ★ 2 and 9, you get 9; 4 ★ 4 is 4; ★(8, 3) = 8")
+    chat.say("combining 6 and 1 with ★ gives 6; if you ★ 2 and 9, you get 9; 4 ★ 4 is 4; ★(8, 3) = 8; "
+             "7 = 7 ★ 5; 1 and 7 make 7 under ★")
     reply = chat.say("what is 1 ★ 5?")
     assert "= 5" in reply
     assert chat.concept_of["⊕"] == chat.concept_of["★"]
@@ -174,3 +178,79 @@ def test_the_learned_reader_reads_a_notation_it_was_never_told():
     assert reader.read("12") == F(9) and reader.read("-3.5") == -(F(3) + F(5, 7))
     assert parse("12 ⊕ 3 = 15", reader).c == F(12)
     assert DecimalReader().read("15") == F(15)
+
+
+def test_cached_row_space_agrees_with_the_rank_test():
+    """RowSpace.contains (one elimination) == in_row_space (two RREFs) on random rational matrices."""
+    import random
+    from hrm_x.qlinalg import RowSpace, in_row_space
+    rng = random.Random(0)
+    for _ in range(300):
+        n, k = rng.randint(1, 5), rng.randint(1, 4)
+        A = [[F(rng.randint(-3, 3), rng.randint(1, 3)) for _ in range(k)] for _ in range(n)]
+        v = [F(rng.randint(-3, 3)) for _ in range(k)] if rng.random() < 0.5 else \
+            [sum(F(rng.randint(-2, 2)) * A[i][j] for i in range(n)) for j in range(k)]
+        assert RowSpace(A).contains(v) == in_row_space(A, v)
+
+
+# ---------- the model: train, checkpoint, resume, CLI ----------
+
+def test_training_builds_concepts_checkpoints_and_resumes(tmp_path):
+    from hrm_x.curriculum import Curriculum
+    from hrm_x.model import HRMX, ModelConfig
+    d = str(tmp_path / "m")
+    model = HRMX(ModelConfig())
+    first = model.train(Curriculum(("constructible",), seed=0, repeats=1), max_tasks=3, checkpoint=d, log=None)
+    assert model.step == 3 and sum(first["tally"]["constructible"].values()) > 0
+    back = HRMX.load(d)
+    assert back.step == 3 and len(back.memory.concepts) == len(model.memory.concepts)
+    rest = back.train(Curriculum(("constructible",), seed=0, repeats=1), checkpoint=d, log=None)
+    assert back.step == 8                                   # resumed: the 5 remaining tasks only
+    assert rest["tally"]["constructible"]["wrong"] == 0
+    rows = (tmp_path / "m" / "train_log.jsonl").read_text(encoding="utf-8").splitlines()
+    assert len(rows) == 8
+
+
+def test_cli_create_train_chat_info(tmp_path, capsys):
+    from hrm_x.__main__ import main
+    d = str(tmp_path / "cli")
+    assert main(["create", d]) == 0
+    assert main(["train", d, "--tasks", "2", "--pools", "written"]) == 0
+    assert main(["chat", d, "2 ⊕ 3 = 5; 4 ⊕ 1 = 5; 6 ⊕ 2 = 8; 1 ⊕ 1 = 2; 10 ⊕ 7 = ?"]) == 0
+    out = capsys.readouterr().out
+    assert "10 ⊕ 7 = 17" in out
+    assert main(["info", d]) == 0
+
+
+def test_regime_coverage_refuses_extrapolating_across_an_unseen_ordering():
+    """Every row has x >= y, so 2x + 1 fits 2 max(x, y) + 1 exactly; the query has x < y. Without
+    the rule the written reading answers 61 (wrong); with it the mind may not answer from 2x + 1."""
+    op = lambda a, b: 2 * max(a, b) + 1
+    rows = [(5, 1), (9, 6), (6, 3), (3, 3), (5, 5), (8, 7)]
+    off = Mind(Controller()).solve(Concept(ConceptConfig(order_coverage=False)), _task(op, rows, (30, 35), oracle=False))
+    assert off.status == "answer" and off.answer == F(61)
+    on = Mind(Controller()).solve(Concept(), _task(op, rows, (30, 35), oracle=False))
+    assert on.status == "abstain" or on.answer == F(71)
+    symmetric = Mind(Controller()).solve(Concept(), _task(lambda a, b: a + b, [(5, 1), (9, 6), (6, 3), (4, 2)],
+                                                          (3, 30), oracle=False))
+    assert symmetric.status == "answer" and symmetric.answer == F(33)     # symmetric: swap covers it
+
+
+def test_repeated_feature_values_do_not_count_as_predictions():
+    """max(x, y) takes only the values 9 and 6 on these rows, so any affine map of max 'predicts' the
+    repeats. v0.5's surplus (n - rank) made 15 max - 54 confident and wrong (381 for 841); counting
+    distinct feature rows it is not, and the flag restores the old count."""
+    from hrm_x.construct import IFGT, X, Y
+    mind = Mind(Controller())
+    mem = ConceptMemory.of(mind)
+    for t in ("a", "b"):
+        mem.record(lambda x, y: max(x, y), (X, Y, X, Y, IFGT), t, [])
+    op = lambda a, b: max(a, b) ** 2
+    rows = [(6, 9), (9, 1), (9, 2), (3, 6), (6, 6)]
+    knowledge = __import__("copy").deepcopy(mind.knowledge)
+    v05 = Mind(Controller(), knowledge=knowledge).solve(
+        Concept(ConceptConfig(distinct_surplus=False), construct=None), _task(op, rows, (29, 18), oracle=False))
+    assert v05.status == "answer" and v05.answer == F(381)
+    r = Mind(Controller(), knowledge=__import__("copy").deepcopy(mind.knowledge)).solve(
+        Concept(), _task(op, rows, (29, 18), oracle=False))
+    assert r.status == "abstain" or r.answer == F(841)

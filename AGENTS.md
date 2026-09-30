@@ -121,7 +121,7 @@ hand-editing the graph.
 | Concern | Location |
 |---|---|
 | **Which code implements which document** | `vault/00 - Meta & Indexes/Code Map.md` |
-| Architecture as built (normative) | `HRM-X Specification v0.5 - Structural Operator Inference` (ADR-010) |
+| Architecture as built (normative) | `vault/10 - Research Program/architecture_spec.md` — HRM-X v0.6 (ADR-013); v0.5 spec (ADR-010) is its depth-0 route |
 | Baseline architectures (normative for their own package only) | `HRM-EQB Specification v0.2` (ADR-005/006), `ADR-003 Unified Cognitive Model` |
 | Why program search was replaced | `ADR-005 Neural HRM-Phi Replaces Program Search` |
 | What the benchmark can and cannot show | `ADR-004 Discriminating Benchmark and Reasoning Ceiling` |

@@ -1,24 +1,55 @@
-# HRM-X — structural operator inference
+# HRM-X — constructive concept induction (v0.6)
 
-The current model is **HRM-X v0.5** (ADR-010), in `hrm_x/`. It is not a neural net and not a
-chain-of-thought prompt. A task is a **situation + operator + question**; understanding means
-inferring the operator exactly, with a check written in a different representation from the one
-that produced the answer.
+The current model is **HRM-X v0.6** (ADR-013), in `hrm_x/`. It is not a neural net and not a
+chain-of-thought prompt. A task is a **situation + operator + question**; understanding is tested,
+not claimed: the operator must be inferred exactly, checked in a different representation, stored,
+and reused on tasks that differ from the ones that produced it.
 
-v0.5 changed what a hypothesis *is*. It is no longer a program the mind has to search for: it is
-a **family** — the exact solution set of a law set — whose rational parameters are fitted
-exactly, and which may answer a query only where the determinacy theorem says the evidence fixes
-it. The v0.4 program-search route is still in the tree, because it is the baseline the new route
-is measured against.
+v0.5 fitted hypothesis *families* exactly, but every family was written by hand. **v0.6 builds the
+family it is missing**: when "outside my language" holds the mass, the mind constructs new
+features from primitives (x, y, 1, 2, +, −, ×, ÷, if-greater) and from concepts it has stored,
+fits their linear closure exactly, answers only when the evidence pays for the construction's
+description length, and keeps a verified construction as a reusable concept once a second task
+confirms it.
 
-- **Normative design:** `vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md`
-- **Decision record:** `vault/06 - Devlogs & ADRs/ADR-010 Structural Operator Inference.md`
-- **Previous:** spec v0.4 and ADR-008, program search over a hand-written DSL.
-- `python -m pytest` → **385 passed, 1 skipped**. 132 of those are HRM-X (`tests/test_x_*.py`,
+- **Specification:** `vault/10 - Research Program/architecture_spec.md`
+- **Decision record:** `vault/06 - Devlogs & ADRs/ADR-013 Constructive Concept Induction.md`
+- **Research record:** `vault/10 - Research Program/` (plan, hypotheses, definition of understanding,
+  biology, experiments, evaluation, ablations)
+- **Previous:** v0.5 (ADR-010, audited in ADR-012), still the depth-0 route inside v0.6.
+
+### v0.6 in numbers (held-out, `experiments/results/x_understanding.json`, E19)
+
+81 held-out tasks (26 operators, 9 never seen in training; queries outside the evidence range):
+
+| | correct | wrong | abstain |
+|---|---|---|---|
+| **v0.6, trained on the curriculum** | **60** | **0** | 21 |
+| v0.5 + ADR-012 (no construction, no memory) | 18 | 0 | 63 |
+| v0.6 with memory switched off (= untrained) | 44 | 0 | 37 |
+| v0.6 closed world (no BOTTOM) | 63 | 12 | 6 |
+| nearest-row pattern matcher / least squares on (1, x, y, xy) | 5 / 15 | 76 / 66 | 0 / 0 |
+
+Constructed or stored concepts carry what the written language cannot: composites 14/15 correct
+trained vs 0/15 with library tokens off; the out-of-primitive operators (gcd, a mod b, digit sum)
+are refused 9/9; zero wrong answers on the 81 held-out tasks. Same evidence through six sentence templates and new symbols: 8/8 identical answers
+and concepts. Evidence that contradicts an earlier concept: revised 6/6. With `max` stored, the
+rows needed for 75 % correct fall (relu 7 → 4, 2·max+1 5 → 3; E17); an unrelated concept is
+unchanged, and switching memory off restores the empty-memory numbers exactly. Three calibration
+rules were forced by measurement on the way (regime coverage, an empirical answer space, distinct
+surplus rows) — each removed a class of wrong answers and is pinned by a test.
+
+What failed and was removed: random (mushroom-body-style) sampling instead of enumeration, a
+learned router (FHRR signature → sparse code), and an anytime stop — each with its measurement in
+`vault/10 - Research Program/ablation_results.md`.
+
+- `python -m pytest` → **412 passed, 1 skipped**. 159 of those are HRM-X (`tests/test_x_*.py`,
   including differential parity for the C++ backend); the rest cover `hrm/` and the vault tooling.
   The 57 `hrm_eqb` tests moved with the package to `legacy/` and no longer run by default —
   see [Legacy](#legacy).
-- **Gates G1–G2 are closed; G3 and G4 are open.** ADR-010 measured the v0.5 route at 5 confident
+- **Gates (v0.5 terms): G1–G2 closed; G4 holds for construction (0 of 9 out-of-primitive answered);
+  G3 is redefined by v0.6 — concepts outside the written language are acquired at an evidence price.**
+  History: ADR-010 measured the v0.5 route at 5 confident
   wrong answers out of 6 on out-of-language operators. ADR-012 found the cause — the spec's
   BOTTOM ("outside my language") hypothesis was cancelling out inside `Mind` — and fixed it:
   0 wrong of 9 on E13 and 2 of 21 on held-out operators, at the price of in-language recall
@@ -280,7 +311,12 @@ never surface in an `affected` query against `hrm_x/`.
 
 ```powershell
 python -m pip install numpy pytest                      # HRM-X itself needs numpy only
-python -m pytest                                        # 385 passed, 1 skipped
+python -m hrm_x create models/hrmx                      # v0.6 model directory
+python -m hrm_x train models/hrmx                       # curriculum with a teacher, checkpoints, resumable
+python -m hrm_x chat models/hrmx "2 ⊕ 3 = 3; 4 ⊕ 1 = 4; 5 ⊕ 5 = 5; 1 ⊕ 6 = 6; 8 ⊕ 2 = 8; 7 ⊕ 2 = ?"
+python -m hrm_x info models/hrmx                        # stored concepts
+python -m experiments.x_understanding                   # E19, the understanding suite (~20 min)
+python -m pytest                                        # 412 passed, 1 skipped
 .\scripts\build_native.ps1                              # optional, enables the C++ backend
 
 python -m experiments.x_arith                           # E1, E2, E12 + kNN / MLP baselines

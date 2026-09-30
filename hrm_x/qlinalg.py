@@ -65,3 +65,24 @@ def in_row_space(A: Sequence[Sequence[Fraction]], v: Sequence[Fraction]) -> bool
     if not A:
         return all(x == 0 for x in v)
     return rank(list(A) + [list(v)]) == rank(A)
+
+
+class RowSpace:
+    """rowspace(A) reduced once; membership is then one elimination pass instead of an RREF.
+
+    Equivalent to in_row_space(A, v) (tests/test_x_construct.py checks it on random matrices):
+    R is reduced with unit pivots and zeros in every other row's pivot column, so removing each
+    pivot component of v in turn leaves the component of v outside rowspace(A), which is zero iff
+    v is in it.
+    """
+
+    def __init__(self, A: Sequence[Sequence[Fraction]]) -> None:
+        self.R, self.pivots = rref(A) if A else ([], [])
+
+    def contains(self, v: Sequence[Fraction]) -> bool:
+        w = list(map(Fraction, v))
+        for row, c in zip(self.R, self.pivots):
+            f = w[c]
+            if f != 0:
+                w = [a - f * b for a, b in zip(w, row)]
+        return all(x == 0 for x in w)

@@ -18,8 +18,9 @@ queries use `graphify query` on `graphify-out/graph.json`. Hand-written companio
 - [[HRM-X Mind & Induction]] — Operator hypotheses as programs, law discovery, the VOC controller, modulators, trace writer.
 - [[HRM-X DSL Library]] — Structural MDL primitive mining, exact abstraction/expansion, and the measured credit a library earns in search.
 - [[HRM-X Concept Induction (v0.5)]] — Law-closed hypothesis families fitted exactly over Q, the determinacy test of Theorem 3, the open-world coverage rule and BOTTOM, corpus-MDL consolidation, phasor binding, and the group-theoretic grid and place-value layers.
+- [[HRM-X Concept Construction (v0.6)]] — New basis features built from primitives when the written language runs out, exact fitting of their linear closure, concept memory (candidate -> admitted -> retired), the language interface with a learned numeral reader, and the measured-but-unused FHRR signature / mushroom-body router.
 - [[HRM-X Domains]] — Arithmetic concepts, word-problem stories, grid object programs; their verifiers.
-- [[HRM-X Native Backend]] — C++ e-graph and grid kernels behind a C ABI, parity-tested against the Python reference.
+- [[HRM-X Native Backend]] — C++ e-graph, grid and construction-enumeration kernels behind a C ABI, parity-tested against the Python reference.
 - [[HRM-X Experiments]] — E1-E12 runners with baselines and ablations; results recorded as JSON.
 
 ## `hrm_eqb/` — HRM-EQB baseline (neural, certified)
@@ -49,65 +50,73 @@ flowchart LR
   S1["HRM-X Mind & Induction"]
   S2["HRM-X DSL Library"]
   S3["HRM-X Concept Induction (v0.5)"]
-  S4["HRM-X Domains"]
-  S5["HRM-X Native Backend"]
-  S6["HRM-X Experiments"]
-  S7["HRM Substrate (FHRR)"]
-  S8["HRM Perception"]
-  S9["HRM Reasoning"]
-  S10["HRM Verification"]
-  S11["HRM Knowledge Store"]
-  S12["HRM Language"]
-  S13["HRM Metacognition"]
-  S14["HRM Learning Loops"]
-  S15["HRM Model Facade & CLI"]
-  S16["Tooling & Benchmarks"]
-  S11 --> S15
-  S11 --> S7
-  S12 --> S15
+  S4["HRM-X Concept Construction (v0.6)"]
+  S5["HRM-X Domains"]
+  S6["HRM-X Native Backend"]
+  S7["HRM-X Experiments"]
+  S8["HRM Substrate (FHRR)"]
+  S9["HRM Perception"]
+  S10["HRM Reasoning"]
+  S11["HRM Verification"]
+  S12["HRM Knowledge Store"]
+  S13["HRM Language"]
+  S14["HRM Metacognition"]
+  S15["HRM Learning Loops"]
+  S16["HRM Model Facade & CLI"]
+  S17["Tooling & Benchmarks"]
+  S12 --> S16
   S12 --> S8
-  S14 --> S11
-  S14 --> S13
-  S14 --> S15
-  S14 --> S8
-  S14 --> S9
-  S14 --> S10
-  S13 --> S15
-  S13 --> S8
-  S15 --> S11
+  S13 --> S16
+  S13 --> S9
   S15 --> S12
   S15 --> S14
-  S15 --> S13
-  S15 --> S8
+  S15 --> S16
   S15 --> S9
-  S15 --> S7
-  S8 --> S15
-  S8 --> S7
-  S9 --> S11
-  S9 --> S12
-  S9 --> S15
-  S9 --> S8
-  S9 --> S7
-  S9 --> S10
-  S7 --> S15
-  S10 --> S15
-  S10 --> S8
-  S3 --> S4
-  S4 --> S3
-  S4 --> S2
-  S4 --> S1
-  S4 --> S5
-  S4 --> S0
-  S6 --> S3
-  S6 --> S2
-  S6 --> S4
-  S6 --> S1
-  S6 --> S5
-  S1 --> S0
-  S5 --> S0
-  S0 --> S1
-  S0 --> S5
+  S15 --> S10
+  S15 --> S11
+  S14 --> S16
+  S14 --> S9
+  S16 --> S12
+  S16 --> S13
+  S16 --> S15
   S16 --> S14
+  S16 --> S9
+  S16 --> S10
+  S16 --> S8
+  S9 --> S16
+  S9 --> S8
+  S10 --> S12
+  S10 --> S13
+  S10 --> S16
+  S10 --> S9
+  S10 --> S8
+  S10 --> S11
+  S8 --> S16
+  S11 --> S16
+  S11 --> S9
+  S4 --> S3
+  S4 --> S5
+  S4 --> S7
+  S4 --> S1
+  S4 --> S6
+  S3 --> S5
+  S5 --> S4
+  S5 --> S3
+  S5 --> S2
+  S5 --> S1
+  S5 --> S6
+  S5 --> S0
+  S7 --> S4
+  S7 --> S3
+  S7 --> S2
+  S7 --> S5
+  S7 --> S1
+  S7 --> S6
+  S1 --> S0
+  S6 --> S0
+  S0 --> S1
+  S0 --> S6
+  S17 --> S15
 ```
 
 ## What each session changed
@@ -122,5 +131,6 @@ flowchart LR
 | [[Session - 2026-09-27 - Unified Model Build]] | HRM Knowledge Store, HRM Language, HRM Learning Loops, HRM Metacognition, HRM Model Facade & CLI, HRM Perception, HRM Reasoning, HRM Substrate (FHRR), HRM Verification |
 | [[Session - 2026-09-28 - DSL Growth, Free Text, and the Graph Pipeline]] | HRM-X DSL Library, HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, Tooling & Benchmarks |
 | [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] | HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, HRM-X Native Backend, HRM-X Workspace & Rules, Tooling & Benchmarks |
-| [[Session - 2026-09-29 - EQB and HRM-X Audit]] | EQB Task Field & Generators, EQB Training, Study & Bench, HRM-X Concept Induction (v0.5), HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction |
+| [[Session - 2026-09-29 - EQB and HRM-X Audit]] | HRM-X Concept Induction (v0.5), HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction |
 | [[Session - 2026-09-29 - HRM-X v0.5 Structural Induction and Vault Cleanup]] | HRM-X Concept Induction (v0.5), HRM-X DSL Library, HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, Tooling & Benchmarks |
+| [[Session - 2026-09-30 - HRM-X v0.6 Constructive Concept Induction]] | HRM-X Concept Construction (v0.6), HRM-X Concept Induction (v0.5), HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, HRM-X Native Backend |

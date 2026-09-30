@@ -71,11 +71,13 @@ SUBSYSTEMS: Tuple[Subsystem, ...] = (
               "the language interface with a learned numeral reader, and the measured-but-unused "
               "FHRR signature / mushroom-body router.",
               ("hrm_x/construct.py", "hrm_x/concept_memory.py", "hrm_x/language.py",
-               "hrm_x/signature.py", "hrm_x/mbi.py")),
+               "hrm_x/signature.py", "hrm_x/mbi.py", "hrm_x/model.py", "hrm_x/curriculum.py",
+               "hrm_x/__main__.py")),
     Subsystem("HRM-X Domains", "Arithmetic concepts, word-problem stories, grid object programs; their verifiers.",
               ("hrm_x/domains/",)),
     Subsystem("HRM-X Native Backend",
-              "C++ e-graph and grid kernels behind a C ABI, parity-tested against the Python reference.",
+              "C++ e-graph, grid and construction-enumeration kernels behind a C ABI, parity-tested "
+              "against the Python reference.",
               ("hrm_x/native/",)),
     Subsystem("HRM-X Experiments", "E1-E12 runners with baselines and ablations; results recorded as JSON.",
               ("experiments/",)),

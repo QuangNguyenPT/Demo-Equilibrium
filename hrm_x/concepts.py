@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
-from hrm_x.qlinalg import in_row_space, rank, solve
+from hrm_x.qlinalg import RowSpace, rank, solve
 
 Q = Fraction
 Feature = Callable[[Q, Q], Optional[Q]]
@@ -99,6 +99,14 @@ class Fitted:
     seen_y: frozenset = frozenset()
     enforce_coverage: bool = True
     min_surplus: int = 0
+    seen_order: frozenset = frozenset()   # signs of x - y that occurred in the evidence (v0.6)
+    _rowspace: Optional[RowSpace] = field(default=None, repr=False, compare=False)
+
+    def rowspace(self) -> RowSpace:
+        """The evidence row space, reduced once and reused by every determinacy test (Theorem 3)."""
+        if self._rowspace is None:
+            self._rowspace = RowSpace(self.A)
+        return self._rowspace
 
     def tested(self) -> bool:
         """The reading has predicted at least `min_surplus` evidence rows it was not fitted to."""
@@ -113,7 +121,18 @@ class Fitted:
         vx, vy = len(self.seen_x) > 1, len(self.seen_y) > 1
         ok_x = x in self.seen_x or vx or (self.symmetric and vy)
         ok_y = y in self.seen_y or vy or (self.symmetric and vx)
-        return ok_x and ok_y
+        return ok_x and ok_y and self.order_covered(x, y)
+
+    def order_covered(self, x: Q, y: Q) -> bool:
+        """v0.6 regime coverage. Once the language can *construct* piecewise features (ifgt), a
+        reading fitted on evidence with only x > y (say) is not determined at a query with x < y:
+        a constructed alternative agrees on every row and differs there (2x + 1 vs 2 max(x, y) + 1).
+        A symmetric reading is exempt -- swapping the arguments maps the query into the seen regime.
+        The diagonal x = y is covered by having seen both sides. Empty `seen_order` = rule off."""
+        if not self.seen_order or self.symmetric:
+            return True
+        s = (x > y) - (x < y)
+        return s in self.seen_order or (s == 0 and {-1, 1} <= self.seen_order)
 
     def value(self, x: Q, y: Q, coverage: bool = True) -> Optional[Q]:
         """Value at (x, y) if the evidence determines it under this family (Theorem 3) and the query is
@@ -122,7 +141,7 @@ class Fitted:
         if coverage and not (self.covered(x, y) and self.tested()):
             return None
         r = self.family.row(x, y)
-        if r is None or not in_row_space(self.A, r):
+        if r is None or not self.rowspace().contains(r):
             return None
         return sum((a * b for a, b in zip(r, self.params)), Q(0))
 
@@ -130,11 +149,14 @@ class Fitted:
 @dataclass
 class ConceptConfig:
     log2_answer_space: float = 10.0  # |Y| = 2^10 effective answer space (Prop. 4)
+    answer_space: str = "empirical"  # v0.6 default (E19); "fixed" = v0.5 hand-set 10 bits
     bits_bottom: float = 4.0         # prior mass of "outside my language" (open world); inf = closed world
     symmetry_bits: float = 3.0       # prior preference for hypotheses symmetric in x, y that use both
     wrong_penalty: float = 4.0       # L: answer only if (1+L) q - L > 0, i.e. q > L/(1+L)
     coverage: bool = True            # open-world coverage rule (ablation: False = closed world)
     min_surplus: int = 0             # answer only from readings with >= this many predicted rows (E14)
+    distinct_surplus: bool = True    # v0.6: surplus = distinct feature rows - rank (E19 diagnosis)
+    order_coverage: bool = True      # v0.6 regime coverage (ablation: False)
 
 
 @dataclass
@@ -192,10 +214,11 @@ def rival_margin(bel: Belief, x: Q, y: Q, answer: Q) -> float:
 
 def _symmetric(f: Family, params: List[Q], A: List[List[Q]]) -> bool:
     """The fitted instance is symmetric in (x, y) and depends on both, judged on shared probes."""
+    rs = RowSpace(A)
     vals = []
     for a, b in PROBES:
         ra, rb = f.row(a, b), f.row(b, a)
-        if ra is None or rb is None or not in_row_space(A, ra) or not in_row_space(A, rb):
+        if ra is None or rb is None or not rs.contains(ra) or not rs.contains(rb):
             return False
         va = sum((u * v for u, v in zip(ra, params)), Q(0))
         vb = sum((u * v for u, v in zip(rb, params)), Q(0))
@@ -210,8 +233,25 @@ def param_bits(params: Sequence[Q]) -> float:
     return sum(1.0 + math.log2(1 + abs(p.numerator)) + math.log2(p.denominator) for p in params)
 
 
+def answer_bits(cfg: ConceptConfig, evidence: Evidence) -> float:
+    """log2|Y|: the evidence one predicted row is worth against "outside my language" (Prop. 4).
+
+    "fixed" is v0.5's hand-set 10 bits. "empirical" asks how likely a *chance* match is for answers
+    like these: integers in [-M, M] with denominators up to D give about (2M + 1) D values, so a
+    predicted row is worth log2((2M + 1) D) bits (at least 2, at most the fixed value). With the
+    small integers of most tasks this is 4-5 bits, not 10 -- which is what stops a 7-token
+    construction from winning on five rows that a thousand other constructions could also match.
+    """
+    if cfg.answer_space != "empirical" or not evidence:
+        return cfg.log2_answer_space
+    m = max(abs(z) for _, z in evidence)
+    d = max(Fraction(z).denominator for _, z in evidence)
+    return max(2.0, min(cfg.log2_answer_space, math.log2((2 * math.ceil(m) + 1) * d)))
+
+
 def fit(evidence: Evidence, cfg: ConceptConfig, families: Sequence[Family] = FAMILIES) -> Belief:
     fitted: List[Fitted] = []
+    y_bits = answer_bits(cfg, evidence)
     ops = 0
     n = len(evidence)
     for fam in families:
@@ -226,11 +266,18 @@ def fit(evidence: Evidence, cfg: ConceptConfig, families: Sequence[Family] = FAM
         if p is None:
             continue
         r = rank(A)
+        # Surplus rows are predictions the fit did not use. A row whose feature vector repeats an
+        # earlier one only tests that z depends on these features -- not which function of them:
+        # with max(x, y) in {6, 9} on every row, any affine map of max "predicts" all the repeats.
+        # So v0.6 counts distinct feature rows (the v0.5 count is kept behind the flag).
+        m = len({tuple(row) for row in A}) if cfg.distinct_surplus else n
         sym = _symmetric(fam, p, A)
         # MDL: L(h) = L(family choice) + L(fitted rational parameters); L(D | h) is paid only for
         # the r points used to fit, the n - r surplus points are predicted (Prop. 4).
-        log2w = -fam.bits - param_bits(p) + (n - r) * cfg.log2_answer_space + (cfg.symmetry_bits if sym else 0.0)
-        fitted.append(Fitted(fam, p, A, r, n - r, log2w, sym, frozenset(x for (x, _), _ in evidence), frozenset(y for (_, y), _ in evidence), cfg.coverage, cfg.min_surplus))
+        log2w = -fam.bits - param_bits(p) + (m - r) * y_bits + (cfg.symmetry_bits if sym else 0.0)
+        fitted.append(Fitted(fam, p, A, r, m - r, log2w, sym, frozenset(x for (x, _), _ in evidence), frozenset(y for (_, y), _ in evidence), cfg.coverage, cfg.min_surplus,
+                              frozenset(((a > b) - (a < b)) for (a, b), _ in evidence) if cfg.order_coverage and cfg.coverage
+                              else frozenset()))
     return Belief(fitted, -cfg.bits_bottom, ops)
 
 

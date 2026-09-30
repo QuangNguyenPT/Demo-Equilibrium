@@ -7,14 +7,15 @@ tags:
 
 # HRM-X Native Backend
 
-> C++ e-graph and grid kernels behind a C ABI, parity-tested against the Python reference.
+> C++ e-graph, grid and construction-enumeration kernels behind a C ABI, parity-tested against the Python reference.
 
 ## Modules
 
 | module | what it does | lines |
 |---|---|---|
-| `hrm_x/native/__init__.py` | Native backend (C ABI over ctypes) for the measured hot paths; Python modules stay the reference. | 262 |
-| `hrm_x/native/include/hrmx.h` | hrmx native backend: C ABI for the measured hot paths of HRM-X (spec v0.4 §23). | 78 |
+| `hrm_x/native/__init__.py` | Native backend (C ABI over ctypes) for the measured hot paths; Python modules stay the reference. | 287 |
+| `hrm_x/native/include/hrmx.h` | hrmx native backend: C ABI for the measured hot paths of HRM-X (spec v0.4 §23). | 88 |
+| `hrm_x/native/src/construct.cpp` | Bottom-up enumeration of feature expressions with observational equivalence (hrm_x/construct.py). | 189 |
 | `hrm_x/native/src/egraph.cpp` | E-graph core; reference semantics: hrm_x/workspace.py (Workspace) and hrm_x/rules.py (_match, matches). | 399 |
 | `hrm_x/native/src/grid.cpp` | Grid perception and object-level steps; reference semantics: hrm_x/domains/grid.py (objects, apply_step). | 130 |
 
@@ -24,6 +25,7 @@ tags:
 
 ## Used by
 
+- [[HRM-X Concept Construction (v0.6)]]
 - [[HRM-X Domains]]
 - [[HRM-X Experiments]]
 - [[HRM-X Workspace & Rules]]
@@ -48,6 +50,7 @@ tags:
 ## Changed or discussed in sessions
 
 - [[Session - 2026-09-28 - HRM-X v0.4 PoC and Native Backend]] — commits `d5bacb1`
+- [[Session - 2026-09-30 - HRM-X v0.6 Constructive Concept Induction]] — named in the log
 
 ## Tests
 
@@ -55,4 +58,5 @@ tags:
 
 ## Recent history
 
+- 2026-09-30 5a40a66 HRM-X v0.6 phase 1: concept construction, concept memory, language interface, native enumerator
 - 2026-09-28 d5bacb1 HRM-X v0.4: operator inference over structured situations + C++ backend (ADR-008)

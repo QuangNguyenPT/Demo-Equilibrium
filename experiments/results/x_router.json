@@ -1,0 +1,43 @@
+{
+  "experiment": "x_router",
+  "config": {
+    "experiment": "E16 learned mushroom-body index over FHRR signatures (hypothesis M4)",
+    "train": "30 dreams x 40 classes",
+    "test": "10 fresh dreams x 40 classes"
+  },
+  "metrics": {
+    "classes": 40,
+    "level_features": 1348,
+    "kWTA 2% (APL)": {
+      "train_acc": 0.628,
+      "held_out_top1": 0.052,
+      "held_out_top5": 0.223,
+      "median_rank": 15.0,
+      "chance_top1": 0.025,
+      "chance_median_rank": 19.5,
+      "routing_ops": 13926
+    },
+    "kWTA 10%": {
+      "train_acc": 0.944,
+      "held_out_top1": 0.075,
+      "held_out_top5": 0.247,
+      "median_rank": 14.5,
+      "chance_top1": 0.025,
+      "chance_median_rank": 19.5,
+      "routing_ops": 20480
+    },
+    "dense ReLU": {
+      "train_acc": 0.186,
+      "held_out_top1": 0.068,
+      "held_out_top5": 0.265,
+      "median_rank": 13.0,
+      "chance_top1": 0.025,
+      "chance_median_rank": 19.5,
+      "routing_ops": 13926
+    },
+    "prefilter_ops_whole_level_5_rows": 46430
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-30 09:19:59"
+}

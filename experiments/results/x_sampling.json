@@ -1,0 +1,121 @@
+{
+  "experiment": "x_sampling",
+  "config": {
+    "experiment": "E15b random sampling vs enumeration vs library (hypotheses M2, M3)",
+    "budgets": [
+      5000,
+      20000,
+      80000
+    ],
+    "targets": "200 random 9-token classes unreachable at <= 7"
+  },
+  "metrics": {
+    "n_targets": 200,
+    "n_size9_new_classes": 21723,
+    "budgets": {
+      "5000": {
+        "enumerate": 0.0,
+        "random": 0.02,
+        "distinct_classes": {
+          "enumerate": 821,
+          "random": 499
+        },
+        "named": {
+          "max(a, b^2)": {
+            "enumerate": false,
+            "random": false,
+            "library": true
+          },
+          "max(a^2, b)": {
+            "enumerate": false,
+            "random": false,
+            "library": true
+          },
+          "max(a, b) * a": {
+            "enumerate": true,
+            "random": false,
+            "library": true
+          },
+          "max(a+1, b)": {
+            "enumerate": true,
+            "random": false,
+            "library": true
+          }
+        }
+      },
+      "20000": {
+        "enumerate": 0.09,
+        "random": 0.04,
+        "distinct_classes": {
+          "enumerate": 3504,
+          "random": 1181
+        },
+        "named": {
+          "max(a, b^2)": {
+            "enumerate": false,
+            "random": false,
+            "library": true
+          },
+          "max(a^2, b)": {
+            "enumerate": false,
+            "random": false,
+            "library": true
+          },
+          "max(a, b) * a": {
+            "enumerate": true,
+            "random": false,
+            "library": true
+          },
+          "max(a+1, b)": {
+            "enumerate": true,
+            "random": false,
+            "library": true
+          }
+        }
+      },
+      "80000": {
+        "enumerate": 0.555,
+        "random": 0.09,
+        "distinct_classes": {
+          "enumerate": 12429,
+          "random": 2700
+        },
+        "named": {
+          "max(a, b^2)": {
+            "enumerate": false,
+            "random": false,
+            "library": true
+          },
+          "max(a^2, b)": {
+            "enumerate": false,
+            "random": false,
+            "library": true
+          },
+          "max(a, b) * a": {
+            "enumerate": true,
+            "random": true,
+            "library": true
+          },
+          "max(a+1, b)": {
+            "enumerate": true,
+            "random": true,
+            "library": true
+          }
+        }
+      }
+    },
+    "library": {
+      "bank_size_to_7_tokens": 12142,
+      "targets_hit": 0.03,
+      "named_hit": {
+        "max(a, b^2)": true,
+        "max(a^2, b)": true,
+        "max(a, b) * a": true,
+        "max(a+1, b)": true
+      }
+    }
+  },
+  "python": "3.11.14",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "recorded": "2026-09-30 09:14:32"
+}

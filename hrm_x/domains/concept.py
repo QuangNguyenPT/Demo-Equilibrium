@@ -60,6 +60,7 @@ from hrm_x.concepts import (
     ConceptConfig,
     Family,
     Fitted,
+    answer_bits,
     fit,
 )
 from hrm_x.concept_memory import ConceptMemory
@@ -129,7 +130,6 @@ class Concept:
         self._constructed: Dict[int, List[Family]] = {}
         self._depth: Dict[int, int] = {}                      # construction depths done per task
         self._origin: Dict[str, Tuple[Tuple[int, ...], Any]] = {}   # family name -> (expr, exact fn)
-        self.last_construction = None
         # Reading keys already proposed for a task, so a later propose returns
         # only what new evidence made available rather than duplicating the
         # version space. Keyed by `id(task)` for the same reason `Arith` keys its
@@ -151,7 +151,7 @@ class Concept:
         out: List[Family] = []
         for k in mem.usable():
             fn = mem.fn(k)
-            for fam in families_of(mem.feature(k), fn, f"lib:{mem.names()[k]}"):
+            for fam in families_of(mem.feature(k), fn, mem.names()[k], prefix="lib"):
                 self._origin[fam.name] = (mem.concepts[k].expr, fn)
                 out.append(fam)
         return out
@@ -210,7 +210,7 @@ class Concept:
             # BOTTOM-relative scale every reading uses, so it stays comparable across asks and levels.
             seen.add(BOTTOM_KEY)
             out.append(Hyp(key=BOTTOM_KEY, weight=1.0, payload=None, answer=OUTSIDE, derived=True,
-                           spread=2.0 ** -self.cfg.log2_answer_space,
+                           spread=2.0 ** -answer_bits(self.cfg, task.evidence()),
                            note="the evidence may come from an operator my language cannot write"))
         if out or level == 0:
             if not out and self.construct_cfg is None:
@@ -257,7 +257,6 @@ class Concept:
                 self._origin[fitted.family.name] = (feat.expr, fn_of(feat))
             out.append(Hyp(key=key, weight=self._weight(fitted.log2w), payload=fitted,
                            note=f"constructed at level {level}: {fitted.surplus} surplus rows"))
-        self.last_construction = rep
         return out, rep.ops
 
     def derive_cost(self, task: ConceptTask, hyp: Hyp, mind: Mind) -> float:

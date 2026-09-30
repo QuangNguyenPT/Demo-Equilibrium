@@ -6,7 +6,7 @@ Every session MUST complete these steps before touching code:
 
 1. **Read vault session index & CLAUDE.md** → `vault/08 - Chat Context & Sessions/00 - Session Index.md` + `CLAUDE.md at main folder`
    - Understand the decision chain: what was decided, why, what changed last session
-2. **Check ADR status** → `vault/06 - Devlogs & ADRs/` — know current phase (ADR-001..011; **ADR-010 = HRM-X v0.5, current**; ADR-011 proposed, not implemented)
+2. **Check ADR status** → `vault/06 - Devlogs & ADRs/` — know current phase (ADR-001..013; **ADR-013 = HRM-X v0.6, current**; ADR-012 = audit; research record in `vault/10 - Research Program/`)
 3. **Run test suite** → `python -m pytest --tb=short -q` — baseline before any change
 4. **Verify training state** → if `models/eqb-small/` absent, training may need resuming (check `runs/train-eqb-small.log`)
 5. **Update graph after every session** → `.\scripts\update_knowledge_graph.ps1 -Mode code-only`
@@ -69,7 +69,8 @@ tests/                     pytest; the ADR-003 sections and test_x_*.py (HRM-X).
 legacy/tests/              out of testpaths: test_eqb_theorems.py (§2-8), test_eqb_model.py +
                            test_eqb_runtime.py (§14), test_blueprint.py (ADR-001)
 data/benchmark/            frozen benchmark v1 (never overwrite; make v2)
-hrm_x/                     HRM-X v0.5 (ADR-010): structural operator inference, CPU only
+hrm_x/                     HRM-X v0.6 (ADR-013): constructive concept induction over v0.5's structural
+                           operator inference, CPU only
   qlinalg.py               exact RREF / rank / solve / row-space membership over Q (stdlib only)
   concepts.py              68 law-closed families, Prop. 4 weighting, Def. 3 BOTTOM, Thm 3 determinacy
   consolidation.py         corpus-MDL macro admission (PoC's library.py, renamed: hrm_x/library.py is the program level)
@@ -80,7 +81,13 @@ hrm_x/                     HRM-X v0.5 (ADR-010): structural operator inference, 
   workspace.py / rules.py  e-graph with provenance (I1-I3), e-matching, saturation; make_workspace() picks backend
   induction.py             programs -> behaviour classes (posterior), QuickSpec law discovery (v0.4 route)
   library.py               program-level DSL mining (v0.4 route; the baseline, not the model)
-  mind.py                  belief + VOC controller (H), Modulators (rho, volatility), sleep, save/load
+  mind.py                  belief + VOC controller (H), OUTSIDE hypotheses, question horizon, save/load
+  construct.py             v0.6: features from primitives + stored concepts, canonical classes, exact closure fits
+  concept_memory.py        v0.6: constructed concepts, candidate -> admitted -> retired, JSON-native
+  language.py              v0.6: statement/query/naming templates, behaviour-based identity, learned reader
+  model.py / curriculum.py v0.6: HRMX facade (train, checkpoint, resume, chat, info) + the task field
+  __main__.py              python -m hrm_x create|train|chat|notation|info|eval
+  signature.py / mbi.py    FHRR evidence signature + mushroom-body index: measured, NOT in the pipeline (E16)
   writer.py                trace -> answer + explanation
   domains/                 concept (v0.5 structural), arith (v0.4 search + laws + residue verifier),
                            story (parser .pt + situation), grid (objects)
@@ -273,6 +280,8 @@ for attempt in range(3):
 ```powershell
 python -m pytest                                   # full suite (~45 s)
 python scripts/fetch_benchmarks.py                 # ARC-AGI-1 + Sudoku-Extreme -> data/external/ (gitignored)
+python -m hrm_x create models/hrmx; python -m hrm_x train models/hrmx   # v0.6 model: train (resumable), then chat/info/eval
+python -m experiments.x_understanding              # E19 understanding suite (also x_transfer, x_sampling, x_router, x_margin, x_v05)
 python -m experiments.x_arith                      # HRM-X experiments (also x_story, x_grid, x_control, x_metacog, x_native)
 .\scripts\build_native.ps1                          # HRM-X C++ backend; HRMX_BACKEND=python|native|auto selects it
 $env:PYTHONPATH = "legacy"                          # the EQB package now lives under legacy/
@@ -388,7 +397,7 @@ Use normal mode for:
 ---
 
 **Last updated:** 2026-09-29  
-**Current (ADR-010 + ADR-012 audit, 2026-09-29):** HRM-X v0.5 in `hrm_x/` is the model; spec `vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md`. A hypothesis is a law-closed family fitted exactly over ℚ rather than a program found by enumeration, and verification is the dual solve `A^T λ = r`. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only, and exact `Fraction` arithmetic stays in Python. Modulators are only the signals with a computational role; do not add others without an ablation. **Gates G3, G4 and G5 are open** — read ADR-010 and ADR-012 before quoting any headline. Since ADR-012 the spec's BOTTOM hypothesis is a real `Mind` hypothesis (`OUTSIDE` in `hrm_x/mind.py`); before that it cancelled out, so do not reintroduce weight normalisation that drops it. `bits_bottom` is now load-bearing. Native backend: **identical results, grid 3.79×, arithmetic 1.47×** (`experiments/results/x_native.json`), built by `.\scripts\build_native.ps1`, selected by `HRMX_BACKEND=python|native|auto`.
+**Current (ADR-013, 2026-09-30):** HRM-X v0.6 in `hrm_x/` is the model; spec `vault/10 - Research Program/architecture_spec.md`. v0.5's exact law-closed families are depth 0; when OUTSIDE holds the mass the mind *constructs* features from primitives and stored concepts (`construct.py`), fits their linear closure exactly, and stores verified constructions (`concept_memory.py`, admitted after a second task). Defaults that measurement forced: calibrated answer space (`answer_space="empirical"`), regime coverage (asymmetric readings do not extrapolate across an unseen sign(x−y)), distinct surplus rows (`distinct_surplus`). Do not reintroduce weight normalisation that drops OUTSIDE, and do not wire the MBI router into the pipeline without beating E16. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only (e-graph, grid, construction enumeration `hx_enumerate`), and exact `Fraction` arithmetic stays in Python. E19 held-out: 60/0/21 (correct/wrong/abstain) vs 18/0/63 for v0.5 + ADR-012 — read ADR-013 and `vault/10 - Research Program/evaluation.md` before quoting any headline. Native backend: **identical results, grid 3.79×, arithmetic 1.47×, enumeration 4–6×**, built by `.\scriptsuild_native.ps1`, selected by `HRMX_BACKEND=python|native|auto`.
 **Baselines.** `legacy/hrm_eqb/` (ADR-005/006) is the neural equilibrium package — **moved out
 of the live tree on 2026-09-29**, because an audit found zero non-test code imports it — and
 `hrm/` (ADR-003) is the program-search one, which **stayed** because

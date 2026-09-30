@@ -41,7 +41,7 @@ from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
-from hrm_x.concepts import ConceptConfig, Family, Fitted, fit
+from hrm_x.concepts import ConceptConfig, Family, Fitted, answer_bits, fit
 
 Q = Fraction
 
@@ -313,15 +313,19 @@ def _is_monomial(values: Sequence[float]) -> bool:
     return False
 
 
-def families_of(feature: Feature, fn: Callable[[Q, Q], Optional[Q]], label: str) -> List[Family]:
-    """The linear-closure families of one feature: g plus every subset of {x, y, 1}."""
+def families_of(feature: Feature, fn: Callable[[Q, Q], Optional[Q]], label: str,
+                prefix: str = "construct") -> List[Family]:
+    """The linear-closure families of one feature: g plus every subset of {x, y, 1}.
+
+    `prefix` names the origin: "construct" for a feature built on this task, "lib" for a stored
+    concept -- the trace, the writer and the reuse counts read it."""
     mono = _is_monomial(feature.values)
     out = []
     for extra in EXTRAS:
         if not extra and mono:
             continue
         feats = (fn,) + tuple(_BASIS[e] for e in extra)
-        name = f"construct[{label}]" + ("+" + "+".join(extra) if extra else "")
+        name = f"{prefix}[{label}]" + ("+" + "+".join(extra) if extra else "")
         out.append(Family(name, feats, bits=feature.bits + math.log2(len(EXTRAS)) + len(extra),
                           laws=f"linear closure of the constructed feature {label}"))
     return out
@@ -351,6 +355,7 @@ def construct(evidence: Sequence[Tuple[Tuple[Q, Q], Q]], cfg: ConceptConfig, fea
     xs = [float(p[0]) for (p, _) in evidence]
     ys = [float(p[1]) for (p, _) in evidence]
     zs = [float(z) for _, z in evidence]
+    y_bits = answer_bits(cfg, list(evidence))
     for feat in feats:
         rep.examined += 1
         fn = fn_of(feat)
@@ -362,7 +367,7 @@ def construct(evidence: Sequence[Tuple[Tuple[Q, Q], Q]], cfg: ConceptConfig, fea
         # A family with k parameters has at most n - k surplus rows; if even that cannot bring it
         # within `margin_bits` of BOTTOM it can never carry answer mass, so it is not fitted.
         fams = [fam for fam in families_of(feat, fn, label_of(feat))
-                if -fam.bits + max(0, n - len(fam.features)) * cfg.log2_answer_space + log2_symmetry
+                if -fam.bits + max(0, n - len(fam.features)) * y_bits + log2_symmetry
                 > -cfg.bits_bottom - margin_bits]
         if not fams:
             continue

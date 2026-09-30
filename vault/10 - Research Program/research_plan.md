@@ -63,3 +63,8 @@ Evidence tags: **[FACT]** external, **[RESULT]** measured here, **[HYPOTHESIS]**
 
 - 2026-09-30: construction integrated; E13 out-of-language 0/0/6 → 2/0/4 [RESULT]; in-language
   correctness unchanged, ops ×20 when the mind tries to build before abstaining [RESULT].
+- 2026-09-30: M2 (random sampling) and M4 (learned router) rejected (E15b, E16) [RESULT].
+- 2026-09-30: E17/E19 wrong answers forced three calibration rules (regime coverage, empirical |Y|,
+  distinct surplus); final E19 60/0/21 vs 18/0/63 for v0.5 + ADR-012 [RESULT]. L1–L3, L5, L6
+  addressed; L4 answered negatively (learning does not help ordering here). Next targets: a given
+  primitive alphabet, one nonlinear feature per family, template-bound language.

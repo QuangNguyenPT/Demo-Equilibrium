@@ -7,55 +7,38 @@
   },
   "metrics": {
     "open world + teacher (shipped)": {
-      "answered": 13,
-      "abstained": 13,
+      "answered": 8,
+      "abstained": 18,
       "correct_margins": [
-        15.91,
-        15.91,
-        16.59,
-        16.59,
-        17.59,
-        31.0,
-        41.73,
-        41.73,
-        41.73,
-        51.23,
+        20.33,
+        31.06,
+        31.06,
+        31.06,
+        40.85,
+        "inf",
+        "inf",
         "inf"
       ],
-      "wrong_margins": [
-        8.42,
-        8.42
-      ],
+      "wrong_margins": [],
       "correct_surplus": [
-        1,
-        1,
-        1,
-        1,
-        1,
         2,
         2,
         2,
         2,
         2,
-        2
+        2,
+        2,
+        3
       ],
-      "wrong_surplus": [
-        1,
-        1
-      ],
+      "wrong_surplus": [],
       "surplus>=1": {
-        "kept_correct": 11,
-        "kept_wrong": 2
-      },
-      "surplus>=2": {
-        "kept_correct": 6,
+        "kept_correct": 8,
         "kept_wrong": 0
       },
-      "separating_interval_bits": [
-        8.42,
-        15.91
-      ],
-      "correct_kept_at_best_threshold": 11,
+      "surplus>=2": {
+        "kept_correct": 8,
+        "kept_wrong": 0
+      },
       "rows": [
         {
           "table": "E13a general",
@@ -67,7 +50,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -82,7 +65,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -97,7 +80,7 @@
             "8"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -111,11 +94,11 @@
             "5",
             "7"
           ],
-          "correct": false,
-          "margin_bits": 8.42,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "biaffine{1}"
+          "correct": true,
+          "margin_bits": "inf",
+          "surplus": 2,
+          "evidence_rows": 4,
+          "winner": "biaffine{x,y}"
         },
         {
           "table": "E13a general",
@@ -126,11 +109,11 @@
             "9",
             "2"
           ],
-          "correct": false,
-          "margin_bits": 8.42,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "biaffine{1}"
+          "correct": true,
+          "margin_bits": "inf",
+          "surplus": 2,
+          "evidence_rows": 4,
+          "winner": "biaffine{x,y}"
         },
         {
           "table": "E13a general",
@@ -155,8 +138,8 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 2,
-          "evidence_rows": 3,
+          "surplus": 3,
+          "evidence_rows": 4,
           "winner": "monomial x^1 y^-1"
         },
         {
@@ -169,7 +152,7 @@
             "4"
           ],
           "correct": true,
-          "margin_bits": 51.23,
+          "margin_bits": 40.85,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^1 y^-1"
@@ -178,61 +161,25 @@
           "table": "E13a general",
           "op": "power",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "2",
-            "5"
-          ],
-          "correct": true,
-          "margin_bits": 15.91,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "exp-power x^(1y)"
+          "status": "abstain"
         },
         {
           "table": "E13a general",
           "op": "power",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "4",
-            "2"
-          ],
-          "correct": true,
-          "margin_bits": 15.91,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "exp-power x^(1y)"
+          "status": "abstain"
         },
         {
           "table": "E13a general",
           "op": "ab+1",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "5",
-            "2"
-          ],
-          "correct": true,
-          "margin_bits": 16.59,
-          "surplus": 1,
-          "evidence_rows": 3,
-          "winner": "biaffine{xy,1}"
+          "status": "abstain"
         },
         {
           "table": "E13a general",
           "op": "ab+1",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "3",
-            "3"
-          ],
-          "correct": true,
-          "margin_bits": 16.59,
-          "surplus": 1,
-          "evidence_rows": 3,
-          "winner": "biaffine{xy,1}"
+          "status": "abstain"
         },
         {
           "table": "E13a general",
@@ -292,7 +239,7 @@
             "7"
           ],
           "correct": true,
-          "margin_bits": 31.0,
+          "margin_bits": 20.33,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -301,16 +248,7 @@
           "table": "E13b pinned-argument",
           "op": "add",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "5",
-            "7"
-          ],
-          "correct": true,
-          "margin_bits": 17.59,
-          "surplus": 1,
-          "evidence_rows": 3,
-          "winner": "biaffine{x,y}"
+          "status": "abstain"
         },
         {
           "table": "E13b pinned-argument",
@@ -333,22 +271,17 @@
       ]
     },
     "open world, no teacher": {
-      "answered": 10,
-      "abstained": 16,
+      "answered": 6,
+      "abstained": 20,
       "correct_margins": [
         4.0,
-        15.91,
-        15.91,
-        41.73,
-        41.73,
-        41.73
+        10.15,
+        10.15,
+        31.06,
+        31.06,
+        31.06
       ],
-      "wrong_margins": [
-        8.42,
-        8.42,
-        9.22,
-        9.22
-      ],
+      "wrong_margins": [],
       "correct_surplus": [
         1,
         1,
@@ -357,22 +290,15 @@
         2,
         2
       ],
-      "wrong_surplus": [
-        1,
-        1,
-        1,
-        1
-      ],
+      "wrong_surplus": [],
       "surplus>=1": {
         "kept_correct": 6,
-        "kept_wrong": 4
+        "kept_wrong": 0
       },
       "surplus>=2": {
         "kept_correct": 3,
         "kept_wrong": 0
       },
-      "separating_interval_bits": null,
-      "correct_kept_at_best_threshold": 5,
       "rows": [
         {
           "table": "E13a general",
@@ -384,7 +310,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -399,7 +325,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -414,7 +340,7 @@
             "8"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -423,31 +349,13 @@
           "table": "E13a general",
           "op": "add",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "5",
-            "7"
-          ],
-          "correct": false,
-          "margin_bits": 8.42,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "biaffine{1}"
+          "status": "abstain"
         },
         {
           "table": "E13a general",
           "op": "add",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "9",
-            "2"
-          ],
-          "correct": false,
-          "margin_bits": 8.42,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "biaffine{1}"
+          "status": "abstain"
         },
         {
           "table": "E13a general",
@@ -483,7 +391,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 15.91,
+          "margin_bits": 10.15,
           "surplus": 1,
           "evidence_rows": 2,
           "winner": "exp-power x^(1y)"
@@ -498,7 +406,7 @@
             "2"
           ],
           "correct": true,
-          "margin_bits": 15.91,
+          "margin_bits": 10.15,
           "surplus": 1,
           "evidence_rows": 2,
           "winner": "exp-power x^(1y)"
@@ -543,31 +451,13 @@
           "table": "E13a general",
           "op": "max",
           "in_language": false,
-          "status": "answer",
-          "query": [
-            "5",
-            "2"
-          ],
-          "correct": false,
-          "margin_bits": 9.22,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "monomial x^2 y^1"
+          "status": "abstain"
         },
         {
           "table": "E13a general",
           "op": "max",
           "in_language": false,
-          "status": "answer",
-          "query": [
-            "3",
-            "3"
-          ],
-          "correct": false,
-          "margin_bits": 9.22,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "monomial x^2 y^1"
+          "status": "abstain"
         },
         {
           "table": "E13a general",
@@ -623,21 +513,20 @@
       ]
     },
     "held-out, teacher": {
-      "answered": 28,
-      "abstained": 33,
+      "answered": 24,
+      "abstained": 37,
       "correct_margins": [
-        13.59,
-        19.3,
-        20.74,
+        18.47,
+        19.71,
         22.71,
-        30.32,
-        30.41,
-        31.57,
-        45.51,
-        46.44,
-        51.2,
-        57.26,
-        69.9,
+        22.76,
+        23.09,
+        29.91,
+        35.96,
+        42.91,
+        56.89,
+        64.88,
+        74.54,
         99.29,
         "inf",
         "inf",
@@ -652,14 +541,10 @@
         "inf"
       ],
       "wrong_margins": [
-        14.43,
-        15.49,
-        17.62,
-        "inf"
+        9.13
       ],
       "correct_surplus": [
         1,
-        1,
         2,
         2,
         2,
@@ -672,7 +557,7 @@
         2,
         2,
         2,
-        3,
+        2,
         3,
         3,
         3,
@@ -684,21 +569,21 @@
         3
       ],
       "wrong_surplus": [
-        1,
-        1,
-        1,
-        2
+        3
       ],
       "surplus>=1": {
-        "kept_correct": 24,
-        "kept_wrong": 4
+        "kept_correct": 23,
+        "kept_wrong": 1
       },
       "surplus>=2": {
         "kept_correct": 22,
         "kept_wrong": 1
       },
-      "separating_interval_bits": null,
-      "correct_kept_at_best_threshold": 0,
+      "separating_interval_bits": [
+        9.13,
+        18.47
+      ],
+      "correct_kept_at_best_threshold": 23,
       "rows": [
         {
           "table": "held-out",
@@ -710,7 +595,7 @@
             "4"
           ],
           "correct": true,
-          "margin_bits": 69.9,
+          "margin_bits": 64.88,
           "surplus": 3,
           "evidence_rows": 4,
           "winner": "monomial x^2 y^1"
@@ -732,7 +617,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 2,
           "evidence_rows": 4,
           "winner": "monomial x^2 y^2"
         },
@@ -806,7 +691,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 57.26,
+          "margin_bits": 56.89,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^2"
@@ -860,7 +745,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 30.41,
+          "margin_bits": 23.09,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^1"
@@ -875,10 +760,10 @@
             "3"
           ],
           "correct": false,
-          "margin_bits": 17.62,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "biaffine{x}"
+          "margin_bits": 9.13,
+          "surplus": 3,
+          "evidence_rows": 5,
+          "winner": "biaffine{xy,x}"
         },
         {
           "table": "held-out",
@@ -890,7 +775,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 20.74,
+          "margin_bits": 19.71,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^1 y^2"
@@ -911,7 +796,7 @@
             "1"
           ],
           "correct": true,
-          "margin_bits": 45.51,
+          "margin_bits": 35.96,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -920,16 +805,7 @@
           "table": "held-out",
           "op": "-3xy+-2x+2y+0",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "5",
-            "2"
-          ],
-          "correct": true,
-          "margin_bits": "inf",
-          "surplus": 2,
-          "evidence_rows": 5,
-          "winner": "biaffine{xy,x,y}"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -950,31 +826,13 @@
           "table": "held-out",
           "op": "0xy+0x+2y+-2",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "4",
-            "1"
-          ],
-          "correct": false,
-          "margin_bits": 15.49,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "exp 2^x"
+          "status": "abstain"
         },
         {
           "table": "held-out",
           "op": "3x^1y^2",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "1",
-            "2"
-          ],
-          "correct": true,
-          "margin_bits": "inf",
-          "surplus": 3,
-          "evidence_rows": 4,
-          "winner": "monomial x^1 y^2"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -987,7 +845,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 2,
           "evidence_rows": 4,
           "winner": "biaffine{xy}"
         },
@@ -1001,7 +859,7 @@
             "1"
           ],
           "correct": true,
-          "margin_bits": 46.44,
+          "margin_bits": 42.91,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^1"
@@ -1031,7 +889,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 19.3,
+          "margin_bits": 18.47,
           "surplus": 1,
           "evidence_rows": 2,
           "winner": "monomial x^2 y^2"
@@ -1075,8 +933,8 @@
           "correct": true,
           "margin_bits": "inf",
           "surplus": 3,
-          "evidence_rows": 4,
-          "winner": "monomial x^0 y^2"
+          "evidence_rows": 6,
+          "winner": "biaffine{xy,y,1}"
         },
         {
           "table": "held-out",
@@ -1089,8 +947,8 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 2,
-          "evidence_rows": 5,
+          "surplus": 3,
+          "evidence_rows": 6,
           "winner": "biaffine{xy,x,y}"
         },
         {
@@ -1103,9 +961,9 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 51.2,
+          "margin_bits": 74.54,
           "surplus": 2,
-          "evidence_rows": 3,
+          "evidence_rows": 4,
           "winner": "monomial x^1 y^2"
         },
         {
@@ -1124,7 +982,7 @@
             "2"
           ],
           "correct": true,
-          "margin_bits": 31.57,
+          "margin_bits": 29.91,
           "surplus": 3,
           "evidence_rows": 4,
           "winner": "monomial x^1 y^2"
@@ -1145,7 +1003,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 30.32,
+          "margin_bits": 22.76,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -1160,38 +1018,20 @@
           "table": "held-out",
           "op": "x^2+y",
           "in_language": false,
-          "status": "abstain"
-        },
-        {
-          "table": "held-out",
-          "op": "x^2+y",
-          "in_language": false,
-          "status": "abstain"
-        },
-        {
-          "table": "held-out",
-          "op": "x^2+y",
-          "in_language": false,
-          "status": "abstain"
-        },
-        {
-          "table": "held-out",
-          "op": "max",
-          "in_language": false,
           "status": "answer",
           "query": [
-            "2",
-            "2"
+            "6",
+            "6"
           ],
           "correct": true,
-          "margin_bits": 13.59,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "biaffine{x}"
+          "margin_bits": "inf",
+          "surplus": 3,
+          "evidence_rows": 5,
+          "winner": "construct[(x * x)]+y"
         },
         {
           "table": "held-out",
-          "op": "max",
+          "op": "x^2+y",
           "in_language": false,
           "status": "answer",
           "query": [
@@ -1201,8 +1041,20 @@
           "correct": true,
           "margin_bits": "inf",
           "surplus": 3,
-          "evidence_rows": 4,
-          "winner": "biaffine{x}"
+          "evidence_rows": 5,
+          "winner": "construct[(x * x)]+y"
+        },
+        {
+          "table": "held-out",
+          "op": "x^2+y",
+          "in_language": false,
+          "status": "abstain"
+        },
+        {
+          "table": "held-out",
+          "op": "max",
+          "in_language": false,
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -1210,18 +1062,18 @@
           "in_language": false,
           "status": "answer",
           "query": [
-            "6",
-            "5"
+            "2",
+            "2"
           ],
-          "correct": false,
+          "correct": true,
           "margin_bits": "inf",
           "surplus": 2,
-          "evidence_rows": 3,
-          "winner": "biaffine{y}"
+          "evidence_rows": 4,
+          "winner": "biaffine{x}"
         },
         {
           "table": "held-out",
-          "op": "min",
+          "op": "max",
           "in_language": false,
           "status": "abstain"
         },
@@ -1235,16 +1087,13 @@
           "table": "held-out",
           "op": "min",
           "in_language": false,
-          "status": "answer",
-          "query": [
-            "6",
-            "6"
-          ],
-          "correct": false,
-          "margin_bits": 14.43,
-          "surplus": 1,
-          "evidence_rows": 3,
-          "winner": "biaffine{xy,1}"
+          "status": "abstain"
+        },
+        {
+          "table": "held-out",
+          "op": "min",
+          "in_language": false,
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -1321,23 +1170,21 @@
       ]
     },
     "held-out, no teacher": {
-      "answered": 28,
-      "abstained": 33,
+      "answered": 21,
+      "abstained": 40,
       "correct_margins": [
-        3.85,
-        13.59,
-        19.3,
-        20.74,
+        3.88,
+        18.47,
+        19.71,
         22.71,
-        30.41,
-        31.57,
-        45.51,
-        46.44,
-        51.2,
-        57.26,
-        69.9,
+        23.09,
+        29.91,
+        35.96,
+        39.43,
+        42.91,
+        56.89,
+        64.88,
         99.29,
-        "inf",
         "inf",
         "inf",
         "inf",
@@ -1348,17 +1195,13 @@
         "inf"
       ],
       "wrong_margins": [
-        3.58,
-        14.43,
-        15.49,
-        17.62,
-        19.93,
-        "inf"
+        3.58
       ],
       "correct_surplus": [
         1,
         1,
         1,
+        1,
         2,
         2,
         2,
@@ -1368,11 +1211,8 @@
         2,
         2,
         2,
-        3,
-        3,
-        3,
-        3,
-        3,
+        2,
+        2,
         3,
         3,
         3,
@@ -1380,23 +1220,21 @@
         3
       ],
       "wrong_surplus": [
-        1,
-        1,
-        1,
-        1,
-        1,
-        2
+        1
       ],
       "surplus>=1": {
-        "kept_correct": 22,
-        "kept_wrong": 6
-      },
-      "surplus>=2": {
-        "kept_correct": 19,
+        "kept_correct": 20,
         "kept_wrong": 1
       },
-      "separating_interval_bits": null,
-      "correct_kept_at_best_threshold": 0,
+      "surplus>=2": {
+        "kept_correct": 16,
+        "kept_wrong": 0
+      },
+      "separating_interval_bits": [
+        3.58,
+        3.88
+      ],
+      "correct_kept_at_best_threshold": 20,
       "rows": [
         {
           "table": "held-out",
@@ -1408,7 +1246,7 @@
             "4"
           ],
           "correct": true,
-          "margin_bits": 69.9,
+          "margin_bits": 64.88,
           "surplus": 3,
           "evidence_rows": 4,
           "winner": "monomial x^2 y^1"
@@ -1430,7 +1268,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 2,
           "evidence_rows": 4,
           "winner": "monomial x^2 y^2"
         },
@@ -1504,7 +1342,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 57.26,
+          "margin_bits": 56.89,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^2"
@@ -1567,7 +1405,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 30.41,
+          "margin_bits": 23.09,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^1"
@@ -1576,16 +1414,7 @@
           "table": "held-out",
           "op": "-1xy+0x+1y+-2",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "2",
-            "3"
-          ],
-          "correct": false,
-          "margin_bits": 17.62,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "biaffine{x}"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -1597,7 +1426,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 20.74,
+          "margin_bits": 19.71,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^1 y^2"
@@ -1618,7 +1447,7 @@
             "1"
           ],
           "correct": true,
-          "margin_bits": 45.51,
+          "margin_bits": 35.96,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -1648,31 +1477,13 @@
           "table": "held-out",
           "op": "0xy+0x+2y+-2",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "4",
-            "1"
-          ],
-          "correct": false,
-          "margin_bits": 15.49,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "exp 2^x"
+          "status": "abstain"
         },
         {
           "table": "held-out",
           "op": "3x^1y^2",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "1",
-            "2"
-          ],
-          "correct": true,
-          "margin_bits": "inf",
-          "surplus": 3,
-          "evidence_rows": 4,
-          "winner": "monomial x^1 y^2"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -1685,7 +1496,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 2,
           "evidence_rows": 4,
           "winner": "biaffine{xy}"
         },
@@ -1699,7 +1510,7 @@
             "1"
           ],
           "correct": true,
-          "margin_bits": 46.44,
+          "margin_bits": 42.91,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^1"
@@ -1729,7 +1540,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 19.3,
+          "margin_bits": 18.47,
           "surplus": 1,
           "evidence_rows": 2,
           "winner": "monomial x^2 y^2"
@@ -1772,7 +1583,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 1,
           "evidence_rows": 4,
           "winner": "monomial x^0 y^2"
         },
@@ -1792,8 +1603,8 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 51.2,
-          "surplus": 2,
+          "margin_bits": 39.43,
+          "surplus": 1,
           "evidence_rows": 3,
           "winner": "monomial x^1 y^2"
         },
@@ -1813,7 +1624,7 @@
             "2"
           ],
           "correct": true,
-          "margin_bits": 31.57,
+          "margin_bits": 29.91,
           "surplus": 3,
           "evidence_rows": 4,
           "winner": "monomial x^1 y^2"
@@ -1834,7 +1645,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 3.85,
+          "margin_bits": 3.88,
           "surplus": 1,
           "evidence_rows": 2,
           "winner": "biaffine{xy}"
@@ -1867,16 +1678,7 @@
           "table": "held-out",
           "op": "max",
           "in_language": false,
-          "status": "answer",
-          "query": [
-            "2",
-            "2"
-          ],
-          "correct": true,
-          "margin_bits": 13.59,
-          "surplus": 1,
-          "evidence_rows": 2,
-          "winner": "biaffine{x}"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -1889,7 +1691,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 2,
           "evidence_rows": 4,
           "winner": "biaffine{x}"
         },
@@ -1897,16 +1699,7 @@
           "table": "held-out",
           "op": "max",
           "in_language": false,
-          "status": "answer",
-          "query": [
-            "6",
-            "5"
-          ],
-          "correct": false,
-          "margin_bits": "inf",
-          "surplus": 2,
-          "evidence_rows": 3,
-          "winner": "biaffine{y}"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -1924,16 +1717,7 @@
           "table": "held-out",
           "op": "min",
           "in_language": false,
-          "status": "answer",
-          "query": [
-            "6",
-            "6"
-          ],
-          "correct": false,
-          "margin_bits": 14.43,
-          "surplus": 1,
-          "evidence_rows": 3,
-          "winner": "biaffine{xy,1}"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -1945,16 +1729,7 @@
           "table": "held-out",
           "op": "|x-y|",
           "in_language": false,
-          "status": "answer",
-          "query": [
-            "1",
-            "5"
-          ],
-          "correct": false,
-          "margin_bits": 19.93,
-          "surplus": 1,
-          "evidence_rows": 3,
-          "winner": "biaffine{x,y}"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -2022,9 +1797,9 @@
       "answered": 3,
       "abstained": 23,
       "correct_margins": [
-        41.73,
-        41.73,
-        41.73
+        31.06,
+        31.06,
+        31.06
       ],
       "wrong_margins": [],
       "correct_surplus": [
@@ -2052,7 +1827,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -2067,7 +1842,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -2082,7 +1857,7 @@
             "8"
           ],
           "correct": true,
-          "margin_bits": 41.73,
+          "margin_bits": 31.06,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -2228,18 +2003,17 @@
       ]
     },
     "held-out, teacher, min_surplus=2": {
-      "answered": 20,
-      "abstained": 41,
+      "answered": 18,
+      "abstained": 43,
       "correct_margins": [
-        20.74,
+        19.71,
         22.71,
-        30.41,
-        31.57,
-        45.51,
-        46.44,
-        51.2,
-        57.26,
-        69.9,
+        23.09,
+        29.91,
+        35.96,
+        42.91,
+        56.89,
+        64.88,
         99.29,
         "inf",
         "inf",
@@ -2251,9 +2025,7 @@
         "inf",
         "inf"
       ],
-      "wrong_margins": [
-        "inf"
-      ],
+      "wrong_margins": [],
       "correct_surplus": [
         2,
         2,
@@ -2264,9 +2036,8 @@
         2,
         2,
         2,
-        3,
-        3,
-        3,
+        2,
+        2,
         3,
         3,
         3,
@@ -2275,19 +2046,15 @@
         3,
         3
       ],
-      "wrong_surplus": [
-        2
-      ],
+      "wrong_surplus": [],
       "surplus>=1": {
-        "kept_correct": 19,
-        "kept_wrong": 1
+        "kept_correct": 18,
+        "kept_wrong": 0
       },
       "surplus>=2": {
-        "kept_correct": 19,
-        "kept_wrong": 1
+        "kept_correct": 18,
+        "kept_wrong": 0
       },
-      "separating_interval_bits": null,
-      "correct_kept_at_best_threshold": 0,
       "rows": [
         {
           "table": "held-out",
@@ -2299,7 +2066,7 @@
             "4"
           ],
           "correct": true,
-          "margin_bits": 69.9,
+          "margin_bits": 64.88,
           "surplus": 3,
           "evidence_rows": 4,
           "winner": "monomial x^2 y^1"
@@ -2321,7 +2088,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 2,
           "evidence_rows": 4,
           "winner": "monomial x^2 y^2"
         },
@@ -2395,7 +2162,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 57.26,
+          "margin_bits": 56.89,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^2"
@@ -2449,7 +2216,7 @@
             "5"
           ],
           "correct": true,
-          "margin_bits": 30.41,
+          "margin_bits": 23.09,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^1"
@@ -2470,7 +2237,7 @@
             "6"
           ],
           "correct": true,
-          "margin_bits": 20.74,
+          "margin_bits": 19.71,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^1 y^2"
@@ -2491,7 +2258,7 @@
             "1"
           ],
           "correct": true,
-          "margin_bits": 45.51,
+          "margin_bits": 35.96,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "biaffine{xy}"
@@ -2527,16 +2294,7 @@
           "table": "held-out",
           "op": "3x^1y^2",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "1",
-            "2"
-          ],
-          "correct": true,
-          "margin_bits": "inf",
-          "surplus": 3,
-          "evidence_rows": 4,
-          "winner": "monomial x^1 y^2"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -2549,7 +2307,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 2,
           "evidence_rows": 4,
           "winner": "biaffine{xy}"
         },
@@ -2563,7 +2321,7 @@
             "1"
           ],
           "correct": true,
-          "margin_bits": 46.44,
+          "margin_bits": 42.91,
           "surplus": 2,
           "evidence_rows": 3,
           "winner": "monomial x^2 y^1"
@@ -2620,16 +2378,7 @@
           "table": "held-out",
           "op": "2x^0y^2",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "2",
-            "1"
-          ],
-          "correct": true,
-          "margin_bits": "inf",
-          "surplus": 3,
-          "evidence_rows": 4,
-          "winner": "monomial x^0 y^2"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -2641,16 +2390,7 @@
           "table": "held-out",
           "op": "1x^1y^2",
           "in_language": true,
-          "status": "answer",
-          "query": [
-            "2",
-            "6"
-          ],
-          "correct": true,
-          "margin_bits": 51.2,
-          "surplus": 2,
-          "evidence_rows": 3,
-          "winner": "monomial x^1 y^2"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -2668,7 +2408,7 @@
             "2"
           ],
           "correct": true,
-          "margin_bits": 31.57,
+          "margin_bits": 29.91,
           "surplus": 3,
           "evidence_rows": 4,
           "winner": "monomial x^1 y^2"
@@ -2695,13 +2435,31 @@
           "table": "held-out",
           "op": "x^2+y",
           "in_language": false,
-          "status": "abstain"
+          "status": "answer",
+          "query": [
+            "6",
+            "6"
+          ],
+          "correct": true,
+          "margin_bits": "inf",
+          "surplus": 3,
+          "evidence_rows": 5,
+          "winner": "construct[(x * x)]+y"
         },
         {
           "table": "held-out",
           "op": "x^2+y",
           "in_language": false,
-          "status": "abstain"
+          "status": "answer",
+          "query": [
+            "2",
+            "2"
+          ],
+          "correct": true,
+          "margin_bits": "inf",
+          "surplus": 3,
+          "evidence_rows": 5,
+          "winner": "construct[(x * x)]+y"
         },
         {
           "table": "held-out",
@@ -2726,7 +2484,7 @@
           ],
           "correct": true,
           "margin_bits": "inf",
-          "surplus": 3,
+          "surplus": 2,
           "evidence_rows": 4,
           "winner": "biaffine{x}"
         },
@@ -2734,16 +2492,7 @@
           "table": "held-out",
           "op": "max",
           "in_language": false,
-          "status": "answer",
-          "query": [
-            "6",
-            "5"
-          ],
-          "correct": false,
-          "margin_bits": "inf",
-          "surplus": 2,
-          "evidence_rows": 3,
-          "winner": "biaffine{y}"
+          "status": "abstain"
         },
         {
           "table": "held-out",
@@ -2840,67 +2589,67 @@
     "bits_bottom sweep (teacher)": {
       "0.0": {
         "E13": {
-          "correct": 10,
+          "correct": 4,
           "wrong": 0,
-          "abstain": 16
+          "abstain": 22
         },
         "held-out": {
-          "correct": 24,
-          "wrong": 2,
-          "abstain": 35
+          "correct": 19,
+          "wrong": 0,
+          "abstain": 42
         }
       },
       "4.0": {
         "E13": {
-          "correct": 11,
-          "wrong": 2,
-          "abstain": 13
+          "correct": 8,
+          "wrong": 0,
+          "abstain": 18
         },
         "held-out": {
-          "correct": 24,
-          "wrong": 4,
-          "abstain": 33
+          "correct": 23,
+          "wrong": 1,
+          "abstain": 37
         }
       },
       "8.0": {
         "E13": {
-          "correct": 16,
-          "wrong": 5,
-          "abstain": 5
+          "correct": 17,
+          "wrong": 0,
+          "abstain": 9
         },
         "held-out": {
           "correct": 25,
-          "wrong": 5,
-          "abstain": 31
+          "wrong": 1,
+          "abstain": 35
         }
       },
       "12.0": {
         "E13": {
-          "correct": 16,
-          "wrong": 5,
-          "abstain": 5
+          "correct": 22,
+          "wrong": 1,
+          "abstain": 3
         },
         "held-out": {
-          "correct": 28,
-          "wrong": 8,
-          "abstain": 25
+          "correct": 32,
+          "wrong": 2,
+          "abstain": 27
         }
       },
       "inf": {
         "E13": {
-          "correct": 16,
-          "wrong": 10,
+          "correct": 18,
+          "wrong": 8,
           "abstain": 0
         },
         "held-out": {
-          "correct": 39,
+          "correct": 36,
           "wrong": 19,
-          "abstain": 3
+          "abstain": 6
         }
       }
     }
   },
   "python": "3.11.14",
   "platform": "Windows-10-10.0.26100-SP0",
-  "recorded": "2026-09-29 21:15:41"
+  "recorded": "2026-09-30 10:36:16"
 }

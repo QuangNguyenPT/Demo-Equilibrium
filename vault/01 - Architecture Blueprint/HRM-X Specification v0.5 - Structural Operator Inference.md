@@ -177,6 +177,9 @@ one `Mind`, 26 solves per condition.
 Full reading, including the three negative results, is in
 [[ADR-010 Structural Operator Inference]].
 
+**Update (ADR-013, 2026-09-30).** This specification is now depth 0 of HRM-X v0.6
+([[architecture_spec]]); construction, concept memory and three calibration rules sit on top.
+
 **Update (ADR-012, 2026-09-29).** The tables above are the port as first measured. Def. 3 was
 not in effect inside `Mind` — BOTTOM's posterior was dropped and cancelled in normalisation — and
 is now a hypothesis the controller sees. Same run, shipped configuration: E13a in-language

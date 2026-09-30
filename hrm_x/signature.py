@@ -27,6 +27,8 @@ from typing import List, Sequence, Tuple
 
 import numpy as np
 
+from hrm_x.algebra import ReferenceAlgebra
+
 Q = Fraction
 ROLES = ("zx", "zy", "xy", "zs", "zp")
 DIM = 256
@@ -48,20 +50,20 @@ class SignatureEncoder:
     """Seeded, parameter-free encoder: evidence rows -> unit-norm complex vector of length `dim`."""
 
     def __init__(self, dim: int = DIM, seed: int = 7) -> None:
-        rng = np.random.default_rng(seed)
+        self.alg = ReferenceAlgebra(dim, seed)          # the repository's FHRR algebra (hrm_x/algebra.py)
         self.dim = dim
-        self.orders = np.exp(1j * rng.uniform(-np.pi, np.pi, size=(27, dim)))
-        self.roles = {r: np.exp(1j * rng.uniform(-np.pi, np.pi, size=dim)) for r in ROLES}
-        self.omega = rng.normal(0.0, 1.0, size=dim)
+        self.orders = self.alg.random_codes(27)
+        self.roles = dict(zip(ROLES, self.alg.random_codes(len(ROLES))))
+        self.omega = self.alg.rng.normal(0.0, 1.0, size=dim)
 
     def phi(self, v: float) -> np.ndarray:
-        return np.exp(1j * self.omega * v)
+        return ReferenceAlgebra.character(self.omega, v)
 
     def row(self, x: float, y: float, z: float) -> np.ndarray:
         rel = {"zx": _lr(z, x), "zy": _lr(z, y), "xy": _lr(x, y), "zs": _lr(z, x + y), "zp": _lr(z, x * y)}
         code = self.orders[_order_pattern(x, y, z)].copy()
         for r in ROLES:
-            code += self.roles[r] * self.phi(rel[r])
+            code += ReferenceAlgebra.bind(self.roles[r], self.phi(rel[r]))
         return code
 
     def encode(self, evidence: Sequence[Tuple[Tuple[Q, Q], Q]]) -> np.ndarray:
@@ -77,7 +79,7 @@ class SignatureEncoder:
 
     def unbind(self, signature: np.ndarray, role: str) -> np.ndarray:
         """Recover the bundled relation channel of one role (exact inverse of the binding)."""
-        return np.conj(self.roles[role]) * signature
+        return ReferenceAlgebra.unbind(self.roles[role], signature)
 
     @staticmethod
     def similarity(a: np.ndarray, b: np.ndarray) -> float:
