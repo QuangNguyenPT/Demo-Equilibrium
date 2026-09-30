@@ -3,7 +3,7 @@ title: "Session - 2026-09-30 - HRM-X v0.6 Constructive Concept Induction"
 type: session
 tags: [session, hrm-x, v0.6, construction, connectome, research-program]
 date: 2026-09-30
-commits: []
+commits: [5a40a66, 130a797]
 code:
   - hrm_x/construct.py
   - hrm_x/concept_memory.py
