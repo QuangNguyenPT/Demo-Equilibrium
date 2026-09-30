@@ -15,7 +15,7 @@ tags:
 |---|---|---|
 | `scripts/build_native.ps1` | Build the HRM-X native backend (C ABI, loaded by hrm_x/native via ctypes). | 30 |
 | `scripts/fetch_benchmarks.py` | Download ARC-AGI-1 and Sudoku-Extreme (test split) into data/external/ (gitignored). | 41 |
-| `scripts/knowledge_map.py` | Curated Obsidian code map: one note per subsystem, linked to the notes that govern and changed it. | 435 |
+| `scripts/knowledge_map.py` | Curated Obsidian code map: one note per subsystem, linked to the notes that govern and changed it. | 419 |
 | `scripts/make_benchmark.py` | Build a frozen benchmark (run once, keep the output). | 62 |
 | `scripts/simplify_graph.py` | Prune graphify's raw graph down to a human-reviewable graph. | 315 |
 | `scripts/update_knowledge_graph.ps1` | Update knowledge graph after modifying the project. | 178 |
@@ -30,6 +30,7 @@ tags:
 
 ## Governed by (specs, ADRs, concepts, guides)
 
+- [[ADR-008 Operator Inference over Structured Situations]]
 - [[Configuration & Hyperparameters]]
 - [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
 
@@ -50,6 +51,7 @@ none
 
 ## Recent history
 
+- 2026-09-30 5d76216 Move hrm_eqb/ to legacy/ — an audit found nothing imports it
 - 2026-09-29 f0dc2ae HRM-X v0.5: structural operator inference (ADR-010) + vault cleanup
 - 2026-09-28 d5bacb1 HRM-X v0.4: operator inference over structured situations + C++ backend (ADR-008)
 - 2026-09-27 6b28b26 HRM-X design (ADR-007, proposed) + curated code map replaces graph blobs

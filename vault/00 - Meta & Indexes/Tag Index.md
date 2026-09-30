@@ -14,11 +14,13 @@ This vault employs a structured tagging taxonomy to enable quick filtering and g
 
 > [!NOTE] Live scope
 > The tags below reflect a project that has since moved on. `hrm/` (program-search
-> baseline, ADR-003), `hrm_eqb/` (equilibrium baseline, ADR-005/006) and `hrm_x/`
-> (current model, ADR-008) are the packages that exist. The C++ engine, arena
-> allocator and C-ABI blueprint layer were **never built** and live only in
-> `legacy/`; the tags scoped as *legacy* below still describe those historical
-> notes and are kept, but nothing in the live project uses them.
+> baseline, ADR-003) and `hrm_x/` (current model, ADR-008) are the live packages;
+> `hrm_eqb/` (equilibrium baseline, ADR-005/006) was built and measured, then moved to
+> `legacy/hrm_eqb/` on 2026-09-29 with its tests under `legacy/tests/` — see
+> `legacy/README.md`. The C++ engine, arena allocator and C-ABI blueprint layer were
+> **never built** and live only in `legacy/cpp_engine/`; the tags scoped as *legacy*
+> below still describe those historical notes and are kept, but nothing in the live
+> project uses them.
 
 ---
 
@@ -43,7 +45,7 @@ This vault employs a structured tagging taxonomy to enable quick filtering and g
 
 ## Baseline Tags
 - `#hrm` — Hierarchical Reasoning Model (Wang et al. 2025) **and** the `hrm/` package, which is now the measured program-search baseline (ADR-003), not the model.
-- `#hrm-eqb` — The `hrm_eqb/` equilibrium baseline (ADR-005/006): built, measured and theorem-tested (57 tests); audited in [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]], superseded as the design target by HRM-X v0.4 and retained. Why it left, and which of its ideas [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes to re-take.
+- `#hrm-eqb` — The `hrm_eqb/` equilibrium baseline (ADR-005/006): built, measured and theorem-tested (55 tests; audited in [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]]), superseded as the design target by HRM-X v0.4. Moved to `legacy/hrm_eqb/` on 2026-09-29; its tests are `legacy/tests/`. Why it left, and which of its ideas [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes to re-take.
 - `#recurrence` — Multi-timescale iterative processing ($z_H$ and $z_L$).
 
 ## Process & Management Tags

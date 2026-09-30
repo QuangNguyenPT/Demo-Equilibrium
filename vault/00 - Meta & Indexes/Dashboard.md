@@ -32,7 +32,7 @@ answer in an independent representation.
 | Generation | Path | Role | Standing |
 | :--- | :--- | :--- | :--- |
 | `hrm_x/` | ADR-010, spec v0.5 | **Current model.** Law-closed hypothesis families fitted exactly over ℚ, determinacy, open-world coverage, VOC control, dual-solve verification. The v0.4 program-search route (`domains/arith.py`, `library.py`) stays inside it as the comparison baseline. C++ hot paths in `hrm_x/native/`. | live |
-| `hrm_eqb/` | ADR-005, ADR-006 | HRM-Phi equilibrium baseline: neural H/L trained on algebra. It measured no arithmetic (ADR-006), which is why it was replaced. | baseline |
+| `legacy/hrm_eqb/` | ADR-005, ADR-006 | HRM-Phi equilibrium baseline: neural H/L trained on algebra. It measured no arithmetic (ADR-006), which is why it was replaced. Built and measured, then moved out of the live tree on 2026-09-29 (`legacy/README.md`); its 55 tests now live in `legacy/tests/` and no longer run by default. | superseded, in `legacy/` |
 | `hrm/` | ADR-003 | The first unified cognitive model: program search over a phasor substrate. | baseline |
 | `legacy/` | ADR-001, ADR-002 | The C++ engine plus Python blueprint design. **Never integrated with the live model.** | historical |
 
@@ -88,7 +88,7 @@ flowchart TD
     end
 
     subgraph BASE["Baselines, kept for comparison"]
-        EQB["hrm_eqb/ — HRM-Phi equilibrium (ADR-005/006)"]
+        EQB["legacy/hrm_eqb/ — HRM-Phi equilibrium (ADR-005/006)"]
         HRM["hrm/ — program-search substrate model (ADR-003)"]
     end
 
@@ -121,6 +121,7 @@ reference is tested differentially (`tests/test_x_native.py`).
 | Knowledge Hub | Focus Area | Direct Link |
 | :--- | :--- | :--- |
 | **Master Index** | Complete vault graph and topic index | [[Master MOC]] |
+| **How It Works** | Architecture, the algorithms, and the current situation | [[How It Works]] |
 | **Code Map** | Which document is implemented by which file | [[Code Map]] |
 | **Current spec** | HRM-X v0.5, structural operator inference (normative) | [[HRM-X Specification v0.5 - Structural Operator Inference]] |
 | **Decision Records** | ADR-010 is current; the ADRs it replaced are kept verbatim | [[ADR-010 Structural Operator Inference]] · [[ADR-011 Reintroducing EQB Ideas into HRM-X]] |

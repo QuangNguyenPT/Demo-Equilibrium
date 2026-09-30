@@ -79,10 +79,17 @@ Authoritative: [[HRM-X Specification v0.5 - Structural Operator Inference]] ·
 | `experiments/x_perception.py` | held-out free text, scored by an independent reader | `experiments/results/x_perception.json` |
 | `experiments/x_patience.py` | learned λ against a fixed sweep over its own reachable range | `experiments/results/x_patience.json` — the learned price lost; the constant stays |
 
-## 1. `hrm_eqb/` — HRM-Φ, the superseded model, kept as a baseline
+## 1. `legacy/hrm_eqb/` — HRM-Φ, built and measured, then moved out
+
+> **Moved to `legacy/hrm_eqb/` on 2026-09-29.** An audit found that **zero** files outside its
+> own test suite imported it. `legacy/` here means *superseded and unused*; the never-built
+> thing in that folder is `legacy/cpp_engine/` (ADR-001/002), which is a different claim.
+> `hrm/` (§2) was audited the same way and **stayed**, because `scripts/make_benchmark.py`
+> imports `hrm.learning`. The module inventory is now `legacy/README.md`.
 
 Authoritative: [[HRM-EQB Specification v0.2 - Theorems and Proofs]] ·
 [[ADR-005 Neural HRM-Phi Replaces Program Search]] ·
+[[ADR-011 Reintroducing EQB Ideas into HRM-X]] ·
 [[Session - 2026-09-27 - HRM-EQB Theorems]] ·
 [[Session - 2026-09-27 - HRM-EQB Full Build]]
 
@@ -91,25 +98,29 @@ docstrings cite the spec ID they implement.
 
 | module | implements | spec ref |
 |---|---|---|
-| `hrm_eqb/algebra.py` | one state, two algebras: 2k complex planes ≡ k quaternions | §2, T1–T4 |
-| `hrm_eqb/equilibrium.py` | two-level equilibrium core + convergence certificate | §3 |
-| `hrm_eqb/certified.py` | operators with exactly known Lipschitz constants | T5, S1, N1 |
-| `hrm_eqb/gate.py` | self-improvement keep gate, provable false-keep rate | §8, G1 |
-| `hrm_eqb/neuromodulation.py` | four global hormones, projected EMA | §6, H1 |
-| `hrm_eqb/product_keys.py` | exact top-k over S1×S2 from two top-k searches | M1 |
-| `hrm_eqb/memory.py` | product-key addressing over quaternion values, bounded reads | M1, K1, K2 |
-| `hrm_eqb/knowledge.py` | `knowledge.pt` archive, rewritten in place | F2 |
-| `hrm_eqb/hrmc.py` | the whole trained core, certificate recomputed on load | F1 |
-| `hrm_eqb/attnres.py` | attention residuals over a chain of states | A1 |
-| `hrm_eqb/field.py` | task field: content/row/col/slot tokenisation | §1 |
-| `hrm_eqb/coda.py` | language coda: thinking chain → byte-level decoder | [[HRM-Phi Design Document v0.1]] |
-| `hrm_eqb/model.py` | prelude → certified equilibrium segments → heads + coda | §0 |
-| `hrm_eqb/mind.py` | the running model: core + knowledge + hormones | — |
-| `hrm_eqb/train.py` | deep-supervised loss over segments | — |
-| `hrm_eqb/tasks.py` | generated task families with exact answers | — |
-| `hrm_eqb/bench.py` | benchmark suites incl. ARC-AGI-1 | — |
-| `hrm_eqb/device.py` | device selection with a hard VRAM cap | [[GPU Safety - VRAM Oversubscription and DPC Watchdog]] |
-| `hrm_eqb/config.py`, `curiosity.py`, `study.py` | configuration, curiosity, study loop | — |
+| `algebra.py` | one state, two algebras: 2k complex planes ≡ k quaternions | §2, T1–T4 |
+| `equilibrium.py` | two-level equilibrium core + convergence certificate | §3 |
+| `certified.py` | operators with exactly known Lipschitz constants | T5, S1, N1 |
+| `gate.py` | self-improvement keep gate, provable false-keep rate | §8, G1 |
+| `neuromodulation.py` | four global hormones, projected EMA | §6, H1 |
+| `product_keys.py` | exact top-k over S1×S2 from two top-k searches | M1 |
+| `memory.py` | product-key addressing over quaternion values, bounded reads | M1, K1, K2 |
+| `knowledge.py` | `knowledge.pt` archive, rewritten in place | F2 |
+| `hrmc.py` | the whole trained core, certificate recomputed on load | F1 |
+| `attnres.py` | attention residuals over a chain of states | A1 |
+| `field.py` | task field: content/row/col/slot tokenisation | §1 |
+| `coda.py` | language coda: thinking chain → byte-level decoder | [[HRM-Phi Design Document v0.1]] |
+| `model.py` | prelude → certified equilibrium segments → heads + coda | §0 |
+| `mind.py` | the running model: core + knowledge + hormones | — |
+| `train.py` | deep-supervised loss over segments | — |
+| `tasks.py` | generated task families with exact answers | — |
+| `bench.py` | benchmark suites incl. ARC-AGI-1 | — |
+| `device.py` | device selection with a hard VRAM cap | [[GPU Safety - VRAM Oversubscription and DPC Watchdog]] |
+| `config.py`, `curiosity.py`, `study.py` | configuration, curiosity, study loop | — |
+
+Its 55 tests are in `legacy/tests/` and are **not** collected by `python -m pytest`
+(`testpaths = ["tests"]`). Run them with `$env:PYTHONPATH = "legacy"; python -m pytest
+legacy/tests -q`.
 
 ## 2. `hrm/` — the program-search baseline
 

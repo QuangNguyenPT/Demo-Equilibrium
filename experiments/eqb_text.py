@@ -17,7 +17,7 @@ learn these rules at this budget, and memorisation was not merely a data artefac
 
 GPU work goes through `select_device()` (70 % VRAM cap) with `--pause` duty cycling.
 
-Run: `python -m experiments.eqb_text --minutes 12`  (writes `experiments/results/eqb_text.json`)
+Run: `PYTHONPATH=legacy python -m experiments.eqb_text --minutes 12`  (hrm_eqb lives in legacy/)  (writes `experiments/results/eqb_text.json`)
 """
 from __future__ import annotations
 

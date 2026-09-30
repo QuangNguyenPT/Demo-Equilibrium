@@ -22,7 +22,7 @@ number that can come out wrong:
 The model directory is copied to a temporary folder first (Mind writes state on close),
 so the probe never modifies a trained model.
 
-Run: `python -m experiments.eqb_probe --model ../models/eqb-small`
+Run: `PYTHONPATH=legacy python -m experiments.eqb_probe --model ../models/eqb-small`  (hrm_eqb lives in legacy/)
      (writes `experiments/results/eqb_probe.json`; add --cuda for the capped GPU)
 """
 from __future__ import annotations

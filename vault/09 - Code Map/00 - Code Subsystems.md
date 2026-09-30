@@ -24,13 +24,6 @@ queries use `graphify query` on `graphify-out/graph.json`. Hand-written companio
 
 ## `hrm_eqb/` — HRM-EQB baseline (neural, certified)
 
-- [[EQB Algebra & Certified Maps]] — Rotation-vector text, quaternion knowledge, operators with exactly known Lipschitz constants.
-- [[EQB Equilibrium Core]] — Two-level fixed-point solver whose convergence certificate is computed from its weights.
-- [[EQB Model & Language Coda]] — Prelude transformer -> certified segments -> answer and halt heads; byte-level coda.
-- [[EQB Task Field & Generators]] — Tasks as token fields; generated families, ARC and Sudoku loaders, augmentation group.
-- [[EQB Knowledge & Model Files]] — Product-key quaternion memory, the knowledge.pt archive and the model.hrmc format.
-- [[EQB Runtime Mind]] — The running model: answer-or-question, verified writes, curiosity, hormones, keep gate.
-- [[EQB Training, Study & Bench]] — Deep-supervised training, keep/discard self-study, benchmark suites, VRAM-capped device, CLI.
 
 ## `hrm/` — program-search baseline
 
@@ -52,98 +45,69 @@ queries use `graphify query` on `graphify-out/graph.json`. Hand-written companio
 
 ```mermaid
 flowchart LR
-  S0["EQB Algebra & Certified Maps"]
-  S1["EQB Equilibrium Core"]
-  S2["EQB Model & Language Coda"]
-  S3["EQB Task Field & Generators"]
-  S4["EQB Knowledge & Model Files"]
-  S5["EQB Runtime Mind"]
-  S6["EQB Training, Study & Bench"]
-  S7["HRM-X Workspace & Rules"]
-  S8["HRM-X Mind & Induction"]
-  S9["HRM-X DSL Library"]
-  S10["HRM-X Concept Induction (v0.5)"]
-  S11["HRM-X Domains"]
-  S12["HRM-X Native Backend"]
-  S13["HRM-X Experiments"]
-  S14["HRM Substrate (FHRR)"]
-  S15["HRM Perception"]
-  S16["HRM Reasoning"]
-  S17["HRM Verification"]
-  S18["HRM Knowledge Store"]
-  S19["HRM Language"]
-  S20["HRM Metacognition"]
-  S21["HRM Learning Loops"]
-  S22["HRM Model Facade & CLI"]
-  S23["Tooling & Benchmarks"]
-  S1 --> S0
-  S4 --> S0
-  S4 --> S2
-  S4 --> S3
-  S2 --> S0
-  S2 --> S1
-  S2 --> S4
-  S2 --> S5
-  S2 --> S3
-  S5 --> S4
-  S5 --> S2
-  S5 --> S3
-  S5 --> S6
-  S6 --> S4
-  S6 --> S2
-  S6 --> S5
-  S6 --> S3
-  S18 --> S22
-  S18 --> S14
-  S19 --> S22
-  S19 --> S15
-  S21 --> S18
-  S21 --> S20
-  S21 --> S22
-  S21 --> S15
-  S21 --> S16
-  S21 --> S17
-  S20 --> S22
-  S20 --> S15
-  S22 --> S18
-  S22 --> S19
-  S22 --> S21
-  S22 --> S20
-  S22 --> S15
-  S22 --> S16
-  S22 --> S14
-  S15 --> S22
-  S15 --> S14
-  S16 --> S18
-  S16 --> S19
-  S16 --> S22
-  S16 --> S15
-  S16 --> S14
-  S16 --> S17
-  S14 --> S22
-  S17 --> S22
-  S17 --> S15
-  S10 --> S11
-  S11 --> S10
-  S11 --> S9
-  S11 --> S8
-  S11 --> S12
+  S0["HRM-X Workspace & Rules"]
+  S1["HRM-X Mind & Induction"]
+  S2["HRM-X DSL Library"]
+  S3["HRM-X Concept Induction (v0.5)"]
+  S4["HRM-X Domains"]
+  S5["HRM-X Native Backend"]
+  S6["HRM-X Experiments"]
+  S7["HRM Substrate (FHRR)"]
+  S8["HRM Perception"]
+  S9["HRM Reasoning"]
+  S10["HRM Verification"]
+  S11["HRM Knowledge Store"]
+  S12["HRM Language"]
+  S13["HRM Metacognition"]
+  S14["HRM Learning Loops"]
+  S15["HRM Model Facade & CLI"]
+  S16["Tooling & Benchmarks"]
+  S11 --> S15
   S11 --> S7
-  S13 --> S1
-  S13 --> S2
-  S13 --> S5
-  S13 --> S3
-  S13 --> S6
-  S13 --> S10
-  S13 --> S9
-  S13 --> S11
+  S12 --> S15
+  S12 --> S8
+  S14 --> S11
+  S14 --> S13
+  S14 --> S15
+  S14 --> S8
+  S14 --> S9
+  S14 --> S10
+  S13 --> S15
   S13 --> S8
-  S13 --> S12
+  S15 --> S11
+  S15 --> S12
+  S15 --> S14
+  S15 --> S13
+  S15 --> S8
+  S15 --> S9
+  S15 --> S7
+  S8 --> S15
   S8 --> S7
-  S12 --> S7
-  S7 --> S8
-  S7 --> S12
-  S23 --> S21
+  S9 --> S11
+  S9 --> S12
+  S9 --> S15
+  S9 --> S8
+  S9 --> S7
+  S9 --> S10
+  S7 --> S15
+  S10 --> S15
+  S10 --> S8
+  S3 --> S4
+  S4 --> S3
+  S4 --> S2
+  S4 --> S1
+  S4 --> S5
+  S4 --> S0
+  S6 --> S3
+  S6 --> S2
+  S6 --> S4
+  S6 --> S1
+  S6 --> S5
+  S1 --> S0
+  S5 --> S0
+  S0 --> S1
+  S0 --> S5
+  S16 --> S14
 ```
 
 ## What each session changed
@@ -153,8 +117,7 @@ flowchart LR
 | [[Session - 2026-09-26 - Foundation & Research]] | Tooling & Benchmarks |
 | [[Session - 2026-09-27 - Benchmark v2 and the Reasoning Ceiling]] | HRM Learning Loops, HRM Perception, HRM Reasoning, HRM Verification, Tooling & Benchmarks |
 | [[Session - 2026-09-27 - Graph Rebuild and Benchmarks]] | Tooling & Benchmarks |
-| [[Session - 2026-09-27 - HRM-EQB Full Build]] | EQB Algebra & Certified Maps, EQB Equilibrium Core, EQB Knowledge & Model Files, EQB Model & Language Coda, EQB Runtime Mind, EQB Task Field & Generators, EQB Training, Study & Bench, Tooling & Benchmarks |
-| [[Session - 2026-09-27 - HRM-EQB Theorems]] | EQB Algebra & Certified Maps, EQB Equilibrium Core, EQB Runtime Mind |
+| [[Session - 2026-09-27 - HRM-EQB Full Build]] | Tooling & Benchmarks |
 | [[Session - 2026-09-27 - Understanding by Construction]] | Tooling & Benchmarks |
 | [[Session - 2026-09-27 - Unified Model Build]] | HRM Knowledge Store, HRM Language, HRM Learning Loops, HRM Metacognition, HRM Model Facade & CLI, HRM Perception, HRM Reasoning, HRM Substrate (FHRR), HRM Verification |
 | [[Session - 2026-09-28 - DSL Growth, Free Text, and the Graph Pipeline]] | HRM-X DSL Library, HRM-X Domains, HRM-X Experiments, HRM-X Mind & Induction, Tooling & Benchmarks |

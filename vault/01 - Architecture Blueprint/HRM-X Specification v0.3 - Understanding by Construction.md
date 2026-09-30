@@ -28,6 +28,10 @@ related:
 > [[ADR-007 Grounded Algebra and Executable Concepts]] redesign it proposed
 > became v0.4. The diagnosis in Part I below is still a valid record of the
 > `hrm_eqb/` measurements that motivated the change.
+>
+> **Moved to `legacy/hrm_eqb/` on 2026-09-29.** The `hrm_eqb/` package this diagnosis cites was
+> built and measured, then moved out of the live tree; an audit found zero files outside its
+> own test suite importing it (see `legacy/README.md`). Kept verbatim as the design record.
 
 > **One-line thesis.** Learn *conventions* by pattern and derive *necessities* by structure.
 > The word "seven" and the phrase "times" are conventions, so a transformer learns them.
@@ -519,6 +523,10 @@ English coverage are learned or empirical. They are measured on Part V.
 | `hrm/` enumerative synthesis | replaced by $q_\theta$-guided search (§7); its DSL becomes the primitive layer |
 
 `hrm_eqb/` stays runnable as the measured baseline, as `hrm/` did after ADR-005.
+
+> **Moved to `legacy/hrm_eqb/` on 2026-09-29.** The baseline is no longer runnable from the
+> repo root; it is run from `legacy/` (`PYTHONPATH=legacy`). Its 55 tests are in
+> `legacy/tests/` and no longer collected by the default `pytest` run.
 
 ---
 

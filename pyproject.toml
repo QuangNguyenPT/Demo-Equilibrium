@@ -14,7 +14,8 @@ test = ["pytest>=8"]
 eqb = ["torch>=2.4"]
 
 [tool.setuptools.packages.find]
-include = ["hrm", "hrm.*", "hrm_eqb", "hrm_eqb.*", "hrm_x", "hrm_x.*", "experiments", "experiments.*"]
+include = ["hrm", "hrm.*", "hrm_x", "hrm_x.*", "experiments", "experiments.*"]
+
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

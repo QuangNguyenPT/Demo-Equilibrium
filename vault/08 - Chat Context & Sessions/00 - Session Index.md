@@ -111,6 +111,9 @@ Track how project decisions flowed:
 | ADR-011 | [[ADR-011 Reintroducing EQB Ideas into HRM-X]] | measured — A falsified, B/C not built | ADR-012 |
 | ADR-012 | [[ADR-012 EQB and HRM-X Audit - Linear Core, Recalled Language, Live BOTTOM]] | **accepted** | — |
 
-`hrm/` = program-search baseline · `hrm_eqb/` = HRM-Φ equilibrium baseline (57 tests
-still run) · `hrm_x/` = current model (**HRM-X v0.5**, normative spec v0.5,
-ADR-010, audited in ADR-012). **Gates G3, G4 and G5 are open** — see ADR-010 and ADR-012 before quoting a headline.
+`hrm/` = program-search baseline (still live — `scripts/make_benchmark.py` imports
+`hrm.learning`) · `legacy/hrm_eqb/` = HRM-Φ equilibrium baseline, built and measured,
+moved out of the live tree on 2026-09-29 (its 55 tests are in `legacy/tests/`, run with
+`PYTHONPATH=legacy python -m pytest legacy/tests -q`) · `hrm_x/` = current model
+(**HRM-X v0.5**, normative spec v0.5, ADR-010). **Gates G3, G4 and G5 are open** (ADR-012) — see
+ADR-010 before quoting a headline.

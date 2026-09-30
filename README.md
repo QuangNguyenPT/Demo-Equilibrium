@@ -14,9 +14,10 @@ is measured against.
 - **Normative design:** `vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md`
 - **Decision record:** `vault/06 - Devlogs & ADRs/ADR-010 Structural Operator Inference.md`
 - **Previous:** spec v0.4 and ADR-008, program search over a hand-written DSL.
-- `python -m pytest` → **442 passed, 1 skipped** (native DLL built). 132 of those are HRM-X (`tests/test_x_*.py`,
-  including differential parity for the C++ backend), 57 are the `hrm_eqb` theorem and runtime
-  tests, and the rest cover `hrm/` and the vault tooling.
+- `python -m pytest` → **385 passed, 1 skipped**. 132 of those are HRM-X (`tests/test_x_*.py`,
+  including differential parity for the C++ backend); the rest cover `hrm/` and the vault tooling.
+  The 57 `hrm_eqb` tests moved with the package to `legacy/` and no longer run by default —
+  see [Legacy](#legacy).
 - **Gates G1–G2 are closed; G3 and G4 are open.** ADR-010 measured the v0.5 route at 5 confident
   wrong answers out of 6 on out-of-language operators. ADR-012 found the cause — the spec's
   BOTTOM ("outside my language") hypothesis was cancelling out inside `Mind` — and fixed it:
@@ -169,19 +170,20 @@ task list by 14 ops out of 1618, so on these operators the open-world machinery 
 and the delivery's answer threshold `L = 4` abstains on **21 of 21** here, because before any
 verification `rho` is 0.8 and `(1+4)(0.8) − 4 = 0` exactly.
 
-## Three generations, all still in the tree
+## The model, and the two older generations
 
 | Package | Size | Role | Status |
 |---|---|---|---|
 | `hrm_x/` | 20 py, 4,339 lines (non-blank) + 545 lines of C++ | **HRM-X v0.5, the current model.** Structural operator inference: law-closed families fitted exactly over ℚ, determinacy, open-world coverage, VOC control, independent verifiers. The v0.4 program-search route is kept inside it as the comparison baseline. | Current (ADR-010, spec v0.5) |
-| `hrm_eqb/` | 23 py, 2,427 lines | HRM-Phi equilibrium baseline: a two-level solver whose convergence certificate is recomputed from the weights at load. | Superseded as the target; kept as a reference and for its theorem tests |
-| `hrm/` | 49 py, 4,991 lines | Program-search baseline: numpy-first, FHRR substrate, SSD knowledge store, learning loops. | Superseded (ADR-003); kept as teacher, judge and ablation baseline |
+| `legacy/hrm_eqb/` | 23 py, 2,427 lines | HRM-Phi equilibrium: a two-level solver whose convergence certificate is recomputed from the weights at load. | **Moved to `legacy/` 2026-09-29** — superseded, and an audit found no non-test code imports it |
+| `hrm/` | 49 py, 4,991 lines | Program-search baseline: numpy-first, FHRR substrate, SSD knowledge store, learning loops. | Superseded (ADR-003) but **still live**: `scripts/make_benchmark.py` imports `hrm.learning` to generate the frozen benchmark |
 
-Line counts are non-blank source lines, excluding `__pycache__`. The three coexisting
-generations are deliberate: each is a baseline for the next, and the older ones carry the
-negative results that justify the current design.
+Line counts are non-blank source lines, excluding `__pycache__`. `hrm/` stays in the tree
+because something still builds on it. `legacy/hrm_eqb/` moved out because nothing did — and
+`legacy/` keeps both its contents and the negative results that justify the current design.
+See [Legacy](#legacy) for what lives there and how to run its tests.
 
-### Generation 2, in brief: `hrm_eqb/` (ADR-005, spec v0.2)
+### Generation 2, in brief: `legacy/hrm_eqb/` (ADR-005, spec v0.2)
 
 Two-level reasoning core, contractive for every weight value, so thinking provably converges
 and the halting rule carries a certified error bound recomputed from the weights each time the
@@ -190,8 +192,9 @@ certificate claims, probe logits, SHA-256s — the loader recomputes `Γ` and `r
 norms, re-runs the probes, and refuses a corrupted or forged file), `knowledge.pt` (quaternion
 values, keys, usage, confidence; rows are rewritten in place through a write-ahead journal), a
 `state.json` and a `results.tsv` self-study ledger. Theorem checks live in
-`tests/test_eqb_theorems.py` (§2–§8) and are mutation-tested. ADR-006 recorded what it does
-*not* do: it learned patterns, and no arithmetic.
+`legacy/tests/test_eqb_theorems.py` (§2–§8) and are mutation-tested. ADR-006 recorded what it
+does *not* do: it learned patterns, and no arithmetic. ADR-011 sets out which of its ideas
+are worth re-taking, and why the rest are not.
 
 ### Generation 1, in brief: `hrm/` (ADR-003, program search)
 
@@ -243,11 +246,41 @@ understanding exists only where a domain has an exact check. An earlier note her
 C++ "would not pay off yet" — that measurement was about BLAS matmuls, not about this repo's
 actual hot paths, and it is now false: see the native backend section above.
 
+## Legacy
+
+`legacy/` is out of the live tree. Nothing in `hrm_x/`, `experiments/` or `scripts/` imports
+any of it, and `pyproject.toml` does not package it. It holds two different things and they
+are not the same claim:
+
+- **`legacy/cpp_engine/`** — the ADR-001/002 C++ engine and Python blueprint. **Never built.**
+  Only the C-ABI boundary survived, re-landed scoped to the e-graph as
+  `hrm_x/native/include/hrmx.h`.
+- **`legacy/hrm_eqb/`** — HRM-Φ / HRM-EQB. **Built, measured, then superseded.** It scored
+  ARC 0.000 and sudoku_extreme 0.000, and its 55 tests all passed. It moved here on
+  2026-09-29 because an audit found **zero** files outside its own test suite imported it.
+  [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes which three of its ideas are worth
+  re-taking; the rest stay as the record of why the current design exists.
+
+Its tests are out of `testpaths`, so `python -m pytest` does not collect them. Run
+them by path — `legacy/conftest.py` puts that directory on `sys.path`:
+
+```powershell
+python -m pytest legacy/tests -q                          # 1 failed, 57 passed
+```
+
+All 55 EQB tests pass. The one failure is `test_blueprint.py`, which wants the
+compiled ADR-001 engine that was never built — pre-existing and unrelated.
+
+The knowledge graph excludes `legacy/` on purpose (`.graphifyignore`): these symbols must
+never surface in an `affected` query against `hrm_x/`.
+
+---
+
 ## Quick start
 
 ```powershell
 python -m pip install numpy pytest                      # HRM-X itself needs numpy only
-python -m pytest                                        # 442 passed, 1 skipped
+python -m pytest                                        # 385 passed, 1 skipped
 .\scripts\build_native.ps1                              # optional, enables the C++ backend
 
 python -m experiments.x_arith                           # E1, E2, E12 + kNN / MLP baselines
@@ -261,8 +294,8 @@ python -m experiments.x_native                          # differential parity + 
 Each runner writes `experiments/results/<name>.json`; nothing is claimed here that is not in one
 of those files. `experiments/common.py` holds the shared seeds, splits and baselines.
 
-The older generations still have their own CLIs (`python -m hrm …`, `python -m hrm_eqb …`); see
-`CLAUDE.md` for those.
+`python -m hrm …` is still the CLI for the program-search package. The EQB CLI moved with its
+package and needs the path: `$env:PYTHONPATH = "legacy"; python -m hrm_eqb …`. See `CLAUDE.md`.
 
 ## Repository
 
@@ -273,17 +306,19 @@ hrm_x/              HRM-X v0.5, the current model (workspace, rules, induction, 
   domains/          concept (v0.5 structural route), arith (v0.4 search + residue verifier),
                     story (parser + situation), grid
   native/           C ABI, egraph.cpp, grid.cpp, ctypes wrapper
-hrm_eqb/            HRM-EQB baseline: certified core, field, memory, files, mind, study, bench, CLI
+legacy/hrm_eqb/       HRM-EQB (moved out 2026-09-29): certified core, field, memory, files,
+                    mind, study, bench, CLI — no non-test code imports it
 hrm/                ADR-003 program-search baseline (substrate, perception, reasoning, verify,
                     knowledge, language, metacognition, learning, core, model, CLI)
 experiments/        x_arith, x_story, x_grid, x_control, x_metacog, x_native, common
-                    results/ holds the 8 recorded JSON results
-tests/              pytest suite, 20 files: one per ADR-003 section, test_eqb_*, test_x_*
+                    results/ holds the 12 recorded JSON results
+tests/              pytest suite, 20 files: the ADR-003 sections and test_x_*
 scripts/            update_knowledge_graph.ps1, knowledge_map.py, simplify_graph.py,
                     build_native.ps1, make_benchmark.py, fetch_benchmarks.py
 data/benchmark/     frozen benchmarks v1, v2 (data/external/ holds downloaded ARC + Sudoku)
 vault/              Obsidian knowledge vault (specs, ADRs, session logs, code map)
-legacy/             superseded ADR-001 C++ GRU engine + blueprint (reference only)
+legacy/             out of the live tree: superseded hrm_eqb/ (with its 55 tests) and the
+                    never-built ADR-001 C++ engine; see legacy/README.md
 graphify-out/       the raw knowledge graph; the full graph is what `query`/`path`/`affected` read
 models/, runs/      gitignored trained artifacts and logs
 docs/               Executive Summary.pdf and the two reference papers

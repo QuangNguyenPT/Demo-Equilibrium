@@ -15,8 +15,11 @@ Every session MUST complete these steps before touching code:
 
 ### Per-Prompt Checklist (before implementing any change)
 
-- [ ] Does this change a certified map, routing normalization, or σ **inside `hrm_eqb/`**? → `test_eqb_theorems.py` must stay green. (Those invariants are a constraint on that package only; `hrm_x/` neither imports it nor inherits any of them.)
-- [ ] Is this a CUDA command? → only through `hrm_eqb.device.select_device()` (70% VRAM cap). `hrm_x/` is CPU-only and needs no CUDA.
+- [ ] Are you editing `legacy/hrm_eqb/`? → it is out of the live tree; nothing in `hrm_x/`,
+      `experiments/` or `scripts/` may import it, and its 55 tests need `PYTHONPATH=legacy` to run.
+      If you are touching live code, the answer is always no.
+- [ ] Is this a CUDA command? → `hrm_x/` is CPU-only and needs none. Legacy EQB training used
+      `hrm_eqb.device.select_device()` (70% VRAM cap).
 - [ ] Is this editing a frozen benchmark or `hrm/learning/harness.py`? → STOP, make a new version instead
 - [ ] Does this affect training? → check checkpoint exists, use `--pause 0.15` on GPU
 - [ ] Does this touch `hrm_x/native/` or a Python function it mirrors? → rebuild (`.\scripts\build_native.ps1`) and keep `tests/test_x_native.py` (differential parity) green
@@ -39,8 +42,8 @@ Engineering hybrid AI architecture combining Hierarchical Reasoning Model (HRM) 
 ## Repo Structure (as built today, 2026-09-28)
 
 This is the **current** structure, not one ADR's. ADR-003 refers to the `hrm/` baseline
-(generation 1) and ADR-005 to `hrm_eqb/` (generation 2); the live implementation since ADR-008
-is `hrm_x/`, listed last because it was added after the other two.
+(generation 1) and ADR-005 to `hrm_eqb/` (generation 2, now at `legacy/hrm_eqb/`); the live
+implementation since ADR-008 is `hrm_x/`, listed last because it was added after the other two.
 
 ```
 hrm/                       the ADR-003 program-search baseline, numpy-first (torch only for the
@@ -57,20 +60,14 @@ hrm/                       the ADR-003 program-search baseline, numpy-first (tor
   core.py                  core weights <-> JSON (per generation)
   model.py                 Model facade = one bundle directory; human controls
   __main__.py              CLI: python -m hrm create|ask|feedback|explain|sleep|study|report|...
-hrm_eqb/                   HRM-EQB (torch): baseline (ADR-005, spec v0.2 incl. §14); superseded as
-                           the target, kept for its theorem tests and as a reference
-  algebra.py               rotation-vector text (complex planes) + quaternion knowledge (4-D)
-  certified.py             Cayley x sigmoid-diag weights, sub-stochastic routing, radial ReLU
-  equilibrium.py           L/H equilibrium core; certificate (Γ, r_n) from SVD norms; halting
-  tasks.py / field.py      generated families + ARC/Sudoku loaders; token field, augmentation
-  model.py                 prelude -> certified segments -> answer/halt heads; coda.py (language)
-  memory.py / knowledge.py quaternion product-key memory; knowledge.pt (in-place rows, WAL, seal)
-  hrmc.py                  model.hrmc: full core, recomputed certificate, probes, forgery refused
-  train.py / mind.py       training (checkpointed); runtime Answer-or-Question, verified writes
-  study.py / bench.py      autoresearch-style keep/discard (G1); benchmark suites
-  device.py                select_device(): VRAM cap (see GPU Safety note)
-  __main__.py              CLI: python -m hrm_eqb create|info|ask|learn|study|bench|seal
-tests/                     pytest; test_eqb_theorems.py (§2-8), test_eqb_model.py + test_eqb_runtime.py (§14); test_x_*.py (HRM-X)
+legacy/hrm_eqb/             HRM-EQB (torch). MOVED OUT 2026-09-29: an audit found zero files
+                           outside its own test suite importing it. Legacy = superseded, NOT
+                           never-built; legacy/cpp_engine/ (ADR-001) is the never-built one.
+                           Its 55 tests live in legacy/tests/ and need PYTHONPATH=legacy.
+legacy/cpp_engine/         ADR-001/002 C++ engine + Python blueprint. NEVER BUILT.
+tests/                     pytest; the ADR-003 sections and test_x_*.py (HRM-X). 381 tests.
+legacy/tests/              out of testpaths: test_eqb_theorems.py (§2-8), test_eqb_model.py +
+                           test_eqb_runtime.py (§14), test_blueprint.py (ADR-001)
 data/benchmark/            frozen benchmark v1 (never overwrite; make v2)
 hrm_x/                     HRM-X v0.5 (ADR-010): structural operator inference, CPU only
   qlinalg.py               exact RREF / rank / solve / row-space membership over Q (stdlib only)
@@ -110,12 +107,13 @@ FlashAttention kernel, MoE or MXFP4, and the ACT Q-learning head is a supervised
 "is this answer right" halting head instead. `hrm/` remains the numpy
 program-search model of ADR-003/004.
 
-**Superseded (2026-09-28).** `hrm_eqb/` is no longer the target: it is a baseline
-now. The live implementation is **`hrm_x/`** (HRM-X v0.4, ADR-008, spec v0.4), which has
-no transformer stack at all beyond the story role-tagger. Therefore **none** of the following
-is live advice: candidates A–E, "FlashAttention (must-have)" below, and the "Recommended
-starting point: Architecture A + ACT-style halting" line. All are kept only as the record of
-what was considered. ADR-008 "Rejected" gives the measured reason.
+**Superseded (2026-09-28; replaced again 2026-09-29).** `hrm_eqb/` stopped being the target
+on 2026-09-28 and was **moved to `legacy/hrm_eqb/`** on 2026-09-29 once an audit showed no
+non-test code imports it. The live implementation is **`hrm_x/`** — HRM-X **v0.5** (ADR-010,
+spec v0.5) — which has no transformer stack at all beyond the story role-tagger. Therefore
+**none** of the following is live advice: candidates A–E, "FlashAttention (must-have)" below,
+and the "Recommended starting point: Architecture A + ACT-style halting" line. All are kept
+only as the record of what was considered. ADR-008 "Rejected" gives the measured reason.
 - **A (Separate HRM Module):** LLM encoder → HRM reasoning → decoder. Modular, reusable, trains as add-on.
 - **B (Hierarchical Inside Transformer):** Recurrent loops embedded in layers. Hard to train, breaks parallelism.
 - **C (Latent Reasoning Loop):** Extra hidden-state updates between tokens. Simple, but slow inference.
@@ -277,6 +275,7 @@ python -m pytest                                   # full suite (~45 s)
 python scripts/fetch_benchmarks.py                 # ARC-AGI-1 + Sudoku-Extreme -> data/external/ (gitignored)
 python -m experiments.x_arith                      # HRM-X experiments (also x_story, x_grid, x_control, x_metacog, x_native)
 .\scripts\build_native.ps1                          # HRM-X C++ backend; HRMX_BACKEND=python|native|auto selects it
+$env:PYTHONPATH = "legacy"                          # the EQB package now lives under legacy/
 python -m hrm_eqb create models/eqb-small --minutes 120 --arc-train data/external/arc/training
 python -m hrm_eqb bench models/eqb-small --suites generated,language,sudoku,arc,empty_brain,schedule
 python -m hrm_eqb ask models/eqb-small task.json   # Answer, or a Question with candidates + bits
@@ -390,10 +389,17 @@ Use normal mode for:
 
 **Last updated:** 2026-09-29  
 **Current (ADR-010 + ADR-012 audit, 2026-09-29):** HRM-X v0.5 in `hrm_x/` is the model; spec `vault/01 - Architecture Blueprint/HRM-X Specification v0.5 - Structural Operator Inference.md`. A hypothesis is a law-closed family fitted exactly over ℚ rather than a program found by enumeration, and verification is the dual solve `A^T λ = r`. Python is the reference; C++ (`hrm_x/native/`) runs profiled hot paths only, and exact `Fraction` arithmetic stays in Python. Modulators are only the signals with a computational role; do not add others without an ablation. **Gates G3, G4 and G5 are open** — read ADR-010 and ADR-012 before quoting any headline. Since ADR-012 the spec's BOTTOM hypothesis is a real `Mind` hypothesis (`OUTSIDE` in `hrm_x/mind.py`); before that it cancelled out, so do not reintroduce weight normalisation that drops it. `bits_bottom` is now load-bearing. Native backend: **identical results, grid 3.79×, arithmetic 1.47×** (`experiments/results/x_native.json`), built by `.\scripts\build_native.ps1`, selected by `HRMX_BACKEND=python|native|auto`.
-**Baselines, superseded as the target on 2026-09-28.** `hrm_eqb/` (ADR-005/006) is the neural equilibrium package and `hrm/` (ADR-003) the program-search one. Both are fully built, measured and kept. `hrm_eqb/`'s spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md` (§14 = construction lemmas); its measured scores are generated 0.298, language 0.983, schedule_invariance 1.000, **sudoku_extreme 0.000, ARC 0.000**, and a probe found **no arithmetic** (additive-consistency error re-measured at 1.34 against a 1.40 ± 0.015 shuffled-label null; ADR-006 recorded 1.39 vs 1.41 on the original run). Why it left, and which of its ideas [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes to re-take.
-**Rule, and its scope (the previous version of this file contradicted itself here).** The `hrm_eqb/` invariants — certified maps, sub-stochastic routing, σ — are a constraint **on `hrm_eqb/` only**. ADR-008: they "do not apply to `hrm_x/`, which is CPU-only and needs no CUDA." If you change a certified map, the routing normalization or σ, then `tests/test_eqb_theorems.py` must stay green, because those proofs depend on them. That is not a project-wide obligation and it is not a reason to carry any of it into `hrm_x/`.
-**HRM-EQB audit (ADR-012):** at the shipped `shrink=0` the equilibrium core is linear in its injections (a resolvent, not a nonlinear reasoner); more cycles/segments do not change accuracy; the language score is recall of the 90-word list (`text_source="letters"` in `hrm_eqb/tasks.py` removes it). Measure with `python -m experiments.eqb_probe --model <dir>` before claiming anything about what EQB learned.
-**GPU rule (two crashes, 2026-09-27), scoped to `hrm_eqb/`:** all CUDA work goes through `hrm_eqb.device.select_device()` (70 % VRAM cap) with pair/token-budgeted batches; probe peak memory on a worst-case batch before any long run; stop background jobs only by task ID. See `vault/05 - Engineering & Guides/GPU Safety - VRAM Oversubscription and DPC Watchdog.md`. `hrm_x/` is CPU-only and does not need this.
+**Baselines.** `legacy/hrm_eqb/` (ADR-005/006) is the neural equilibrium package — **moved out
+of the live tree on 2026-09-29**, because an audit found zero non-test code imports it — and
+`hrm/` (ADR-003) is the program-search one, which **stayed** because
+`scripts/make_benchmark.py` imports `hrm.learning`. Both were fully built and measured.
+`hrm_eqb/`'s spec is `vault/01 - Architecture Blueprint/HRM-EQB Specification v0.2 - Theorems and Proofs.md` (§14 = construction lemmas); its measured scores are generated 0.298, language 0.983, schedule_invariance 1.000, **sudoku_extreme 0.000, ARC 0.000**, and a probe found **no arithmetic** (additive-consistency error re-measured at 1.34 against a 1.40 ± 0.015 shuffled-label null; ADR-006 recorded 1.39 vs 1.41 on the original run). Why it left, and which of its ideas [[ADR-011 Reintroducing EQB Ideas into HRM-X]] proposes to re-take.
+**Rule, and its scope (the previous version of this file contradicted itself here).** The `hrm_eqb/` invariants — certified maps, sub-stochastic routing, σ — were a constraint **on that package only**. ADR-008: they "do not apply to `hrm_x/`, which is CPU-only and needs no CUDA." They now live in `legacy/`, so editing one is a deliberate act of archaeology, not routine work.
+**HRM-EQB audit (ADR-012):** at the shipped `shrink=0` the equilibrium core is linear in its injections (a resolvent, not a nonlinear reasoner); more cycles/segments do not change accuracy; the language score is recall of the 90-word list (`text_source="letters"` in `legacy/hrm_eqb/tasks.py` removes it). Measure with `PYTHONPATH=legacy python -m experiments.eqb_probe --model <dir>` before claiming anything about what EQB learned.
+**GPU rule (two crashes, 2026-09-27), now historical:** EQB training went through
+`hrm_eqb.device.select_device()` (70 % VRAM cap) with pair/token-budgeted batches. See
+`vault/05 - Engineering & Guides/GPU Safety - VRAM Oversubscription and DPC Watchdog.md`.
+`hrm_x/` is CPU-only and has never needed this.
 **Git:** branch `feat/hrm-x-v04`, tracking `origin/feat/hrm-x-v04`; commit per phase with the full suite green. (The previous text named `feat/hrm-eqb-full`, a pre-baseline state.)
 
 ## Knowledge Graph — Auto-Update Rule
@@ -424,8 +430,8 @@ Graph written to `graphify-out/` and synced to `vault/` automatically.
 ## PEM Integration Notes (2026-09-26) — superseded by ADR-003, pointing at the `hrm/` baseline
 
 These notes describe the legacy C++ engine (now in `legacy/`) and the **superseded `hrm/`
-ADR-003 program-search baseline** — *not* the current model (`hrm_x/`, ADR-008) and not
-`hrm_eqb/`. In particular `hrm/reasoning/qhead.py` is dead history: the 9-feature Q-head was
+ADR-003 program-search baseline** — *not* the current model (`hrm_x/`, ADR-010) and not
+`legacy/hrm_eqb/`. In particular `hrm/reasoning/qhead.py` is dead history: the 9-feature Q-head was
 never wired for training and has no successor in HRM-X, whose H level is a
 value-of-computation controller, not a Q-head. Keep these files only as a record of the port.
 The PEM port lives in `hrm/`:
