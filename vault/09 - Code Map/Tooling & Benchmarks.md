@@ -15,7 +15,7 @@ tags:
 |---|---|---|
 | `scripts/build_native.ps1` | Build the HRM-X native backend (C ABI, loaded by hrm_x/native via ctypes). | 30 |
 | `scripts/fetch_benchmarks.py` | Download ARC-AGI-1 and Sudoku-Extreme (test split) into data/external/ (gitignored). | 41 |
-| `scripts/knowledge_map.py` | Curated Obsidian code map: one note per subsystem, linked to the notes that govern and changed it. | 435 |
+| `scripts/knowledge_map.py` | Curated Obsidian code map: one note per subsystem, linked to the notes that govern and changed it. | 419 |
 | `scripts/make_benchmark.py` | Build a frozen benchmark (run once, keep the output). | 62 |
 | `scripts/simplify_graph.py` | Prune graphify's raw graph down to a human-reviewable graph. | 315 |
 | `scripts/update_knowledge_graph.ps1` | Update knowledge graph after modifying the project. | 178 |
@@ -30,6 +30,7 @@ tags:
 
 ## Governed by (specs, ADRs, concepts, guides)
 
+- [[ADR-008 Operator Inference over Structured Situations]]
 - [[Configuration & Hyperparameters]]
 - [[HRM-X Specification v0.4 - Operator Inference over Structured Situations]]
 

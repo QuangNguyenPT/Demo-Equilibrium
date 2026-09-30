@@ -239,10 +239,14 @@ would be the "registry lookup dressed up as reasoning" the README rules out.
 
 ## 8. What this does not change
 
-`hrm_eqb/` remains a baseline and not the target. Its 55 tests keep running, its
-theorem corpus keeps its file, and nothing above resurrects the package or its
-architecture. What is proposed is EQB's *method* — certify the quantity, not the
-model — applied to the objects HRM-X already computes.
+`hrm_eqb/` remains a baseline and not the target. It was moved out of the live tree to
+`legacy/hrm_eqb/` on 2026-09-29 (see `legacy/README.md`), and its 55 tests moved to
+`legacy/tests/` with it, so they no longer run in the default suite
+(`testpaths = ["tests"]`). Run them explicitly with
+`PYTHONPATH=legacy python -m pytest legacy/tests -q`. Its theorem corpus keeps its file,
+and nothing above resurrects the package or its architecture. What is proposed is EQB's
+*method* — certify the quantity, not the model — applied to the objects HRM-X already
+computes.
 
 ## Attribution
 

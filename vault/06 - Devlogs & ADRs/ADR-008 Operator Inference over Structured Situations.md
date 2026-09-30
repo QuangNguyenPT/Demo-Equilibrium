@@ -31,6 +31,12 @@ record is kept verbatim as the decision record.
 - It supersedes the ADR-007 design (v0.3): grounded algebra survives as the *verifier's*
   representation, and executable concepts become programs inferred from evidence.
 - `hrm_eqb/` and `hrm/` stay as baselines and references.
+- **Moved to `legacy/hrm_eqb/` on 2026-09-29.** The equilibrium baseline named above was
+  built and measured, then moved out of the live tree; an audit found zero files outside
+  its own test suite importing it (see `legacy/README.md`). Its 55 tests are in
+  `legacy/tests/` and are run with `PYTHONPATH=legacy python -m pytest legacy/tests -q`,
+  not by the default suite. `hrm/` is still a live package (`scripts/make_benchmark.py`
+  imports `hrm.learning`).
 
 Labels: [E] established, [R] measured here, [H] hypothesis, [U] unresolved.
 

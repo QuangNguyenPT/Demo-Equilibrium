@@ -19,7 +19,7 @@ def test_every_module_belongs_to_a_subsystem():
 
 
 def test_assign_prefers_exact_then_longest_prefix():
-    assert km.assign("hrm_eqb/mind.py") == "EQB Runtime Mind"
+    assert km.assign("hrm_x/mind.py") == "HRM-X Mind & Induction"
     assert km.assign("hrm/perception/grid/programs.py") == "HRM Perception"
     assert km.assign("hrm/model.py") == "HRM Model Facade & CLI"
     assert km.assign("tests/test_cli.py") is None
@@ -41,10 +41,10 @@ def test_imports_resolve_absolute_relative_and_submodule_from_package(tmp_path):
 
 def test_mentions_accept_full_paths_and_packages_never_bare_names():
     """Bare names are rejected: old notes say `train.py` for files that later moved to legacy/."""
-    known = ["hrm_eqb/mind.py", "hrm_eqb/train.py", "hrm/reasoning/equilibrium.py", "hrm/reasoning/qhead.py"]
-    text = "Edited `hrm_eqb/mind.py` and the whole hrm/reasoning/ package; see train.py and legacy/train.py."
+    known = ["hrm_x/mind.py", "hrm_x/writer.py", "hrm/reasoning/equilibrium.py", "hrm/reasoning/qhead.py"]
+    text = "Edited `hrm_x/mind.py` and the whole hrm/reasoning/ package; see writer.py and legacy/writer.py."
     got = km.mentions(text, known)
-    assert got == {"hrm_eqb/mind.py", "hrm/reasoning/equilibrium.py", "hrm/reasoning/qhead.py"}
+    assert got == {"hrm_x/mind.py", "hrm/reasoning/equilibrium.py", "hrm/reasoning/qhead.py"}
 
 
 def test_frontmatter_commits_inline_and_list_forms():

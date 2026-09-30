@@ -27,7 +27,7 @@ from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 OUT_DIR = Path("vault") / "09 - Code Map"
 MARKER = "generated: knowledge_map"
-CODE_ROOTS = ("hrm", "hrm_eqb", "hrm_x", "experiments", "scripts")
+CODE_ROOTS = ("hrm", "hrm_x", "experiments", "scripts")
 CODE_SUFFIXES = (".py", ".ps1", ".cpp", ".h")
 SKIP_NOTE_DIRS = ("07 - Templates", "09 - Code Map", "_graph-view")
 INDEX_DIRS = ("00 - Meta & Indexes",)
@@ -43,28 +43,12 @@ class Subsystem:
 
 
 SUBSYSTEMS: Tuple[Subsystem, ...] = (
-    Subsystem("EQB Algebra & Certified Maps",
-              "Rotation-vector text, quaternion knowledge, operators with exactly known Lipschitz constants.",
-              ("hrm_eqb/algebra.py", "hrm_eqb/certified.py", "hrm_eqb/product_keys.py")),
-    Subsystem("EQB Equilibrium Core",
-              "Two-level fixed-point solver whose convergence certificate is computed from its weights.",
-              ("hrm_eqb/equilibrium.py", "hrm_eqb/attnres.py")),
-    Subsystem("EQB Model & Language Coda",
-              "Prelude transformer -> certified segments -> answer and halt heads; byte-level coda.",
-              ("hrm_eqb/model.py", "hrm_eqb/coda.py", "hrm_eqb/config.py", "hrm_eqb/__init__.py")),
-    Subsystem("EQB Task Field & Generators",
-              "Tasks as token fields; generated families, ARC and Sudoku loaders, augmentation group.",
-              ("hrm_eqb/field.py", "hrm_eqb/tasks.py")),
-    Subsystem("EQB Knowledge & Model Files",
-              "Product-key quaternion memory, the knowledge.pt archive and the model.hrmc format.",
-              ("hrm_eqb/memory.py", "hrm_eqb/knowledge.py", "hrm_eqb/hrmc.py")),
-    Subsystem("EQB Runtime Mind",
-              "The running model: answer-or-question, verified writes, curiosity, hormones, keep gate.",
-              ("hrm_eqb/mind.py", "hrm_eqb/curiosity.py", "hrm_eqb/neuromodulation.py", "hrm_eqb/gate.py")),
-    Subsystem("EQB Training, Study & Bench",
-              "Deep-supervised training, keep/discard self-study, benchmark suites, VRAM-capped device, CLI.",
-              ("hrm_eqb/train.py", "hrm_eqb/study.py", "hrm_eqb/bench.py", "hrm_eqb/device.py",
-               "hrm_eqb/__main__.py")),
+    # `hrm_eqb/` used to be seven subsystems here. It moved to `legacy/hrm_eqb/` on
+    # 2026-09-29: an audit found zero files outside its own test suite importing it,
+    # and `.graphifyignore` already excludes `legacy/` from the knowledge graph
+    # ("must not appear in impact queries"). Documenting it in the *live* code map
+    # while excluding it from the graph would be incoherent. Its module inventory
+    # is now `legacy/README.md`; the case for re-taking its method is ADR-011.
     Subsystem("HRM-X Workspace & Rules",
               "E-graph with provenance: congruence closure, conflicts with blame, rule saturation, extraction.",
               ("hrm_x/workspace.py", "hrm_x/rules.py")),

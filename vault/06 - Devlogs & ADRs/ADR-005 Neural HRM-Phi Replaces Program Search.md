@@ -25,6 +25,11 @@ related:
 > provisional `hrmphi/` named below), with 23 theorem tests passing.
 > **Since 2026-09-28 `hrm_eqb/` is a measured *baseline*, not the model** — see the
 > banner under the title.
+>
+> **Moved to `legacy/hrm_eqb/` on 2026-09-29.** An audit found zero files outside its own
+> test suite importing it; see `legacy/README.md`. Kept verbatim as the decision record.
+> Its 55 tests now live in `legacy/tests/` and are run with
+> `PYTHONPATH=legacy python -m pytest legacy/tests -q`.
 
 # ADR-005: Neural HRM-Φ Replaces Program Search as the Model
 

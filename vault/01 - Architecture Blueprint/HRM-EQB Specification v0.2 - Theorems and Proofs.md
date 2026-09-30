@@ -23,7 +23,7 @@ related:
 
 > [!NOTE] Fully implemented and theorem-tested — but superseded as the design target
 > This specification is **not** a paper design: it was built in `hrm_eqb/` and its
-> theorems were numerically checked (`tests/test_eqb_theorems.py`), as recorded in
+> theorems were numerically checked (`legacy/tests/test_eqb_theorems.py`), as recorded in
 > [[ADR-006 HRM-EQB Training and Benchmark Results]] (N0–N8 build; 42/42 tests at
 > that time — the count has since grown to 55, see §10).
 >
@@ -35,6 +35,13 @@ related:
 >
 > This document therefore remains the **normative design of the `hrm_eqb/`
 > baseline** — authoritative for that package, not for the project.
+>
+> **Moved to `legacy/hrm_eqb/` on 2026-09-29.** The package was built and measured, then
+> moved out of the live tree; an audit found zero files outside its own test suite importing
+> it (see `legacy/README.md`). The 55 tests are in `legacy/tests/` and are **no longer
+> collected by default** — run them with
+> `PYTHONPATH=legacy python -m pytest legacy/tests -q`. Kept verbatim as the normative
+> design of that baseline.
 
 v0.1 (HRM-Φ) conceded that convergence on the phasor torus could not be proved. v0.2
 closes that gap by design: the reasoning dynamics are contractive **by construction**, so
@@ -46,7 +53,7 @@ the model's behaviour follows from four numbers stored in its file. The spec add
 - curiosity that asks the most informative question;
 - an autoresearch-style self-improvement gate with a provable false-keep bound.
 
-Each theorem has a proof here and a numerical check in `tests/test_eqb_theorems.py` (§10).
+Each theorem has a proof here and a numerical check in `legacy/tests/test_eqb_theorems.py` (§10).
 
 **What is proved** is the model's *dynamics*: existence, uniqueness, convergence, halting,
 gradients, robustness, retrieval exactness, and decision rules. **What is not proved** is
@@ -755,11 +762,12 @@ in context: an empty brain.
 
 ## 10. Verification map (theorem → executable check)
 
-Every row is a test in `tests/test_eqb_theorems.py` (23 collected, float64, seeded), run
-against the code in the `hrm_eqb` package. The construction lemmas of §14 have their own
+Every row is a test in `legacy/tests/test_eqb_theorems.py` (23 collected, float64, seeded), run
+against the code in the `hrm_eqb` package (now `legacy/hrm_eqb/`). The construction lemmas of §14 have their own
 table there. **Status: all 55 `hrm_eqb` tests pass** (`test_eqb_theorems.py` 23,
-`test_eqb_model.py` 19, `test_eqb_runtime.py` 13); the whole repository suite is
-**436 passed, 1 skipped** as of 2026-09-29.
+`test_eqb_model.py` 19, `test_eqb_runtime.py` 13) — as of 2026-09-29 they run only
+explicitly, via `PYTHONPATH=legacy python -m pytest legacy/tests -q`; the whole live
+repository suite is **436 passed, 1 skipped**.
 
 > **Corrected 2026-09-29.** This line read "Status 2026-09-27: all pass, and the full
 > suite passes (243 passed, 1 skipped)". The 243 was a snapshot taken on 2026-09-27 and
@@ -876,7 +884,7 @@ provability against capacity.
 ## 14. Construction lemmas (added while building the full model)
 
 Building the model (package `hrm_eqb`, phases N1–N7) needed eleven more statements. Each
-is proved here and checked in `tests/test_eqb_model.py` or `tests/test_eqb_runtime.py`.
+is proved here and checked in `legacy/tests/test_eqb_model.py` or `legacy/tests/test_eqb_runtime.py`.
 Rules R1–R3 are engineering rules backed by measurements, not theorems.
 
 ### G1a — Augmentation is an exact group action on tasks

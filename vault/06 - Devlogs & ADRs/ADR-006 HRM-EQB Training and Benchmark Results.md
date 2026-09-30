@@ -16,6 +16,11 @@ date: 2026-09-27
 ## Context
 
 HRM-EQB (N0–N7) was built and tested in a single session (see Session - 2026-09-27 - HRM-EQB Full Build). This ADR records the training run and benchmark results, completing N8.
+>
+> **Moved to `legacy/hrm_eqb/` on 2026-09-29.** An audit found zero files outside its own
+> test suite importing it; see `legacy/README.md`. Kept verbatim as the decision record.
+> The commands below ran when the package was live in the repo root; they now need
+> `PYTHONPATH=legacy`, and the package is imported as `legacy.hrm_eqb`.
 
 **Model:** `eqb-small` (ModelConfig defaults: dim=128, heads=4, prelude_layers=3, max_segments=3, memory_side=64 → 4096 memory slots, max_cycles=40)
 

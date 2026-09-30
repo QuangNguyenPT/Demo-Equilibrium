@@ -108,6 +108,9 @@ Track how project decisions flowed:
 | ADR-010 | [[ADR-010 Structural Operator Inference]] | **current** | — |
 | ADR-011 | [[ADR-011 Reintroducing EQB Ideas into HRM-X]] | **proposed — not implemented** | — |
 
-`hrm/` = program-search baseline · `hrm_eqb/` = HRM-Φ equilibrium baseline (55 tests
-still run) · `hrm_x/` = current model (**HRM-X v0.5**, normative spec v0.5,
-ADR-010). **Gates G4 and G5 are not met** — see ADR-010 before quoting a headline.
+`hrm/` = program-search baseline (still live — `scripts/make_benchmark.py` imports
+`hrm.learning`) · `legacy/hrm_eqb/` = HRM-Φ equilibrium baseline, built and measured,
+moved out of the live tree on 2026-09-29 (its 55 tests are in `legacy/tests/`, run with
+`PYTHONPATH=legacy python -m pytest legacy/tests -q`) · `hrm_x/` = current model
+(**HRM-X v0.5**, normative spec v0.5, ADR-010). **Gates G4 and G5 are not met** — see
+ADR-010 before quoting a headline.
